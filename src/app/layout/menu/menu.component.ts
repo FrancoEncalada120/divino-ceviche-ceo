@@ -60,9 +60,9 @@ export class MenuComponent {
         },
         {
           type: 'link',
-          label: 'Company',
+          label: 'Locations',
           icon: 'bi-building',
-          route: '/settings/company',
+          route: '/settings/Locacions',
         },
       ],
     },

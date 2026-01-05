@@ -20,11 +20,9 @@ export class DashboardComponent implements OnInit {
   hasMissingYesterday = false;
   kpis: KpiCard[] = [];
 
-  // ✅ SOLO declarar (no inicializar aquí)
   filtersForm!: ReturnType<FormBuilder['group']>;
 
   constructor(private fb: FormBuilder, private dashboardSvc: DashboardService) {
-    // ✅ inicialización correcta
     this.filtersForm = this.fb.nonNullable.group({
       locationId: ['all', Validators.required],
       range: ['last7', Validators.required],

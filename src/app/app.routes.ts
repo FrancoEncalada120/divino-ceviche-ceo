@@ -23,6 +23,16 @@ export const routes: Routes = [
             (m) => m.DailyInputComponent
           ),
       },
+      {
+        path: 'settings/Locacions',
+        loadComponent: () =>
+          import(
+            './pages/locations/locations-list/locations-list.component'
+          ).then((m) => m.LocationsListComponent),
+      },
+
+      //------
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
