@@ -1,0 +1,63 @@
+<aside class="sidebar">
+  <!-- Brand -->
+  <div class="brand">
+    <div class="brand-icon">
+      <i class="bi bi-receipt-cutoff"></i>
+    </div>
+
+    <div class="brand-text">
+      <div class="brand-title">Divino CEO</div>
+      <div class="brand-subtitle">Dashboard™</div>
+    </div>
+  </div>
+
+  <!-- Menu -->
+  <nav class="menu">
+    <ng-container *ngFor="let item of items">
+      <!-- Section label -->
+      <div *ngIf="item.type === 'section'" class="menu-section">
+        {{ item.label }}
+      </div>
+
+      <!-- Link item -->
+      <a
+        *ngIf="item.type === 'link'"
+        class="menu-link"
+        [routerLink]="item.route"
+        routerLinkActive="active"
+      >
+        <i class="bi" [ngClass]="item.icon"></i>
+        <span class="menu-text">{{ item.label }}</span>
+      </a>
+
+      <!-- Group item -->
+      <button
+        *ngIf="item.type === 'group'"
+        type="button"
+        class="menu-link menu-group"
+        (click)="toggleGroup(item)"
+      >
+        <i class="bi" [ngClass]="item.icon"></i>
+        <span class="menu-text">{{ item.label }}</span>
+
+        <i
+          class="bi bi-chevron-down ms-auto chevron"
+          [class.open]="item.isOpen"
+        ></i>
+      </button>
+
+      <!-- Group children -->
+      <div *ngIf="item.type === 'group' && item.isOpen" class="menu-children">
+        <a
+          *ngFor="let child of item.children"
+          class="menu-child"
+          [routerLink]="child.route"
+          routerLinkActive="active"
+        >
+          <i class="bi" [ngClass]="child.icon"></i>
+          <span>{{ child.label }}</span>
+        </a>
+      </div>
+    </ng-container>
+  </nav>
+</aside>

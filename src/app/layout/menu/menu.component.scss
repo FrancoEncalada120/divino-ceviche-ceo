@@ -1,0 +1,131 @@
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #0f172a 0%, #111827 100%);
+  padding: 20px 16px;
+  color: #e5e7eb;
+  font-family: Inter, system-ui, -apple-system, sans-serif;
+}
+
+/* ===== BRAND ===== */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+}
+
+.brand-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.brand-subtitle {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+/* ===== MENU ===== */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Section label (OPERATIONS) */
+.menu-section {
+  margin: 16px 0 6px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: #64748b;
+  font-weight: 600;
+}
+
+/* ===== LINKS ===== */
+.menu-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #e5e7eb;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.menu-link i {
+  font-size: 16px;
+}
+
+/* Hover */
+.menu-link:hover {
+  background: #1e293b;
+}
+
+/* Active */
+.menu-link.active {
+  background: #2563eb;
+  color: #ffffff;
+}
+
+/* ===== GROUP (Settings) ===== */
+.menu-group {
+  width: 100%;
+  text-align: left;
+}
+
+.chevron {
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+/* ===== CHILDREN ===== */
+.menu-children {
+  margin-left: 34px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.menu-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #cbd5f5;
+  border-radius: 8px;
+  text-decoration: none;
+}
+
+.menu-child:hover {
+  background: #1e293b;
+}
+
+.menu-child.active {
+  background: #1e40af;
+  color: #fff;
+}

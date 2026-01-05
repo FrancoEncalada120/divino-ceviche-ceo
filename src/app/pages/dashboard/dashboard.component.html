@@ -1,0 +1,103 @@
+<div class="container-fluid py-3">
+  <!-- ✅ FORM WRAPPER -->
+  <form [formGroup]="filtersForm">
+    <!-- Top controls -->
+    <div class="row g-3 align-items-center">
+      <div class="col-12 col-lg-5">
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-geo-alt"></i>
+          </span>
+
+          <select class="form-select" formControlName="locationId">
+            <option *ngFor="let loc of locations" [value]="loc.id">
+              {{ loc.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-5">
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-calendar3"></i>
+          </span>
+
+          <select class="form-select" formControlName="range">
+            <option value="last7">Last 7 Days</option>
+            <option value="last30">Last 30 Days</option>
+            <option value="today">Today</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="col-12 col-lg-2 d-flex gap-2 justify-content-lg-end">
+        <button class="btn btn-outline-secondary w-100 w-lg-auto" type="button">
+          <i class="bi bi-plus-lg me-1"></i> Add Invoice
+        </button>
+        <button class="btn btn-primary w-100 w-lg-auto" type="button">
+          <i class="bi bi-plus-lg me-1"></i> Add Today's Numbers
+        </button>
+      </div>
+    </div>
+  </form>
+
+  <!-- Subheader -->
+  <div class="mt-3 d-flex align-items-center justify-content-between">
+    <div class="text-muted small">
+      Showing:
+      <span class="fw-medium">
+        {{
+          filtersForm.value.locationId === "all"
+            ? "All Locations"
+            : "Location " + filtersForm.value.locationId
+        }}
+      </span>
+      •
+      <span class="fw-medium">
+        {{
+          filtersForm.value.range === "last7"
+            ? "Last 7"
+            : filtersForm.value.range === "last30"
+            ? "Last 30"
+            : "Today"
+        }}
+      </span>
+    </div>
+
+    <button class="btn btn-sm btn-outline-primary" (click)="onApplyFilters()">
+      <i class="bi bi-arrow-repeat me-1"></i> Refresh
+    </button>
+  </div>
+
+  <!-- Alert -->
+  <div
+    class="alert alert-danger mt-3 d-flex align-items-center"
+    role="alert"
+    *ngIf="hasMissingYesterday"
+  >
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <div>No entry for yesterday. Add yesterday's numbers to stay on track.</div>
+  </div>
+
+  <!-- Cards -->
+  <div class="row g-3 mt-1">
+    <div class="col-12 col-md-6 col-lg-4" *ngFor="let card of kpis">
+      <div class="kpi-card card shadow-sm h-100">
+        <div class="card-body d-flex justify-content-between align-items-start">
+          <div>
+            <div class="text-muted small">{{ card.title }}</div>
+            <div class="kpi-value mt-1">{{ formatValue(card) }}</div>
+          </div>
+
+          <div class="kpi-icon">
+            <i class="bi" [ngClass]="card.icon"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="mt-3 text-muted small" *ngIf="loading">Loading...</div>
+</div>
