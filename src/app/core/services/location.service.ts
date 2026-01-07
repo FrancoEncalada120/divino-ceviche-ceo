@@ -10,11 +10,12 @@ type ApiResponse<T> = {
   message?: string;
 };
 
+
 @Injectable({ providedIn: 'root' })
 export class LocationService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/locations`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<Location[]> {
     console.log('[LocationService] GET', this.apiUrl);
@@ -26,4 +27,38 @@ export class LocationService {
       })
     );
   }
+
+  create(location: Location): Observable<Location> {
+
+    console.log('[create] POST', this.apiUrl);
+    console.log('[create] data', location);
+
+    return this.http
+      .post<ApiResponse<Location>>(this.apiUrl, location)
+      .pipe(
+        map(res => {
+
+          console.log('[create] res', res);
+
+          if (!res.success) {
+            throw new Error(res.message || 'Error creating location');
+          }
+          return res.data;
+        })
+      );
+  }
+
+  update(location: Location): Observable<Location> {
+    return this.http
+      .put<ApiResponse<Location>>(`${this.apiUrl}/${location.location_id}`, location)
+      .pipe(
+        map(res => {
+          if (!res.success) {
+            throw new Error(res.message || 'Error updating location');
+          }
+          return res.data;
+        })
+      );
+  }
+
 }

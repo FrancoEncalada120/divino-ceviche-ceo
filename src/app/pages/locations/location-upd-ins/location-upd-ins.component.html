@@ -1,0 +1,41 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{ mode === 'edit' ? 'Update Location' : 'Add New Location' }}</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <input type="hidden" [(ngModel)]="formData.location_id">
+
+      <div class="form-group">
+        <label>Location Name</label>
+        <input type="text" [(ngModel)]="formData.location_name"
+          placeholder="e.g., Divino ceviche Doral, Ave Miami Gardens">
+      </div>
+
+      <div class="form-group">
+        <label>Account Number</label>
+        <input type="text" [(ngModel)]="formData.location_AccountNumber" placeholder="e.g., 30000207001, 30000207002">
+      </div>
+
+      <div class="form-group">
+        <label>Status</label>
+        <select [(ngModel)]="formData.location_status">
+          <option value="A">Active</option>
+          <option value="D">Inactive</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">
+        {{ mode === 'edit' ? 'Save Changes' : 'Create' }}
+      </button>
+    </div>
+
+  </div>
+</div>
