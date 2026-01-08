@@ -1,0 +1,107 @@
+<div class="modal-backdrop">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <div class="modal-header">
+      <h2>{{ mode === 'edit' ? 'Update Goal' : 'Add New Goal' }}</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+
+      <input type="hidden" [(ngModel)]="formData.location_id">
+
+      <div class="form-group">
+        <label>Location</label>
+        <select [(ngModel)]="formData.location_id">
+          <option [ngValue]="0">Select locations</option>
+          <option *ngFor="let loc of locations" [value]="loc.location_id">
+            {{ loc.location_name}}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <div class="row-inline">
+
+          <div class="field">
+            <label>Month</label>
+            <select [(ngModel)]="formData.goal_month">
+              <option [ngValue]="null">Select month</option>
+              <option *ngFor="let month of months" [value]="month.value">
+                {{ month.label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Year</label>
+            <select [(ngModel)]="formData.goal_year">
+              <option [ngValue]="null">Select year</option>
+              <option *ngFor="let year of years" [value]="year.value">
+                {{ year.label }}
+              </option>
+            </select>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row-inline">
+
+          <div class="field">
+            <label>Target Sales ($)</label>
+            <input type="number" [(ngModel)]="formData.goal_target_sales" />
+          </div>
+
+          <div class="field">
+            <label>Target AOV ($)</label>
+            <input type="number" [(ngModel)]="formData.goal_target_AOV" />
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row-inline">
+
+          <div class="field">
+            <label>Food Cost %</label>
+            <input type="number" [(ngModel)]="formData.goal_food_cost" />
+          </div>
+
+          <div class="field">
+            <label>Labor Cost %</label>
+            <input type="number" [(ngModel)]="formData.goal_labor_cost" />
+          </div>
+
+        </div>
+      </div>
+
+      <div class="form-group">
+        <div class="row-inline">
+
+          <div class="field">
+            <label>Net Margin %</label>
+            <input type="number" [(ngModel)]="formData.goal_net_margin" />
+          </div>
+
+           <div class="field">
+
+          </div>
+        </div>
+
+      </div>
+
+
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">
+        {{ mode === 'edit' ? 'Save Changes' : 'Create' }}
+      </button>
+    </div>
+
+  </div>
+</div>

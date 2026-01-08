@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, NgClass } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Location } from '../../core/models/location.model';
 import { DashboardService } from '../../core/services/dashboard.service';
-import { DashboardResponse, KpiCard } from '../../core/models/dashboard.models';
+import { DashboardResponse } from '../../core/models/dashboard.models';
+
 
 @Component({
   selector: 'app-dashboard',
@@ -12,13 +14,12 @@ import { DashboardResponse, KpiCard } from '../../core/models/dashboard.models';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-  loading = false;
 
-  locations: DashboardResponse['locations'] = [
-    { id: 'all', name: 'All locations' },
-  ];
+  loading = false;
+  locations: Location[] = [];
+  dasboard: DashboardResponse | null = null;
+
   hasMissingYesterday = false;
-  kpis: KpiCard[] = [];
 
   filtersForm!: ReturnType<FormBuilder['group']>;
 
@@ -36,35 +37,15 @@ export class DashboardComponent implements OnInit {
   load(): void {
     this.loading = true;
 
-    const filters = this.filtersForm.getRawValue();
-    this.dashboardSvc.getDashboard(filters as any).subscribe({
+    this.dashboardSvc.getDashboard("2026-01-05", "2026-01-05", "1").subscribe({
       next: (res) => {
-        this.locations = res.locations;
-        this.hasMissingYesterday = res.hasMissingYesterday;
-        this.kpis = res.kpis;
+        this.dasboard = res;
+        console.log('Dashboard data:', res);
       },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),
     });
   }
 
-  onApplyFilters(): void {
-    this.load();
-  }
 
-  formatValue(card: KpiCard): string {
-    if (card.format === 'currency') {
-      return new Intl.NumberFormat('es-PE', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 0,
-      }).format(card.value);
-    }
-
-    if (card.format === 'percent') {
-      return `${card.value.toFixed(1)}%`;
-    }
-
-    return String(card.value);
-  }
 }

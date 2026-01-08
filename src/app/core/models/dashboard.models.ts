@@ -1,20 +1,41 @@
-export type DateRangeKey = 'last7' | 'last30' | 'today';
-
-export interface DashboardFilters {
-  locationId: string; // "all" | "1" | ...
-  range: DateRangeKey; // last7, last30, today
-}
-
-export interface KpiCard {
-  key: 'netSales' | 'cogs' | 'labor' | 'prime' | 'aov' | 'netMargin';
-  title: string;
-  value: number;
-  format: 'currency' | 'percent' | 'number';
-  icon?: string; // bootstrap icon class
-}
-
 export interface DashboardResponse {
-  hasMissingYesterday: boolean;
-  kpis: KpiCard[];
-  locations: { id: string; name: string }[];
+  success: boolean;
+  invoices: Invoice[];
+  dailyMetrics: DailyMetric[];
+  totales: TotalMetric[];
+}
+
+export interface Invoice {
+  invoice_id: number;
+  invoice_date: string; // YYYY-MM-DD
+  invoice_vendor_description: string;
+  category_id: number;
+  invoice_amount: string; // viene como string del backend
+  invoice_notes: string | null;
+  created_at: string; // ISO datetime
+  location_id: number;
+  category: Category;
+}
+
+export interface Category {
+  category_id: number;
+  invoice_type_id: number;
+  description: string | null;
+  category_code: string;
+}
+
+export interface DailyMetric {
+  daily_metric_date: string;
+  totalNetSales: string;
+  totalDailyHourly: string;
+  LaborCost: string;
+  AOV: string;
+}
+
+export interface TotalMetric {
+  name: string;
+  goal: number | string;
+  Result: number;
+  diff: number;
+  desc: 'Above target' | 'Below target';
 }

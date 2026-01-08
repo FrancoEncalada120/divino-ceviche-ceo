@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Monthly Goals</h4>
+    <p class="text-muted mb-0">Set targets for sales, costs, and margins by location</p>
+  </div>
+
+  <button class="btn btn-primary" (click)="openCreate()">Add Goal</button>
+</div>
+
+<div class="card shadow-sm mb-2">
+  <div class="card-body">
+
+    <div class="d-flex align-items-center gap-3 p-2">
+      <button class="btn btn-outline-secondary btn-sm" (click)="prevMonth()">
+        &lt;
+      </button>
+
+      <strong class="fs-5">
+        {{ currentMonthName }} {{ currentYear }}
+      </strong>
+
+      <button class="btn btn-outline-secondary btn-sm" (click)="nextMonth()">
+        &gt;
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div *ngIf="loading" class="text-muted py-3">Loading...</div>
+
+    <app-goal-list (edit)="openEdit($event)" (delete)="delete($event)" [goals]="goals"></app-goal-list>
+
+  </div>
+</div>
+
+<app-goal-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" [goal]="selectedLocation" (close)="closeModal()"
+  (submit)="handleSubmit($event)">
+</app-goal-upd-ins>

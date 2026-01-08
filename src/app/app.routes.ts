@@ -31,6 +31,13 @@ export const routes: Routes = [
             './pages/locations/location-pri/location-pri.component'
           ).then((m) => m.LocationPriComponent),
       },
+      {
+        path: 'settings/Goals',
+        loadComponent: () =>
+          import(
+            './pages/goals/goal-pri/goal-pri.component'
+          ).then((m) => m.GoalPriComponent),
+      },
 
       //------
 

@@ -64,6 +64,12 @@ export class MenuComponent {
           icon: 'bi-building',
           route: '/settings/Locacions',
         },
+        {
+          type: 'link',
+          label: 'Goals',
+          icon: 'bi-building',
+          route: '/settings/Goals',
+        },
       ],
     },
   ];
