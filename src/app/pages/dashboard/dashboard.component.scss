@@ -62,3 +62,27 @@
   color: #dc2626;
 }
 
+
+
+.custom-day {
+  text-align: center;
+  padding: 0.25rem;
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.25rem;
+}
+
+.custom-day.range {
+  background-color: #e9ecef;
+}
+
+.custom-day.start,
+.custom-day.end {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.custom-day.filled {
+  background-color: #cfe2ff;
+}

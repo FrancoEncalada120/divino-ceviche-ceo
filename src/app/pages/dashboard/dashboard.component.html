@@ -1,109 +1,115 @@
 <div class="container-fluid py-3">
   <!-- ✅ FORM WRAPPER -->
-  <form [formGroup]="filtersForm">
-    <!-- Top controls -->
-    <div class="row g-3 align-items-center">
-      <div class="col-12 col-lg-5">
-        <div class="input-group">
-          <span class="input-group-text bg-white">
-            <i class="bi bi-geo-alt"></i>
-          </span>
 
-          <select class="form-select" formControlName="locationId">
-            <option *ngFor="let loc of locations" [value]="loc.location_id">
-              {{ loc.location_name }}
-            </option>
-          </select>
-        </div>
-      </div>
+  <!-- Top controls -->
+  <div class="row g-3 align-items-center mb-5">
+    <div class="col-6">
 
-      <div class="col-12 col-lg-5">
-        <div class="input-group">
-          <span class="input-group-text bg-white">
-            <i class="bi bi-calendar3"></i>
-          </span>
+      <div class="input-group">
 
-          <select class="form-select" formControlName="range">
-            <option value="last7">Last 7 Days</option>
-            <option value="last30">Last 30 Days</option>
-            <option value="today">Today</option>
-          </select>
-        </div>
-      </div>
 
-      <div class="col-12 col-lg-2 d-flex gap-2 justify-content-lg-end">
-        <button class="btn btn-outline-secondary w-100 w-lg-auto" type="button">
-          <i class="bi bi-plus-lg me-1"></i> Add Invoice
-        </button>
-        <button class="btn btn-primary w-100 w-lg-auto" type="button">
-          <i class="bi bi-plus-lg me-1"></i> Add Today's Numbers
-        </button>
+        <span class="input-group-text bg-white">
+          <i class="bi bi-geo-alt"></i>
+        </span>
+
+        <p-multiselect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select locations" [maxSelectedLabels]="3" styleClass="w-50" (onChange)="onLocationsChange()" />
+
       </div>
     </div>
-  </form>
 
-  <!-- Subheader -->
-  <div class="mt-3 d-flex align-items-center justify-content-between">
-    <div class="text-muted small">
-      Showing:
-      <span class="fw-medium">
-        {{
-        filtersForm.value.locationId === "all"
-        ? "All Locations"
-        : "Location " + filtersForm.value.locationId
-        }}
-      </span>
-      •
-      <span class="fw-medium">
-        {{
-        filtersForm.value.range === "last7"
-        ? "Last 7"
-        : filtersForm.value.range === "last30"
-        ? "Last 30"
-        : "Today"
-        }}
-      </span>
+    <div class="col-6">
+
+      <div class="input-group w-100">
+
+        <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
+          [readonlyInput]="true" placeholder="Select date range" (ngModelChange)="onLocationsChangeDate($event)">
+        </p-datepicker>
+
+      </div>
+
     </div>
 
-    <button class="btn btn-sm btn-outline-primary">
-      <i class="bi bi-arrow-repeat me-1"></i> Refresh
-    </button>
-  </div>
+    <!-- Subheader -->
+    <div class="mt-3 d-flex align-items-center justify-content-between">
+      <div class="text-muted small">
 
-  <!-- Alert -->
-  <div class="alert alert-danger mt-3 d-flex align-items-center" role="alert" *ngIf="hasMissingYesterday">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    <div>No entry for yesterday. Add yesterday's numbers to stay on track.</div>
-  </div>
+        <ng-container *ngIf="selectedLocation.length; else noneSelected">
+          {{
+          selectedLocationNames
+          }}
+        </ng-container>
 
-  <!-- Cards -->
-  <div class="row g-2">
-    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
-
-      <div class="kpi-card">
-        <div class="kpi-header">
-          <span class="kpi-title">{{item.name}}</span>
-          <span class="kpi-currency">$</span>
+        <ng-template #noneSelected>
+          None
+        </ng-template>
+        <div class="text-muted small">
+          {{ formattedDateRange }}
         </div>
+      </div>
 
-        <div class="kpi-value">
-          ${{item.Result}}
-        </div>
+    </div>
 
-        <div class="kpi-footer">
-          <span class="kpi-target">
-            Target: ${{item.goal}}
-          </span>
+    <!-- Cards -->
+    <div class="row g-2">
+      <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
 
-          <span class="kpi-diff negative">
-            <i class="bi bi-arrow-down"></i>
-            {{item.diff}}%
-          </span>
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span class="kpi-title">{{item.name}}</span>
+            <span class="kpi-currency">$</span>
+          </div>
+
+          <div class="kpi-value">
+            ${{item.Result | number:'1.0-3' }}
+          </div>
+
+          <div class="kpi-footer">
+            <span class="kpi-target">
+              Target: ${{item.goal | number:'1.0-3' }}
+            </span>
+
+            <span class="kpi-diff negative">
+              <i class="bi bi-arrow-down"></i>
+              {{item.diff | number:'1.0-3' }}%
+            </span>
+          </div>
         </div>
       </div>
     </div>
+
+    <!-- Loading -->
+    <div class="mt-3 text-muted small" *ngIf="loading">Loading...</div>
   </div>
 
-  <!-- Loading -->
-  <div class="mt-3 text-muted small" *ngIf="loading">Loading...</div>
+  <div class="card">
+    <div class="card-body">
+      <table class="table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Sales</th>
+            <th>Labor Cost</th>
+            <th>Labor %</th>
+            <th>AOV</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let item of dasboard?.dailyMetrics">
+
+            <td>{{ item.daily_metric_date }}</td>
+            <td></td>
+            <td>{{ item.totalNetSales }}</td>
+            <td>{{ item.totalDailyHourly }}</td>
+            <td>{{ item.LaborCost }}</td>
+            <td>{{ item.AOV }}</td>
+
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
