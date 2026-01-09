@@ -83,6 +83,9 @@
   </div>
 
   <div class="card">
+    <div class="card-header">
+      Daily Scorecard
+    </div>
     <div class="card-body">
       <table class="table align-middle">
         <thead class="table-light">
@@ -100,7 +103,7 @@
           <tr *ngFor="let item of dasboard?.dailyMetrics">
 
             <td>{{ item.daily_metric_date }}</td>
-            <td></td>
+            <td>{{ item.location_name}}</td>
             <td>{{ item.totalNetSales }}</td>
             <td>{{ item.totalDailyHourly }}</td>
             <td>{{ item.LaborCost }}</td>

@@ -26,6 +26,7 @@ export interface Category {
 
 export interface DailyMetric {
   daily_metric_date: string;
+  location_name: string;
   totalNetSales: string;
   totalDailyHourly: string;
   LaborCost: string;
