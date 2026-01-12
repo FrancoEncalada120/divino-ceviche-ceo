@@ -1,3 +1,5 @@
+import { Location } from "./location.model";
+
 export interface DashboardResponse {
   success: boolean;
   invoices: Invoice[];
@@ -15,6 +17,7 @@ export interface Invoice {
   created_at: string; // ISO datetime
   location_id: number;
   category: Category;
+  locations : Location
 }
 
 export interface Category {
