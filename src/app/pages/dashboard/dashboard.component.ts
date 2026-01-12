@@ -19,44 +19,35 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-
   loading = false;
   locations: Location[] = [];
   dasboard: DashboardResponse | null = null;
-
 
   dateRange: Date[] | null = null;
 
   selectedLocation!: Location[];
 
-  constructor(private dashboardSvc: DashboardService, private locationService: LocationService) {
-  }
+  constructor(
+    private dashboardSvc: DashboardService,
+    private locationService: LocationService
+  ) {}
 
   ngOnInit(): void {
-
     // 📅 Inicializar con AYER
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    this.dateRange = [
-      new Date(yesterday),
-      new Date(yesterday)
-    ];
+    this.dateRange = [new Date(yesterday), new Date(yesterday)];
 
     this.loadLocations();
 
-    this.locationChange$
-      .pipe(debounceTime(1000))
-      .subscribe(() => {
-        console.log('Locations changed, reloading dashboard...');
-        this.load();
-      });
-
-
+    this.locationChange$.pipe(debounceTime(1000)).subscribe(() => {
+      console.log('Locations changed, reloading dashboard...');
+      this.load();
+    });
   }
 
   load(): void {
-
     this.loading = true;
 
     if (!this.dateRange || this.dateRange.length !== 2) {
@@ -65,13 +56,19 @@ export class DashboardComponent implements OnInit {
       return;
     }
 
-    if (!this.selectedLocation || this.selectedLocation === null || this.selectedLocation.length === 0) {
+    if (
+      !this.selectedLocation ||
+      this.selectedLocation === null ||
+      this.selectedLocation.length === 0
+    ) {
       console.warn('No locations selected.');
       this.loading = false;
       return;
     }
 
-    const locales = this.selectedLocation.map(loc => loc.location_id).join(',');
+    const locales = this.selectedLocation
+      .map((loc) => loc.location_id)
+      .join(',');
 
     console.log('Range de fechas:', this.formattedDateRange);
     console.log('Range de fechas:', this.dateRange);
@@ -89,9 +86,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
   loadLocations(): void {
-
     this.locationService.getAll().subscribe({
       next: (data) => {
         console.log('[Locations] GET ok, items:', data?.length, data);
@@ -101,14 +96,12 @@ export class DashboardComponent implements OnInit {
         this.selectedLocation = [...this.locations];
 
         this.load();
-
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
       complete: () => console.log('[Locations] GET complete'),
     });
-
   }
 
   get selectedLocationNames(): string {
@@ -120,18 +113,20 @@ export class DashboardComponent implements OnInit {
       return 'All locations';
     }
 
-    return this.selectedLocation
-      .map(c => c.location_name)
-      .join(', ');
+    return this.selectedLocation.map((c) => c.location_name).join(', ');
   }
 
   get formattedDateRange(): string {
-    if (!this.dateRange || this.dateRange.length !== 2 || !this.dateRange[0] || !this.dateRange[1]) {
+    if (
+      !this.dateRange ||
+      this.dateRange.length !== 2 ||
+      !this.dateRange[0] ||
+      !this.dateRange[1]
+    ) {
       return 'No date selected';
     }
 
-    const format = (d: Date) =>
-      d.toISOString().split('T')[0];
+    const format = (d: Date) => d.toISOString().split('T')[0];
 
     return `${format(this.dateRange[0])} - ${format(this.dateRange[1])}`;
   }
@@ -139,8 +134,9 @@ export class DashboardComponent implements OnInit {
   private locationChange$ = new Subject<void>();
 
   onLocationsChange() {
-
-    console.log('Locations or date range changed, scheduling dashboard reload...');
+    console.log(
+      'Locations or date range changed, scheduling dashboard reload...'
+    );
 
     this.locationChange$.next();
   }
@@ -149,5 +145,4 @@ export class DashboardComponent implements OnInit {
     console.log('Rango de fechas cambiado:', event);
     this.load();
   }
-
 }

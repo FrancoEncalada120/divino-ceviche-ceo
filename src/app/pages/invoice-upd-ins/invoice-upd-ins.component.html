@@ -1,0 +1,94 @@
+<div class="modal-backdrop">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>{{ mode === "edit" ? "Update Invoice" : "Add New Invoice" }}</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <!-- ID (hidden) -->
+      <input type="hidden" [(ngModel)]="formData.invoice_id" />
+
+      <!-- Row: Date + Location -->
+      <div class="form-group">
+        <div class="row-inline">
+          <div class="field">
+            <label>Date</label>
+            <input type="date" [(ngModel)]="formData.invoice_date" />
+          </div>
+
+          <div class="field">
+            <label>Location</label>
+            <select [(ngModel)]="formData.location_id">
+              <option [ngValue]="0">Select location</option>
+              <option *ngFor="let loc of locations" [ngValue]="loc.location_id">
+                {{ loc.location_name }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vendor -->
+      <div class="form-group">
+        <label>Vendor</label>
+        <input
+          type="text"
+          [(ngModel)]="formData.invoice_vendor_description"
+          placeholder="e.g., ALWAYS FRESH CORP"
+        />
+      </div>
+
+      <!-- Row: Category + Amount -->
+      <div class="form-group">
+        <div class="row-inline">
+          <div class="field">
+            <label>Category</label>
+            <select [(ngModel)]="formData.category_id">
+              <option [ngValue]="0">Select category</option>
+              <option
+                *ngFor="let cat of categories"
+                [ngValue]="cat.category_id"
+              >
+                {{ cat.category_code }}
+              </option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label>Amount</label>
+            <input
+              type="number"
+              step="0.01"
+              [(ngModel)]="formData.invoice_amount"
+              placeholder="0.00"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Notes -->
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea
+          rows="3"
+          [(ngModel)]="formData.invoice_notes"
+          placeholder="Optional notes..."
+        ></textarea>
+      </div>
+
+      <!-- Created At (solo lectura, opcional) -->
+      <div class="form-group" *ngIf="mode === 'edit'">
+        <label>Created At</label>
+        <input type="text" [value]="formData.created_at" disabled />
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">
+        {{ mode === "edit" ? "Save Changes" : "Create" }}
+      </button>
+    </div>
+  </div>
+</div>

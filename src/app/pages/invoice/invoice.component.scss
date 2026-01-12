@@ -1,0 +1,290 @@
+/* Centrar los tabs */
+.tabs-centered .p-tabview-nav {
+  display: flex;
+  justify-content: center;
+  border-bottom: none;
+}
+
+/* Estilo botón */
+.tabs-buttons .p-tabview-nav li {
+  margin: 0 6px;
+}
+
+.tabs-buttons .p-tabview-nav li .p-tabview-nav-link {
+  border-radius: 999px; /* pill */
+  padding: 0.6rem 1.5rem;
+  border: 1px solid #dee2e6;
+  background: #f8f9fa;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+/* Hover */
+.tabs-buttons .p-tabview-nav li .p-tabview-nav-link:hover {
+  background: #e9ecef;
+}
+
+/* Activo */
+.tabs-buttons .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: #0d6efd; /* azul bootstrap */
+  color: #fff;
+  border-color: #0d6efd;
+  box-shadow: 0 4px 10px rgba(13, 110, 253, 0.25);
+}
+
+.action-btn {
+  background: #ffffff !important;
+  color: #212529 !important;
+  border: 1px solid #dee2e6 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  min-width: 220px; /* todos del mismo tamaño */
+  justify-content: center;
+}
+
+.action-btn.p-button-success {
+  border-left: 5px solid #198754 !important;
+}
+
+.action-btn.p-button-info {
+  border-left: 5px solid #0dcaf0 !important;
+}
+
+.action-btn.p-button-warning {
+  border-left: 5px solid #ffc107 !important;
+}
+
+.action-btn:hover {
+  background: #f8f9fa !important;
+}
+
+.invoice-actions {
+  display: flex;
+  gap: 0.5rem; /* separación clara entre botones */
+  margin: 1rem 0; /* espacio con la tabla/tabs */
+
+  border-radius: 14px;
+  background: #f8f9fa; /* fondo suave */
+}
+
+//////////////////
+.summary-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.75rem;
+  margin: 1.5rem 0 2rem;
+}
+
+/* Card estilo “botón” */
+.sum-card {
+  cursor: pointer;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Quita padding default del card si molesta */
+:host ::ng-deep .sum-card .p-card-body {
+  padding: 0;
+}
+
+/* Contenido interno estilo botón */
+.sum-inner {
+  padding: 1.25rem 1.4rem;
+  background: #fff;
+}
+
+/* Stripe lateral como tus botones */
+.sum-cogs {
+  border-left: 6px solid #198754;
+}
+.sum-fixed {
+  border-left: 6px solid #0dcaf0;
+}
+.sum-other {
+  border-left: 6px solid #ffc107;
+}
+
+.sum-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+}
+
+.sum-top .pi {
+  font-size: 1.2rem;
+}
+
+.sum-title {
+  font-size: 1rem;
+}
+
+.sum-value {
+  margin-top: 0.9rem;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.sum-sub {
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* Hover tipo botón */
+.sum-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* “Activo” si quieres que se marque igual que tab */
+.sum-card.is-active {
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+  border-color: #ced4da;
+  background: #f8f9fa;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .summary-row {
+    grid-template-columns: 1fr;
+  }
+}
+/////////////////
+///
+/// /* ====== Title ====== */
+.page-title h2 {
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+
+.page-title p {
+  margin: 0;
+}
+
+/* ====== Filters ====== */
+.filters-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1.75rem;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-weight: 700;
+  color: #343a40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* responsive filtros */
+@media (max-width: 900px) {
+  .filters-bar {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ====== Tabs colored like cards/buttons ====== */
+/* necesitamos ::ng-deep para tocar estilos internos de PrimeNG */
+:host ::ng-deep .invoice-tabs .p-tabview-nav {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  border-bottom: none;
+  margin-bottom: 1.25rem;
+}
+
+:host ::ng-deep .invoice-tabs .p-tabview-nav li {
+  margin: 0;
+}
+
+:host ::ng-deep .invoice-tabs .p-tabview-nav li .p-tabview-nav-link {
+  border-radius: 12px;
+  padding: 0.65rem 1.25rem;
+  border: 1px solid #dee2e6;
+  background: #fff;
+  font-weight: 800;
+  transition: all 0.2s ease;
+}
+
+/* Hover general */
+:host ::ng-deep .invoice-tabs .p-tabview-nav li .p-tabview-nav-link:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+}
+
+/* COGS tab (1st) */
+:host
+  ::ng-deep
+  .invoice-tabs
+  .p-tabview-nav
+  li:nth-child(1)
+  .p-tabview-nav-link {
+  border-left: 6px solid #198754;
+}
+
+/* FIXED tab (2nd) */
+:host
+  ::ng-deep
+  .invoice-tabs
+  .p-tabview-nav
+  li:nth-child(2)
+  .p-tabview-nav-link {
+  border-left: 6px solid #0dcaf0;
+}
+
+/* OTHER tab (3rd) */
+:host
+  ::ng-deep
+  .invoice-tabs
+  .p-tabview-nav
+  li:nth-child(3)
+  .p-tabview-nav-link {
+  border-left: 6px solid #ffc107;
+}
+
+/* Activo: fondo suave + borde fuerte por color */
+:host
+  ::ng-deep
+  .invoice-tabs
+  .p-tabview-nav
+  li.p-highlight:nth-child(1)
+  .p-tabview-nav-link {
+  border-color: #198754;
+  background: rgba(25, 135, 84, 0.08);
+}
+
+:host
+  ::ng-deep
+  .invoice-tabs
+  .p-tabview-nav
+  li.p-highlight:nth-child(2)
+  .p-tabview-nav-link {
+  border-color: #0dcaf0;
+  background: rgba(13, 202, 240, 0.1);
+}
+
+:host
+  ::ng-deep
+  .invoice-tabs
+  .p-tabview-nav
+  li.p-highlight:nth-child(3)
+  .p-tabview-nav-link {
+  border-color: #ffc107;
+  background: rgba(255, 193, 7, 0.14);
+}

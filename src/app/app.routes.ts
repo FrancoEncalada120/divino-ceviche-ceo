@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { ShellComponent } from './layout/shell/shell.component';
 import { LocationPriComponent } from './pages/locations/location-pri/location-pri.component';
+import { MonthlyPlComponent } from './pages/monthly-pl/monthly-pl.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -25,18 +26,32 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'monthly-pl',
+        loadComponent: () =>
+          import('./pages/monthly-pl/monthly-pl.component').then(
+            (m) => m.MonthlyPlComponent
+          ),
+      },
+      {
+        path: 'invoice-tracker',
+        loadComponent: () =>
+          import('./pages/invoice/invoice.component').then(
+            (m) => m.InvoiceComponent
+          ),
+      },
+      {
         path: 'settings/Locacions',
         loadComponent: () =>
-          import(
-            './pages/locations/location-pri/location-pri.component'
-          ).then((m) => m.LocationPriComponent),
+          import('./pages/locations/location-pri/location-pri.component').then(
+            (m) => m.LocationPriComponent
+          ),
       },
       {
         path: 'settings/Goals',
         loadComponent: () =>
-          import(
-            './pages/goals/goal-pri/goal-pri.component'
-          ).then((m) => m.GoalPriComponent),
+          import('./pages/goals/goal-pri/goal-pri.component').then(
+            (m) => m.GoalPriComponent
+          ),
       },
 
       //------
