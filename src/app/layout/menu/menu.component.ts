@@ -35,6 +35,12 @@ export class MenuComponent {
     },
     {
       type: 'link',
+      label: 'Profit Calculator',
+      icon: 'bi-calculator',
+      route: '/calculator',
+    },
+    {
+      type: 'link',
       label: 'Invoice Tracker',
       icon: 'bi-receipt',
       route: '/invoice-tracker',

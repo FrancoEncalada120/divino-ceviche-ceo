@@ -1,0 +1,236 @@
+<div class="container-fluid p-4">
+  <div class="row g-4">
+
+    <!-- LEFT COLUMN -->
+    <div class="col-md-6">
+
+      <!-- Time Period -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="text-danger">📅 Time Period</h6>
+
+          <div class="form-group"></div>
+          <label class="form-label">What Time Period Are We Calculating?</label>
+          <select class="form-select" [(ngModel)]="sales.days">
+            <option value="30">30 Days</option>
+            <option value="31">31 Days</option>
+          </select>
+
+        </div>
+      </div>
+
+      <!-- Fixed Costs -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="text-danger">💲 Fixed Costs</h6>
+
+          <div class="mb-3">
+            <label>Rent Costs</label>
+            <input class="form-control" type="number" placeholder="Rent Costs" [(ngModel)]="fixedCosts.rent"
+              (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Insurance Costs</label>
+            <input class="form-control mb-2" type="number" placeholder="Insurance Costs"
+              [(ngModel)]="fixedCosts.insurance" (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Property Tax</label>
+            <input class="form-control mb-2" type="number" placeholder="Property Tax"
+              [(ngModel)]="fixedCosts.propertyTax" (ngModelChange)="calculate()">
+          </div>
+
+
+          <div class="mb-3">
+            <label>Phone and Internet</label>
+            <input class="form-control mb-2" type="number" placeholder="Phone & Internet"
+              [(ngModel)]="fixedCosts.phoneInternet" (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Marketing</label>
+            <input class="form-control mb-2" type="number" placeholder="Marketing" [(ngModel)]="fixedCosts.marketing"
+              (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Licenses and Permits</label>
+            <input class="form-control mb-2" type="number" placeholder="Licenses and Permits"
+              [(ngModel)]="fixedCosts.licenses" (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Utility Costs</label>
+            <input class="form-control mb-2" type="number" placeholder="Utility Costs"
+              [(ngModel)]="fixedCosts.utilities" (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Salaries</label>
+            <input class="form-control mb-2" type="number" placeholder="Salaries" [(ngModel)]="fixedCosts.salaries"
+              (ngModelChange)="calculate()">
+          </div>
+
+          <div class="mb-3">
+            <label>Other Fixed Costs</label>
+            <input class="form-control" type="number" placeholder="Other Fixed" [(ngModel)]="fixedCosts.otherFixed"
+              (ngModelChange)="calculate()">
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Variable Costs -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="text-danger">📉 Variable Costs as % of Sales</h6>
+
+          <div class="mb-3">
+            <label>Food (%)</label>
+            <input class="form-control mb-2" [(ngModel)]="variableCosts.foodPct" (ngModelChange)="calculate()"
+              placeholder="Food (%)">
+          </div>
+
+          <div class="mb-3">
+            <label>Hourly Labor (%)</label>
+            <input class="form-control mb-2" [(ngModel)]="variableCosts.laborPct" (ngModelChange)="calculate()"
+              placeholder="Hourly Labor (%)">
+          </div>
+
+          <div class="mb-3">
+            <label>Other Variable Costs (%)</label>
+            <input class="form-control" [(ngModel)]="variableCosts.otherPct" (ngModelChange)="calculate()"
+              placeholder="Other Variable Costs (%)">
+          </div>
+        </div>
+      </div>
+
+      <!-- Sales -->
+      <div class="card">
+        <div class="card-body">
+          <h6 class="text-danger">🛒 Sales</h6>
+
+          <div class="mb-3">
+            <label>Total Sales (for the period)</label>
+            <input class="form-control mb-2" [(ngModel)]="sales.totalSales" (ngModelChange)="calculate()"
+              placeholder="Total Sales (for the period)">
+          </div>
+          <div class="mb-3">
+            <label>Avg $ Per Guest (for ticket calculations)</label>
+            <input class="form-control" [(ngModel)]="sales.avgTicket" (ngModelChange)="calculate()"
+              placeholder="Avg $ Per Guest">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div class="col-md-6">
+
+      <!-- Key Results -->
+      <div class="card mb-3">
+        <div class="card-body text-center">
+          <h6 class="text-success">✅ Key Results</h6>
+
+          <h2 class="text-success"> {{ results.breakEvenSales | currency:'USD' }}</h2>
+          <small>Break-Even Sales (Monthly)</small>
+
+          <div class="row mt-3">
+            <div class="col">
+              <small class="text-muted">Daily Break-Even</small><br>
+              <strong>
+                {{ results.dailyBreakEven | currency:'USD' }}
+              </strong>
+            </div>
+            <div class="col">
+              <small class="text-muted">Tickets/Day BE</small><br>
+              <strong>
+                {{ results.ticketsPerDay | number:'1.1-1' }}
+              </strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Current Performance -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="text-success">📊 Current Performance</h6>
+
+          <div class="d-flex justify-content-between">
+            <span>Profit at Current Sales</span>
+            <strong class="text-success">{{ results.profit | currency:'USD' }}</strong>
+          </div>
+
+          <div class="d-flex justify-content-between">
+            <span>Profit Margin</span>
+            <strong class="text-success">{{ results.profitMargin | number:'1.0-1' }}%</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profit Ramp -->
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="text-success">📈 Profit Ramp (vs Break-Even)</h6>
+
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Sales Level</th>
+                <th>Sales $</th>
+                <th>Profit $</th>
+                <th>Profit %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of profitRampBE">
+                <td>{{ row.label }}</td>
+                <td>{{ row.sales | currency:'USD' }}</td>
+                <td [class.text-danger]="row.profit < 0" [class.text-success]="row.profit >= 0">
+                  {{ row.profit | currency:'USD' }}
+                </td>
+                <td>{{ row.profitPct | number:'1.1-1' }}%</td>
+              </tr>
+            </tbody>
+          </table>
+
+
+        </div>
+      </div>
+
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <h6 class="text-success">📈 Profit Ramp (vs Current Sales)</h6>
+
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Sales Level</th>
+                <th>Sales $</th>
+                <th>Profit $</th>
+                <th>Profit %</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let row of profitRampCurrent">
+                <td>{{ row.label }}</td>
+                <td>{{ row.sales | currency:'USD' }}</td>
+                <td [class.text-danger]="row.profit < 0" [class.text-success]="row.profit >= 0">
+                  {{ row.profit | currency:'USD' }}
+                </td>
+                <td>{{ row.profitPct | number:'1.1-1' }}%</td>
+              </tr>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

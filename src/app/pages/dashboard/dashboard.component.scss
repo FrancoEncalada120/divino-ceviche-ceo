@@ -86,3 +86,37 @@
 .custom-day.filled {
   background-color: #cfe2ff;
 }
+
+
+/* ====== Filters ====== */
+.filters-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  padding: 1rem 1.25rem;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-label {
+  font-weight: 700;
+  color: #343a40;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* responsive filtros */
+@media (max-width: 900px) {
+  .filters-bar {
+    grid-template-columns: 1fr;
+  }
+}

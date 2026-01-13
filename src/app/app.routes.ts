@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { ShellComponent } from './layout/shell/shell.component';
-import { LocationPriComponent } from './pages/locations/location-pri/location-pri.component';
-import { MonthlyPlComponent } from './pages/monthly-pl/monthly-pl.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -30,6 +28,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./pages/monthly-pl/monthly-pl.component').then(
             (m) => m.MonthlyPlComponent
+          ),
+      },
+      {
+        path: 'calculator',
+        loadComponent: () =>
+          import('./pages/calculator/calculator.component').then(
+            (m) => m.CalculatorComponent
           ),
       },
       {
