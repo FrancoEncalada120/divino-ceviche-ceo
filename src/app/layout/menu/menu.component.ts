@@ -46,13 +46,6 @@ export class MenuComponent {
       route: '/invoice-tracker',
     },
     {
-      type: 'link',
-      label: 'Profit Calculator',
-      icon: 'bi-calculator',
-      route: '/profit-calculator',
-    },
-
-    {
       type: 'group',
       label: 'Settings',
       icon: 'bi-gear',

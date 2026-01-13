@@ -46,6 +46,7 @@ export class InvoiceComponent {
   invoice01: Invoice[] = [];
   invoice02: Invoice[] = [];
   invoice03: Invoice[] = [];
+  invoice04: Invoice[] = [];
 
   totalCat1 = 0;
   totalCat2 = 0;
@@ -65,7 +66,7 @@ export class InvoiceComponent {
     private locationService: LocationService,
     private dashboardSvc: DashboardService,
     private invoiceService: InvoiceService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const yesterday = new Date();
@@ -126,6 +127,10 @@ export class InvoiceComponent {
         this.invoice03 = invoices.filter(
           (x) => Number(x.category.invoice_type_id) === 3
         );
+        this.invoice04 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 4
+        );
+
         this.calculateTotals(invoices);
       },
       error: () => (this.loading = false),
