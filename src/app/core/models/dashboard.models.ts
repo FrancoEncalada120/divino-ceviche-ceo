@@ -1,4 +1,4 @@
-import { Location } from "./location.model";
+import { Location } from './location.model';
 
 export interface DashboardResponse {
   success: boolean;
@@ -17,7 +17,7 @@ export interface Invoice {
   created_at: string; // ISO datetime
   location_id: number;
   category: Category;
-  locations : Location
+  locations: Location;
 }
 
 export interface Category {
@@ -34,6 +34,15 @@ export interface DailyMetric {
   totalDailyHourly: string;
   LaborCost: string;
   AOV: string;
+}
+
+export interface DailyMetricCreateDto {
+  daily_metric_id?: number | null;
+  location_id: number;
+  daily_metric_date: number;
+  daily_metric_tickets: number;
+  daily_metric_net_sales: number;
+  daily_metric_daily_hourly: number;
 }
 
 export interface TotalMetric {
