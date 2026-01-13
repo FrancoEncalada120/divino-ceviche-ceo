@@ -30,6 +30,7 @@ import { InvoiceService } from '../../core/services/invoice.service';
     InvoiceUpdInsComponent,
     NgIf,
   ],
+
   templateUrl: './invoice.component.html',
   styleUrl: './invoice.component.scss',
 })

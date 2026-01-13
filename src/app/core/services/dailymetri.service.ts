@@ -13,24 +13,29 @@ type ApiResponse<T> = {
 
 @Injectable({ providedIn: 'root' })
 export class DailyMetricService {
-  private readonly apiUrl = `${environment.apiBaseUrl}/daily-metric`;
+  private readonly apiUrl = `${environment.apiBaseUrl}/ceo/dailyMetric`;
 
   constructor(private http: HttpClient) {}
 
-  /** GET ALL (opcional: filtros por location_id y date) */
   getAll(filters?: {
-    location_id?: number;
-    date?: number;
+    locacion?: string | string[];
+    fechaIni?: string; // 'YYYY-MM-DD' o 'YYYYMMDD' según tu backend
+    fechaFin?: string; // 'YYYY-MM-DD' o 'YYYYMMDD'
   }): Observable<DailyMetric[]> {
     console.log('[DailyMetricService] GET', this.apiUrl);
 
     let params = new HttpParams();
-    if (filters?.location_id != null) {
-      params = params.set('location_id', String(filters.location_id));
+
+    if (filters?.locacion != null) {
+      const locValue = Array.isArray(filters.locacion)
+        ? filters.locacion.join(',')
+        : String(filters.locacion);
+
+      if (locValue.trim() !== '') params = params.set('locacion', locValue);
     }
-    if (filters?.date != null) {
-      params = params.set('date', String(filters.date));
-    }
+
+    if (filters?.fechaIni) params = params.set('fechaIni', filters.fechaIni);
+    if (filters?.fechaFin) params = params.set('fechaFin', filters.fechaFin);
 
     return this.http
       .get<ApiResponse<DailyMetric[]>>(this.apiUrl, { params })

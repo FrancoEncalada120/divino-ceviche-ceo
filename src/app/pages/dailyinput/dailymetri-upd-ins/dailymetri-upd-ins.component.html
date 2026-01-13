@@ -15,19 +15,16 @@
           Location (for new entry) <span class="req">*</span>
         </label>
 
-        <p-multiSelect
+        <p-dropdown
           [options]="locations"
-          formControlName="location_ids"
+          formControlName="location_id"
           optionLabel="location_name"
           optionValue="location_id"
-          placeholder="Select locations"
-          [maxSelectedLabels]="3"
-          display="chip"
+          placeholder="Select location"
           styleClass="w-100"
-        ></p-multiSelect>
-
-        <small class="text-danger" *ngIf="isInvalid('location_ids')">
-          Select at least one location
+        ></p-dropdown>
+        <small class="text-danger" *ngIf="isInvalid('location_id')">
+          Location is required
         </small>
       </div>
 
@@ -92,21 +89,6 @@
             styleClass="w-100"
             inputStyleClass="w-100"
           ></p-inputNumber>
-        </div>
-      </div>
-
-      <!-- Calculados -->
-      <div class="calc mt-3">
-        <div class="calc-item">
-          <div class="calc-label">AOV</div>
-          <div class="calc-value">{{ aov | number : "1.2-2" }}</div>
-        </div>
-
-        <div class="calc-item">
-          <div class="calc-label">Labor Cost %</div>
-          <div class="calc-value">
-            {{ laborCostPercent | number : "1.2-2" }}%
-          </div>
         </div>
       </div>
 

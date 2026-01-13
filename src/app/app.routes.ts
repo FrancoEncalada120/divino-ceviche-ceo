@@ -1,10 +1,8 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { ShellComponent } from './layout/shell/shell.component';
-<<<<<<< Updated upstream
-=======
+
 import { LocationPriComponent } from './pages/locations/location-pri/location-pri.component';
->>>>>>> Stashed changes
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
