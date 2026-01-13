@@ -1,0 +1,122 @@
+<div class="page">
+  <h2 class="title">Daily Input</h2>
+  <p class="subtitle">Add daily metrics for your locations</p>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="plus">+</span>
+      <h3>Add Daily Metrics</h3>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="save()" class="form">
+      <!-- Locations -->
+      <div class="mb-3">
+        <label class="form-label">
+          Location (for new entry) <span class="req">*</span>
+        </label>
+
+        <p-multiSelect
+          [options]="locations"
+          formControlName="location_ids"
+          optionLabel="location_name"
+          optionValue="location_id"
+          placeholder="Select locations"
+          [maxSelectedLabels]="3"
+          display="chip"
+          styleClass="w-100"
+        ></p-multiSelect>
+
+        <small class="text-danger" *ngIf="isInvalid('location_ids')">
+          Select at least one location
+        </small>
+      </div>
+
+      <!-- Row 1 -->
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Date</label>
+
+          <p-datepicker
+            formControlName="date"
+            [showIcon]="true"
+            dateFormat="yy-mm-dd"
+            styleClass="w-100"
+            inputStyleClass="w-100"
+          ></p-datepicker>
+
+          <small class="text-danger" *ngIf="isInvalid('date')">
+            Date is required
+          </small>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Number of Tickets</label>
+
+          <p-inputNumber
+            formControlName="tickets"
+            [min]="0"
+            [useGrouping]="false"
+            styleClass="w-100"
+            inputStyleClass="w-100"
+          ></p-inputNumber>
+        </div>
+      </div>
+
+      <!-- Row 2 -->
+      <div class="row g-3 mt-1">
+        <div class="col-md-6">
+          <label class="form-label">Net Sales ($)</label>
+
+          <p-inputNumber
+            formControlName="netSales"
+            [min]="0"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            [useGrouping]="false"
+            styleClass="w-100"
+            inputStyleClass="w-100"
+          ></p-inputNumber>
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">Daily Hourly Labour ($)</label>
+
+          <p-inputNumber
+            formControlName="dailyHourly"
+            [min]="0"
+            mode="decimal"
+            [minFractionDigits]="2"
+            [maxFractionDigits]="2"
+            [useGrouping]="false"
+            styleClass="w-100"
+            inputStyleClass="w-100"
+          ></p-inputNumber>
+        </div>
+      </div>
+
+      <!-- Calculados -->
+      <div class="calc mt-3">
+        <div class="calc-item">
+          <div class="calc-label">AOV</div>
+          <div class="calc-value">{{ aov | number : "1.2-2" }}</div>
+        </div>
+
+        <div class="calc-item">
+          <div class="calc-label">Labor Cost %</div>
+          <div class="calc-value">
+            {{ laborCostPercent | number : "1.2-2" }}%
+          </div>
+        </div>
+      </div>
+
+      <p-button
+        type="submit"
+        label="{{ saving ? 'Saving...' : 'Save New Entry' }}"
+        icon="pi pi-save"
+        [disabled]="saving"
+        styleClass="p-button-primary mt-3"
+      ></p-button>
+    </form>
+  </div>
+</div>

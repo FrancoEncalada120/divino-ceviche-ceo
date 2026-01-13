@@ -1,0 +1,138 @@
+/* ===== Page ===== */
+.page {
+  padding: 24px;
+  background: #f8f9fb;
+  min-height: 100%;
+}
+
+/* ===== Titles ===== */
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #1f2937;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+/* ===== Card ===== */
+.card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: none;
+}
+
+/* ===== Card Header ===== */
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  margin-bottom: 18px;
+  background: transparent;
+  border: none;
+
+  h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+  }
+}
+
+.plus {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* ===== Form ===== */
+.form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 4px;
+}
+
+.req {
+  color: #dc2626;
+}
+
+/* ===== PrimeNG inputs full width ===== */
+:host ::ng-deep .p-multiselect,
+:host ::ng-deep .p-inputnumber,
+:host ::ng-deep .p-datepicker,
+:host ::ng-deep .p-calendar {
+  width: 100%;
+}
+
+/* ===== Input spacing ===== */
+.row.g-3 > div {
+  margin-bottom: 12px;
+}
+
+/* ===== Calculated boxes ===== */
+.calc {
+  display: flex;
+  gap: 16px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.calc-item {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 14px 18px;
+  min-width: 160px;
+}
+
+.calc-label {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.calc-value {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* ===== Button ===== */
+:host ::ng-deep .p-button {
+  margin-top: 18px;
+  border-radius: 10px;
+  padding: 10px 18px;
+  font-weight: 500;
+}
+
+/* ===== Validation ===== */
+.text-danger {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .calc {
+    flex-direction: column;
+  }
+
+  .calc-item {
+    width: 100%;
+  }
+}

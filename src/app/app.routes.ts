@@ -1,6 +1,10 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { ShellComponent } from './layout/shell/shell.component';
+<<<<<<< Updated upstream
+=======
+import { LocationPriComponent } from './pages/locations/location-pri/location-pri.component';
+>>>>>>> Stashed changes
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -19,17 +23,17 @@ export const routes: Routes = [
       {
         path: 'daily-input',
         loadComponent: () =>
-          import('./pages/daily-input/daily-input.component').then(
-            (m) => m.DailyInputComponent
+          import('./pages/dailyinput/dailymetric/dailymetric.component').then(
+            (m) => m.DailymetricComponent
           ),
       },
-      {
-        path: 'monthly-pl',
-        loadComponent: () =>
-          import('./pages/monthly-pl/monthly-pl.component').then(
-            (m) => m.MonthlyPlComponent
-          ),
-      },
+      // {
+      //   path: 'monthly-pl',
+      //   loadComponent: () =>
+      //     import('./pages/monthly-pl/monthly-pl.component').then(
+      //       (m) => m.MonthlyPlComponent
+      //     ),
+      // },
       {
         path: 'calculator',
         loadComponent: () =>

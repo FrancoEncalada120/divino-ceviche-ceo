@@ -155,6 +155,7 @@ export class InvoiceComponent {
     );
 
     this.locationChange$.next();
+    this.load();
   }
 
   onLocationsChangeDate(event: any) {
