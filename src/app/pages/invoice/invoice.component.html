@@ -57,16 +57,30 @@
       <div class="sum-inner">
         <div class="sum-top">
           <i class="pi pi-file"></i>
-          <span class="sum-title">Other</span>
+          <span class="sum-title">Other Invoice</span>
         </div>
 
         <div class="sum-value">{{ totalCat3 | number : "1.2-2" }}</div>
         <div class="sum-sub">{{ cantidadCat3 }} entries</div>
       </div>
     </p-card>
+
+    <p-card class="sum-card sum-unsig" (click)="activeTab = 4">
+      <div class="sum-inner">
+        <div class="sum-top">
+          <i class="pi pi-file"></i>
+          <span class="sum-title">Unassigned Invoice</span>
+        </div>
+
+        <div class="sum-value">{{ totalCat4 | number : "1.2-2" }}</div>
+        <div class="sum-sub">{{ cantidadCat4 }} entries</div>
+      </div>
+    </p-card>
+
   </div>
 
-  <div class="invoice-actions">
+
+  <div class="invoice-actions mb-2">
     <button pButton type="button" label="Add COGS Invoice" icon="pi pi-plus" class="p-button-success action-btn"
       (click)="openAddInvoice(1)"></button>
 
@@ -76,6 +90,7 @@
     <button pButton type="button" label="Add Other Invoice" icon="pi pi-plus" class="p-button-warning action-btn"
       (click)="openAddInvoice(3)"></button>
   </div>
+
 
   <div class="card">
     <p-tabView>

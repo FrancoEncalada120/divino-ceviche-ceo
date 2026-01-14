@@ -42,7 +42,7 @@ export class InvoiceComponent {
   dateRange: Date[] | null = null;
   dasboard: DashboardResponse | null = null;
   private locationChange$ = new Subject<void>();
-  activeTab: 1 | 2 | 3 = 1; // por defecto pestaña 1
+  activeTab: 1 | 2 | 3 | 4 = 1; // por defecto pestaña 1
 
   invoice01: Invoice[] = [];
   invoice02: Invoice[] = [];
@@ -52,10 +52,12 @@ export class InvoiceComponent {
   totalCat1 = 0;
   totalCat2 = 0;
   totalCat3 = 0;
+  totalCat4 = 0;
 
   cantidadCat1 = 0;
   cantidadCat2 = 0;
   cantidadCat3 = 0;
+  cantidadCat4 = 0;
 
   selectedCategoryType: number | null = null;
   editingInvoice: Invoice | null = null;
@@ -197,6 +199,9 @@ export class InvoiceComponent {
     this.totalCat3 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 3)
     );
+     this.totalCat4 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 4)
+    );
 
     this.cantidadCat1 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 1
@@ -206,6 +211,9 @@ export class InvoiceComponent {
     ).length;
     this.cantidadCat3 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 3
+    ).length;
+    this.cantidadCat4 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 4
     ).length;
   }
 

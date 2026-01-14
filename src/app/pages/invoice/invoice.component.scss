@@ -69,7 +69,7 @@
 //////////////////
 .summary-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.75rem;
   margin: 1.5rem 0 2rem;
 }
@@ -104,6 +104,9 @@
 }
 .sum-other {
   border-left: 6px solid #ffc107;
+}
+.sum-unsig {
+  border-left: 6px solid red;
 }
 
 .sum-top {
