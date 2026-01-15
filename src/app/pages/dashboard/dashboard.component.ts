@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { Location } from '../../core/models/location.model';
 import { DashboardService } from '../../core/services/dashboard.service';
 import { DashboardResponse } from '../../core/models/dashboard.models';
@@ -10,11 +10,15 @@ import { FormsModule } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { TxtsignoPipe } from '../../core/pipes/txtsigno.pipe';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule],
+  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe],
+  providers: [
+    DecimalPipe    // 👈 NECESARIO
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -30,7 +34,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private dashboardSvc: DashboardService,
     private locationService: LocationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // 📅 Inicializar con AYER

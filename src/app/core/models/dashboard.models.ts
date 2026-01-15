@@ -47,8 +47,18 @@ export interface DailyMetricCreateDto {
 
 export interface TotalMetric {
   name: string;
-  goal: number | string;
+  goal: number;
   Result: number;
   diff: number;
-  desc: 'Above target' | 'Below target';
+  eval: Eval;
+  icon: string;
+  signo: string;
+}
+
+
+
+export interface Eval {
+  color: string;
+  arrow: string;
+  status: string;
 }

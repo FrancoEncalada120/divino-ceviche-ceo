@@ -51,24 +51,36 @@
       <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
 
         <div class="kpi-card bg-white">
-          <div class="kpi-header">
+          <!-- <div class="kpi-header">
             <span class="kpi-title">{{item.name}}</span>
-            <span class="kpi-currency">$</span>
-          </div>
-
-          <div class="kpi-value">
-            ${{item.Result | number:'1.0-3' }}
-          </div>
-
-          <div class="kpi-footer">
-            <span class="kpi-target">
-              Target: ${{item.goal | number:'1.0-3' }}
+            <span class="kpi-currency">
+              <i [class]="item.icon"></i>
             </span>
+          </div> -->
+          <div class="sum-inner">
+            <div class="sum-top">
+              <i [class]="item.icon"></i>
+              <span class="sum-title">{{item.name}}</span>
+            </div>
 
-            <span class="kpi-diff negative">
-              <i class="bi bi-arrow-down"></i>
-              {{item.diff | number:'1.0-3' }}%
-            </span>
+
+            <div class="kpi-value">
+              {{item.Result | txtsigno:item.signo }}
+            </div>
+
+            <div class="kpi-footer">
+              <span class="kpi-target">
+                Target: {{item.goal | txtsigno:item.signo }}
+              </span>
+
+              <span [class]="item.eval.color">
+                <i [class]="item.eval.arrow"></i>
+                {{item.diff | txtsigno:item.signo }}
+              </span>
+
+
+            </div>
+
           </div>
         </div>
       </div>

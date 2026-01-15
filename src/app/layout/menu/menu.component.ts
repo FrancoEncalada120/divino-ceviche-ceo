@@ -41,7 +41,7 @@ export class MenuComponent {
       type: 'link',
       label: 'Invoice Tracker',
       icon: 'bi-receipt',
-      route: '/invoice-tracker',
+      route: 'invoice-tracker',
     },
     {
       type: 'group',

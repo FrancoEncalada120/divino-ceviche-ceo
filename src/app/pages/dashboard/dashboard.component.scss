@@ -87,6 +87,22 @@
   background-color: #cfe2ff;
 }
 
+.sum-inner {
+  padding: 1.25rem 1.4rem;
+  background: #fff;
+}
+
+.sum-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+}
+
+.sum-top .pi {
+  font-size: 1.2rem;
+}
+
 
 /* ====== Filters ====== */
 .filters-bar {
