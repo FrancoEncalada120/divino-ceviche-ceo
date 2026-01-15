@@ -45,4 +45,9 @@ export class UserService {
         })
       );
   }
+
+  getUser(){
+    return this.userLogin;
+  }
+
 }
