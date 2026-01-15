@@ -2,7 +2,7 @@
   <div class="row g-4">
 
     <!-- LEFT COLUMN -->
-    <div class="col-md-6">
+    <div class="col-md-7">
 
       <!-- Time Period -->
       <div class="card mb-3">
@@ -24,59 +24,67 @@
         <div class="card-body">
           <h6 class="text-danger">💲 Fixed Costs</h6>
 
-          <div class="mb-3">
-            <label>Rent Costs</label>
-            <input class="form-control" type="number" placeholder="Rent Costs" [(ngModel)]="fixedCosts.rent"
-              (ngModelChange)="calculate()">
+          <div class="row  mb-3">
+            <div class="col-4">
+              <label>Rent Costs</label>
+              <input class="form-control" type="number" placeholder="Rent Costs" [(ngModel)]="fixedCosts.rent"
+                (ngModelChange)="calculate()">
+            </div>
+
+            <div class="col-4">
+              <label>Insurance Costs</label>
+              <input class="form-control mb-2" type="number" placeholder="Insurance Costs"
+                [(ngModel)]="fixedCosts.insurance" (ngModelChange)="calculate()">
+            </div>
+
+            <div class="col-4">
+              <label>Property Tax</label>
+              <input class="form-control mb-2" type="number" placeholder="Property Tax"
+                [(ngModel)]="fixedCosts.propertyTax" (ngModelChange)="calculate()">
+            </div>
+
           </div>
 
-          <div class="mb-3">
-            <label>Insurance Costs</label>
-            <input class="form-control mb-2" type="number" placeholder="Insurance Costs"
-              [(ngModel)]="fixedCosts.insurance" (ngModelChange)="calculate()">
+          <div class="row  mb-3">
+            <div class="col-4">
+              <label>Phone and Internet</label>
+              <input class="form-control mb-2" type="number" placeholder="Phone & Internet"
+                [(ngModel)]="fixedCosts.phoneInternet" (ngModelChange)="calculate()">
+            </div>
+
+            <div class="col-4">
+              <label>Marketing</label>
+              <input class="form-control mb-2" type="number" placeholder="Marketing" [(ngModel)]="fixedCosts.marketing"
+                (ngModelChange)="calculate()">
+            </div>
+
+            <div class="col-4">
+              <label>Licenses and Permits</label>
+              <input class="form-control mb-2" type="number" placeholder="Licenses and Permits"
+                [(ngModel)]="fixedCosts.licenses" (ngModelChange)="calculate()">
+            </div>
           </div>
 
-          <div class="mb-3">
-            <label>Property Tax</label>
-            <input class="form-control mb-2" type="number" placeholder="Property Tax"
-              [(ngModel)]="fixedCosts.propertyTax" (ngModelChange)="calculate()">
-          </div>
 
+          <div class="row  mb-3">
+            <div class="col-4">
+              <label>Utility Costs</label>
+              <input class="form-control mb-2" type="number" placeholder="Utility Costs"
+                [(ngModel)]="fixedCosts.utilities" (ngModelChange)="calculate()">
+            </div>
 
-          <div class="mb-3">
-            <label>Phone and Internet</label>
-            <input class="form-control mb-2" type="number" placeholder="Phone & Internet"
-              [(ngModel)]="fixedCosts.phoneInternet" (ngModelChange)="calculate()">
-          </div>
+            <div class="col-4">
+              <label>Salaries</label>
+              <input class="form-control mb-2" type="number" placeholder="Salaries" [(ngModel)]="fixedCosts.salaries"
+                (ngModelChange)="calculate()">
+            </div>
 
-          <div class="mb-3">
-            <label>Marketing</label>
-            <input class="form-control mb-2" type="number" placeholder="Marketing" [(ngModel)]="fixedCosts.marketing"
-              (ngModelChange)="calculate()">
-          </div>
+            <div class="col-4">
+              <label>Other Fixed Costs</label>
+              <input class="form-control" type="number" placeholder="Other Fixed" [(ngModel)]="fixedCosts.otherFixed"
+                (ngModelChange)="calculate()">
+            </div>
 
-          <div class="mb-3">
-            <label>Licenses and Permits</label>
-            <input class="form-control mb-2" type="number" placeholder="Licenses and Permits"
-              [(ngModel)]="fixedCosts.licenses" (ngModelChange)="calculate()">
-          </div>
-
-          <div class="mb-3">
-            <label>Utility Costs</label>
-            <input class="form-control mb-2" type="number" placeholder="Utility Costs"
-              [(ngModel)]="fixedCosts.utilities" (ngModelChange)="calculate()">
-          </div>
-
-          <div class="mb-3">
-            <label>Salaries</label>
-            <input class="form-control mb-2" type="number" placeholder="Salaries" [(ngModel)]="fixedCosts.salaries"
-              (ngModelChange)="calculate()">
-          </div>
-
-          <div class="mb-3">
-            <label>Other Fixed Costs</label>
-            <input class="form-control" type="number" placeholder="Other Fixed" [(ngModel)]="fixedCosts.otherFixed"
-              (ngModelChange)="calculate()">
           </div>
 
         </div>
@@ -87,22 +95,24 @@
         <div class="card-body">
           <h6 class="text-danger">📉 Variable Costs as % of Sales</h6>
 
-          <div class="mb-3">
-            <label>Food (%)</label>
-            <input class="form-control mb-2" [(ngModel)]="variableCosts.foodPct" (ngModelChange)="calculate()"
-              placeholder="Food (%)">
-          </div>
+          <div class="row  mb-3">
+            <div class="col-4">
+              <label>Food (%)</label>
+              <input class="form-control mb-2" [(ngModel)]="variableCosts.foodPct" (ngModelChange)="calculate()"
+                placeholder="Food (%)">
+            </div>
 
-          <div class="mb-3">
-            <label>Hourly Labor (%)</label>
-            <input class="form-control mb-2" [(ngModel)]="variableCosts.laborPct" (ngModelChange)="calculate()"
-              placeholder="Hourly Labor (%)">
-          </div>
+            <div class="col-4">
+              <label>Hourly Labor (%)</label>
+              <input class="form-control mb-2" [(ngModel)]="variableCosts.laborPct" (ngModelChange)="calculate()"
+                placeholder="Hourly Labor (%)">
+            </div>
 
-          <div class="mb-3">
-            <label>Other Variable Costs (%)</label>
-            <input class="form-control" [(ngModel)]="variableCosts.otherPct" (ngModelChange)="calculate()"
-              placeholder="Other Variable Costs (%)">
+            <div class="col-4">
+              <label>Other Variable Costs (%)</label>
+              <input class="form-control" [(ngModel)]="variableCosts.otherPct" (ngModelChange)="calculate()"
+                placeholder="Other Variable Costs (%)">
+            </div>
           </div>
         </div>
       </div>
@@ -112,15 +122,17 @@
         <div class="card-body">
           <h6 class="text-danger">🛒 Sales</h6>
 
-          <div class="mb-3">
-            <label>Total Sales (for the period)</label>
-            <input class="form-control mb-2" [(ngModel)]="sales.totalSales" (ngModelChange)="calculate()"
-              placeholder="Total Sales (for the period)">
-          </div>
-          <div class="mb-3">
-            <label>Avg $ Per Guest (for ticket calculations)</label>
-            <input class="form-control" [(ngModel)]="sales.avgTicket" (ngModelChange)="calculate()"
-              placeholder="Avg $ Per Guest">
+          <div class="row  mb-3">
+            <div class="col-4">
+              <label>Total Sales (for the period)</label>
+              <input class="form-control mb-2" [(ngModel)]="sales.totalSales" (ngModelChange)="calculate()"
+                placeholder="Total Sales (for the period)">
+            </div>
+            <div class="col">
+              <label>Avg $ Per Guest (for ticket calculations)</label>
+              <input class="form-control" [(ngModel)]="sales.avgTicket" (ngModelChange)="calculate()"
+                placeholder="Avg $ Per Guest">
+            </div>
           </div>
         </div>
       </div>
@@ -128,7 +140,7 @@
     </div>
 
     <!-- RIGHT COLUMN -->
-    <div class="col-md-6">
+    <div class="col-md-5">
 
       <!-- Key Results -->
       <div class="card mb-3">
