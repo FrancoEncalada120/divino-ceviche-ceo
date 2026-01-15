@@ -12,9 +12,16 @@
         <i class="pi pi-map-marker"></i> Locations
       </label>
 
-      <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
-        placeholder="Select locations" [maxSelectedLabels]="3" display="chip" styleClass="w-100"
-        (onChange)="onLocationsChange()"></p-multiSelect>
+      <p-multiSelect
+        [options]="locations"
+        [(ngModel)]="selectedLocation"
+        optionLabel="location_name"
+        placeholder="Select locations"
+        [maxSelectedLabels]="3"
+        display="chip"
+        styleClass="w-100"
+        (onChange)="onLocationsChange()"
+      ></p-multiSelect>
     </div>
 
     <div class="filter-item">
@@ -22,9 +29,16 @@
         <i class="pi pi-calendar"></i> Date Range
       </label>
 
-      <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
-        [readonlyInput]="true" placeholder="Select date range" styleClass="w-100"
-        (ngModelChange)="onLocationsChangeDate($event)"></p-datepicker>
+      <p-datepicker
+        [(ngModel)]="dateRange"
+        selectionMode="range"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        [readonlyInput]="true"
+        placeholder="Select date range"
+        styleClass="w-100"
+        (ngModelChange)="onLocationsChangeDate($event)"
+      ></p-datepicker>
     </div>
   </div>
 
@@ -76,28 +90,50 @@
         <div class="sum-sub">{{ cantidadCat4 }} entries</div>
       </div>
     </p-card>
-
   </div>
-
 
   <div class="invoice-actions mb-2">
-    <button pButton type="button" label="Add COGS Invoice" icon="pi pi-plus" class="p-button-success action-btn"
-      (click)="openAddInvoice(1)"></button>
+    <button
+      pButton
+      type="button"
+      label="Add COGS Invoice"
+      icon="pi pi-plus"
+      class="p-button-success action-btn"
+      (click)="openAddInvoice(1)"
+    ></button>
 
-    <button pButton type="button" label="Add Fixed Expense" icon="pi pi-plus" class="p-button-info action-btn"
-      (click)="openAddInvoice(2)"></button>
+    <button
+      pButton
+      type="button"
+      label="Add Fixed Expense"
+      icon="pi pi-plus"
+      class="p-button-info action-btn"
+      (click)="openAddInvoice(2)"
+    ></button>
 
-    <button pButton type="button" label="Add Other Invoice" icon="pi pi-plus" class="p-button-warning action-btn"
-      (click)="openAddInvoice(3)"></button>
+    <button
+      pButton
+      type="button"
+      label="Add Other Invoice"
+      icon="pi pi-plus"
+      class="p-button-warning action-btn"
+      (click)="openAddInvoice(3)"
+    ></button>
   </div>
-
 
   <div class="card">
     <p-tabView>
       <p-tabPanel header="COGS Invoice">
-        <p-table [value]="invoice01" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}">
+        <p-table
+          [value]="invoice01"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'scroll'"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+        >
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="invoice_id">
@@ -134,11 +170,21 @@
               <td>{{ item.invoice_notes || "-" }}</td>
               <td>{{ item.locations.location_name }}</td>
               <td class="text-end">
-                <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 1)"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  class="p-button-text p-button-sm"
+                  (click)="openUpdateInvoice(item, 1)"
+                ></button>
 
-                <button pButton type="button" icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-text p-button-danger p-button-sm"
+                  (click)="openDeleteInvoice(item)"
+                ></button>
               </td>
             </tr>
           </ng-template>
@@ -152,9 +198,16 @@
       </p-tabPanel>
 
       <p-tabPanel header="Fixed Expense">
-        <p-table [value]="invoice02" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}">
+        <p-table
+          [value]="invoice02"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'scroll'"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+        >
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="invoice_id">
@@ -191,11 +244,21 @@
               <td>{{ item.invoice_notes || "-" }}</td>
               <td>{{ item.locations.location_name }}</td>
               <td class="text-end">
-                <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 2)"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  class="p-button-text p-button-sm"
+                  (click)="openUpdateInvoice(item, 2)"
+                ></button>
 
-                <button pButton type="button" icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-text p-button-danger p-button-sm"
+                  (click)="openDeleteInvoice(item)"
+                ></button>
               </td>
             </tr>
           </ng-template>
@@ -209,9 +272,16 @@
       </p-tabPanel>
 
       <p-tabPanel header="Other Invoice">
-        <p-table [value]="invoice03" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}">
+        <p-table
+          [value]="invoice03"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'scroll'"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+        >
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="invoice_id">
@@ -248,11 +318,21 @@
               <td>{{ item.invoice_notes || "-" }}</td>
               <td>{{ item.locations.location_name }}</td>
               <td class="text-end">
-                <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 3)"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  class="p-button-text p-button-sm"
+                  (click)="openUpdateInvoice(item, 3)"
+                ></button>
 
-                <button pButton type="button" icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-text p-button-danger p-button-sm"
+                  (click)="openDeleteInvoice(item)"
+                ></button>
               </td>
             </tr>
           </ng-template>
@@ -266,9 +346,16 @@
       </p-tabPanel>
 
       <p-tabPanel header="Unassigned Invoice">
-        <p-table [value]="invoice04" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}">
+        <p-table
+          [value]="invoice04"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'scroll'"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+        >
           <ng-template pTemplate="header">
             <tr>
               <th pSortableColumn="invoice_id">
@@ -305,11 +392,21 @@
               <td>{{ item.invoice_notes || "-" }}</td>
               <td>{{ item.locations.location_name }}</td>
               <td class="text-end">
-                <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 4)"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-pencil"
+                  class="p-button-text p-button-sm"
+                  (click)="openUpdateInvoice(item, 4)"
+                ></button>
 
-                <button pButton type="button" icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"></button>
+                <button
+                  pButton
+                  type="button"
+                  icon="pi pi-trash"
+                  class="p-button-text p-button-danger p-button-sm"
+                  (click)="openDeleteInvoice(item)"
+                ></button>
               </td>
             </tr>
           </ng-template>
@@ -321,11 +418,16 @@
           </ng-template>
         </p-table>
       </p-tabPanel>
-
     </p-tabView>
   </div>
 </div>
 
-<app-invoice-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModal()"
-  (submit)="handleSubmit($event)" [invoice]="editingInvoice" [categoryType]="selectedCategoryType">
+<app-invoice-upd-ins
+  *ngIf="showAddLocationModal"
+  [mode]="modalMode"
+  (close)="closeModal()"
+  (submit)="handleSubmit($event)"
+  [invoice]="editingInvoice"
+  [categoryType]="selectedCategoryType"
+>
 </app-invoice-upd-ins>

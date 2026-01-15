@@ -1,51 +1,75 @@
-<p-card header="Información de auditoría" styleClass="audit-card">
-  <div class="p-fluid formgrid grid audit-grid">
-    <!-- Creación -->
-    <div class="field col-12 md:col-6">
-      <label for="createdAt">Fecha creación</label>
-      <input
-        id="createdAt"
-        pInputText
-        class="audit-input"
-        [value]="createdAt ? (createdAt | date : 'dd/MM/yyyy HH:mm') : '-'"
-        readonly
-      />
+<p-card styleClass="audit-card">
+  <div class="audit-header">
+    <div class="audit-title">
+      <i class="pi pi-shield"></i>
+      <span>Información de auditoría</span>
     </div>
 
-    <div class="field col-12 md:col-6">
-      <label for="createdBy">Usuario creación</label>
-      <input
-        id="createdBy"
-        pInputText
-        class="audit-input"
-        [value]="createdBy || '-'"
-        [title]="createdBy || '-'"
-        readonly
-      />
+    <button
+      pButton
+      type="button"
+      class="p-button-text p-button-sm"
+      (click)="toggle()"
+      [icon]="expanded ? 'pi pi-chevron-up' : 'pi pi-chevron-down'"
+      [label]="expanded ? 'Menos' : 'Más'"
+    ></button>
+  </div>
+
+  <div class="audit-collapsed" *ngIf="!expanded">
+    <div class="audit-mini">
+      <span class="mini-label">Creado</span>
+      <span class="mini-value">
+        {{ createdAt ? (createdAt | date : "dd/MM/yyyy HH:mm") : "-" }}
+      </span>
     </div>
 
-    <!-- Modificación -->
-    <div class="field col-12 md:col-6">
-      <label for="modifiedAt">Fecha modificación</label>
-      <input
-        id="modifiedAt"
-        pInputText
-        class="audit-input"
-        [value]="modifiedAt ? (modifiedAt | date : 'dd/MM/yyyy HH:mm') : '-'"
-        readonly
-      />
+    <div class="audit-mini">
+      <span class="mini-label">Modificado</span>
+      <span class="mini-value">
+        {{ modifiedAt ? (modifiedAt | date : "dd/MM/yyyy HH:mm") : "-" }}
+      </span>
+    </div>
+  </div>
+
+  <div class="audit-grid" *ngIf="expanded">
+    <div class="audit-item">
+      <i class="pi pi-calendar audit-icon created"></i>
+      <div class="audit-content">
+        <span class="audit-label">Fecha creación</span>
+        <span class="audit-value">
+          {{ createdAt ? (createdAt | date : "dd/MM/yyyy HH:mm") : "-" }}
+        </span>
+      </div>
     </div>
 
-    <div class="field col-12 md:col-6">
-      <label for="modifiedBy">Usuario modificación</label>
-      <input
-        id="modifiedBy"
-        pInputText
-        class="audit-input"
-        [value]="modifiedBy || '-'"
-        [title]="modifiedBy || '-'"
-        readonly
-      />
+    <div class="audit-item">
+      <i class="pi pi-user audit-icon created"></i>
+      <div class="audit-content">
+        <span class="audit-label">Usuario creación</span>
+        <span class="audit-value" [title]="(createdBy ?? '-') + ''">
+          {{ createdBy ?? "-" }}
+        </span>
+      </div>
+    </div>
+
+    <div class="audit-item">
+      <i class="pi pi-clock audit-icon updated"></i>
+      <div class="audit-content">
+        <span class="audit-label">Fecha modificación</span>
+        <span class="audit-value">
+          {{ modifiedAt ? (modifiedAt | date : "dd/MM/yyyy HH:mm") : "-" }}
+        </span>
+      </div>
+    </div>
+
+    <div class="audit-item">
+      <i class="pi pi-user-edit audit-icon updated"></i>
+      <div class="audit-content">
+        <span class="audit-label">Usuario modificación</span>
+        <span class="audit-value" [title]="(modifiedBy ?? '-') + ''">
+          {{ modifiedBy ?? "-" }}
+        </span>
+      </div>
     </div>
   </div>
 </p-card>

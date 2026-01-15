@@ -7,7 +7,6 @@ export interface User {
   user_email: string;
 }
 
-
 export interface UserRequest {
   email: string;
   password: string;

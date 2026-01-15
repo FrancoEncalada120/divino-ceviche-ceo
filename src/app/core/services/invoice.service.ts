@@ -18,6 +18,11 @@ type ApiResponseList<T> = {
   error?: string;
 };
 
+export interface ApiResponse {
+  success: boolean;
+  message?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class InvoiceService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/invoices`;
@@ -61,6 +66,19 @@ export class InvoiceService {
         if (!res.success)
           throw new Error(res.message || 'Error updating invoice');
         return res.invoice;
+      })
+    );
+  }
+
+  delete(id: number): Observable<void> {
+    const url = `${this.apiUrl}/${id}`;
+    console.log('[InvoiceService] DELETE', url);
+
+    return this.http.delete<ApiResponse>(url).pipe(
+      map((res) => {
+        if (!res.success) {
+          throw new Error(res.message || 'Error deleting invoice');
+        }
       })
     );
   }

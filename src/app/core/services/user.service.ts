@@ -34,8 +34,16 @@ export class UserService {
     localStorage.removeItem('user');
   }
 
-  getUser(){
+  getUser() {
     return this.userLogin;
   }
 
+  getUser2(): User | null {
+    try {
+      const userData = localStorage.getItem('user');
+      return userData ? (JSON.parse(userData) as User) : null;
+    } catch {
+      return null;
+    }
+  }
 }

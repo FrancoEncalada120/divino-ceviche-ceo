@@ -8,10 +8,21 @@ import {
 import { MenuItem } from './menu.model';
 import { filter } from 'rxjs';
 import { NgClass, NgFor, NgIf } from '@angular/common';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-menu',
-  imports: [NgFor, NgIf, RouterLink, RouterLinkActive, NgClass],
+  standalone: true,
+  imports: [
+    NgFor,
+    NgIf,
+    RouterLink,
+    RouterLinkActive,
+    NgClass,
+    ToastModule,
+    ConfirmDialogModule,
+  ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
 })

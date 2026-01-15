@@ -6,89 +6,166 @@
     </div>
 
     <div class="modal-body">
-      <!-- ID (hidden) -->
-      <input type="hidden" [(ngModel)]="formData.invoice_id" />
+      <form #invoiceForm="ngForm">
+        <!-- ID (hidden) -->
+        <input type="hidden" [(ngModel)]="formData.invoice_id" />
 
-      <!-- Row: Date + Location -->
-      <div class="form-group">
-        <div class="row-inline">
-          <div class="field">
-            <label>Date</label>
-            <input type="date" [(ngModel)]="formData.invoice_date" />
-          </div>
+        <!-- Row: Date + Location -->
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Date</label>
+              <input
+                type="date"
+                [(ngModel)]="formData.invoice_date"
+                name="invoice_date"
+                required
+                #invoiceDate="ngModel"
+              />
 
-          <div class="field">
-            <label>Location</label>
-            <select [(ngModel)]="formData.location_id">
-              <option [ngValue]="0">Select location</option>
-              <option *ngFor="let loc of locations" [ngValue]="loc.location_id">
-                {{ loc.location_name }}
-              </option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- Vendor -->
-      <div class="form-group">
-        <label>Vendor</label>
-        <input
-          type="text"
-          [(ngModel)]="formData.invoice_vendor_description"
-          placeholder="e.g., ALWAYS FRESH CORP"
-        />
-      </div>
-
-      <!-- Row: Category + Amount -->
-      <div class="form-group">
-        <div class="row-inline">
-          <div class="field">
-            <label>Category</label>
-            <select [(ngModel)]="formData.category_id">
-              <option [ngValue]="0">Select category</option>
-              <option
-                *ngFor="let cat of categories"
-                [ngValue]="cat.category_id"
+              <small
+                class="error"
+                *ngIf="
+                  invoiceDate.invalid &&
+                  (invoiceDate.touched || invoiceForm.submitted)
+                "
               >
-                {{ cat.category_code }}
-              </option>
-            </select>
-          </div>
+                Date is required
+              </small>
+            </div>
 
-          <div class="field">
-            <label>Amount</label>
-            <input
-              type="number"
-              step="0.01"
-              [(ngModel)]="formData.invoice_amount"
-              placeholder="0.00"
-            />
+            <div class="field">
+              <label>Location</label>
+              <select
+                [(ngModel)]="formData.location_id"
+                name="location_id"
+                required
+                #location="ngModel"
+              >
+                <option [ngValue]="0">Select location</option>
+                <option
+                  *ngFor="let loc of locations"
+                  [ngValue]="loc.location_id"
+                >
+                  {{ loc.location_name }}
+                </option>
+              </select>
+
+              <small
+                class="error"
+                *ngIf="
+                  location.invalid &&
+                  (location.touched || invoiceForm.submitted)
+                "
+              >
+                Location is required
+              </small>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Notes -->
-      <div class="form-group">
-        <label>Notes</label>
-        <textarea
-          rows="3"
-          [(ngModel)]="formData.invoice_notes"
-          placeholder="Optional notes..."
-        ></textarea>
-      </div>
+        <!-- Vendor -->
+        <div class="form-group">
+          <label>Vendor</label>
+          <input
+            type="text"
+            [(ngModel)]="formData.invoice_vendor_description"
+            name="invoice_vendor_description"
+            required
+            minlength="3"
+            #vendor="ngModel"
+          />
 
-      <app-audit-info
-        *ngIf="mode === 'edit'"
-        [createdAt]="formData.created_at"
-        [createdBy]="formData.invoice_create_user"
-        [modifiedAt]="formData.update_at"
-        [modifiedBy]="formData.invoice_update_user"
-      />
+          <small
+            class="error"
+            *ngIf="vendor.invalid && (vendor.touched || invoiceForm.submitted)"
+          >
+            Vendor is required
+          </small>
+        </div>
+
+        <!-- Row: Category + Amount -->
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Category</label>
+              <select
+                [(ngModel)]="formData.category_id"
+                name="category_id"
+                required
+                #category="ngModel"
+              >
+                <option [ngValue]="0">Select category</option>
+                <option
+                  *ngFor="let cat of categories"
+                  [ngValue]="cat.category_id"
+                >
+                  {{ cat.category_code }}
+                </option>
+              </select>
+
+              <small
+                class="error"
+                *ngIf="
+                  category.invalid &&
+                  (category.touched || invoiceForm.submitted)
+                "
+              >
+                Category is required
+              </small>
+            </div>
+
+            <div class="field">
+              <label>Amount</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0.01"
+                [(ngModel)]="formData.invoice_amount"
+                name="invoice_amount"
+                required
+                #amount="ngModel"
+              />
+
+              <small
+                class="error"
+                *ngIf="
+                  amount.invalid && (amount.touched || invoiceForm.submitted)
+                "
+              >
+                Amount must be greater than 0
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="form-group">
+          <label>Notes</label>
+          <textarea
+            rows="3"
+            [(ngModel)]="formData.invoice_notes"
+            placeholder="Optional notes..."
+          ></textarea>
+        </div>
+
+        <app-audit-info
+          *ngIf="mode === 'edit'"
+          [createdAt]="formData.created_at"
+          [createdBy]="formData.invoice_create_user"
+          [modifiedAt]="formData.update_at"
+          [modifiedBy]="formData.invoice_update_user"
+        />
+      </form>
     </div>
 
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
-      <button class="btn btn-primary" (click)="onSubmit()">
+      <button
+        class="btn btn-primary"
+        (click)="onSubmit()"
+        [disabled]="invoiceForm.invalid"
+      >
         {{ mode === "edit" ? "Save Changes" : "Create" }}
       </button>
     </div>

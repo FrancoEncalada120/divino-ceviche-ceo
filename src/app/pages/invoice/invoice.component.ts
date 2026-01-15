@@ -14,6 +14,9 @@ import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InvoiceUpdInsComponent } from '../invoice-upd-ins/invoice-upd-ins.component';
 import { InvoiceService } from '../../core/services/invoice.service';
+import { UserService } from '../../core/services/user.service';
+import { User } from '../../core/models/user.models';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-invoice',
@@ -64,14 +67,19 @@ export class InvoiceComponent {
 
   showAddLocationModal = false;
   modalMode: 'create' | 'edit' = 'create';
+  user: User | null = null;
 
   constructor(
     private locationService: LocationService,
     private dashboardSvc: DashboardService,
-    private invoiceService: InvoiceService
+    private invoiceService: InvoiceService,
+    private userService: UserService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
+    this.user = this.userService.currentUser;
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     this.dateRange = [new Date(yesterday), new Date(yesterday)];
@@ -225,19 +233,76 @@ export class InvoiceComponent {
   }
 
   handleSubmit(invoice: Invoice) {
+    const auditUserId = this.userService.getUser2()?.user_id;
+
+    console.log(auditUserId);
+
+    if (!auditUserId) {
+      console.error('No hay usuario logueado, no puedo auditar.');
+      return;
+    }
+
+    const auditUser = String(auditUserId);
     const isCreate = this.modalMode === 'create';
+
+    if (isCreate) {
+      invoice.invoice_create_user = auditUser;
+    }
+
+    invoice.invoice_update_user = auditUser;
 
     const action$ = isCreate
       ? this.invoiceService.create(invoice)
       : this.invoiceService.update(invoice.invoice_id, invoice);
 
     action$.subscribe({
-      next: (savedInvoice) => {
+      next: () => {
         this.closeModal();
         this.load();
       },
-      error: (err) => {
-        console.error('[Invoice] save error:', err);
+      error: (err) => console.error('[Invoice] save error:', err),
+    });
+  }
+
+  openDeleteInvoice(item: Invoice) {
+    console.log('[openDeleteInvoice] CLICK', item);
+
+    this.confirmationService.confirm({
+      header: 'Confirmación',
+      message: '¿Seguro que deseas eliminar esta invoice?',
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Sí, eliminar',
+      rejectLabel: 'Cancelar',
+
+      accept: () => {
+        console.log('[ConfirmDialog] ACCEPT');
+
+        this.invoiceService.delete(item.invoice_id).subscribe({
+          next: () => {
+            console.log('[DELETE] OK');
+
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Eliminado',
+              detail: 'Invoice eliminada correctamente',
+            });
+
+            this.load();
+          },
+          error: (err) => {
+            console.error('[DELETE] ERROR', err);
+
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Error',
+              detail: err?.message || 'No se pudo eliminar',
+            });
+          },
+        });
+      },
+
+      reject: () => {
+        console.log('[ConfirmDialog] REJECT');
       },
     });
   }
