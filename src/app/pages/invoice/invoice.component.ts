@@ -69,7 +69,7 @@ export class InvoiceComponent {
     private locationService: LocationService,
     private dashboardSvc: DashboardService,
     private invoiceService: InvoiceService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const yesterday = new Date();
@@ -107,9 +107,6 @@ export class InvoiceComponent {
       .map((loc) => loc.location_id)
       .join(',');
 
-    console.log('Range de fechas:', this.formattedDateRange);
-    console.log('Range de fechas:', this.dateRange);
-
     const startDate = this.dateRange[0].toISOString().split('T')[0];
     const endDate = this.dateRange[1].toISOString().split('T')[0];
 
@@ -118,8 +115,6 @@ export class InvoiceComponent {
         this.dasboard = res;
 
         const invoices = res.invoices ?? []; // <-- array real
-
-        console.log('Dashboard .invoices:', res.invoices);
 
         this.invoice01 = invoices.filter(
           (x) => Number(x.category.invoice_type_id) === 1
@@ -144,7 +139,6 @@ export class InvoiceComponent {
   loadLocations(): void {
     this.locationService.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.locations = data ?? [];
 
         // 👇 TODOS seleccionados por defecto
@@ -158,16 +152,11 @@ export class InvoiceComponent {
   }
 
   onLocationsChange() {
-    console.log(
-      'Locations or date range changed, scheduling dashboard reload...'
-    );
-
     this.locationChange$.next();
     this.load();
   }
 
   onLocationsChangeDate(event: any) {
-    console.log('Rango de fechas cambiado:', event);
     this.load();
   }
 
@@ -199,7 +188,7 @@ export class InvoiceComponent {
     this.totalCat3 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 3)
     );
-     this.totalCat4 = sum(
+    this.totalCat4 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 4)
     );
 
@@ -244,19 +233,8 @@ export class InvoiceComponent {
 
     action$.subscribe({
       next: (savedInvoice) => {
-        console.log('[Invoice] saved:', savedInvoice);
-
-        // Si tu dashboard depende del endpoint getDashboard, lo mejor es recargar:
         this.closeModal();
         this.load();
-
-        // (Opcional) Si quieres actualizar localmente SIN recargar:
-        // if (isCreate) {
-        //   this.invoice.push(savedInvoice);
-        // } else {
-        //   const index = this.invoice.findIndex(i => i.invoice_id === savedInvoice.invoice_id);
-        //   if (index !== -1) this.invoice[index] = savedInvoice;
-        // }
       },
       error: (err) => {
         console.error('[Invoice] save error:', err);

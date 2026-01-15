@@ -1,0 +1,51 @@
+<p-card header="Información de auditoría" styleClass="audit-card">
+  <div class="p-fluid formgrid grid audit-grid">
+    <!-- Creación -->
+    <div class="field col-12 md:col-6">
+      <label for="createdAt">Fecha creación</label>
+      <input
+        id="createdAt"
+        pInputText
+        class="audit-input"
+        [value]="createdAt ? (createdAt | date : 'dd/MM/yyyy HH:mm') : '-'"
+        readonly
+      />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="createdBy">Usuario creación</label>
+      <input
+        id="createdBy"
+        pInputText
+        class="audit-input"
+        [value]="createdBy || '-'"
+        [title]="createdBy || '-'"
+        readonly
+      />
+    </div>
+
+    <!-- Modificación -->
+    <div class="field col-12 md:col-6">
+      <label for="modifiedAt">Fecha modificación</label>
+      <input
+        id="modifiedAt"
+        pInputText
+        class="audit-input"
+        [value]="modifiedAt ? (modifiedAt | date : 'dd/MM/yyyy HH:mm') : '-'"
+        readonly
+      />
+    </div>
+
+    <div class="field col-12 md:col-6">
+      <label for="modifiedBy">Usuario modificación</label>
+      <input
+        id="modifiedBy"
+        pInputText
+        class="audit-input"
+        [value]="modifiedBy || '-'"
+        [title]="modifiedBy || '-'"
+        readonly
+      />
+    </div>
+  </div>
+</p-card>

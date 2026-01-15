@@ -77,11 +77,13 @@
         ></textarea>
       </div>
 
-      <!-- Created At (solo lectura, opcional) -->
-      <div class="form-group" *ngIf="mode === 'edit'">
-        <label>Created At</label>
-        <input type="text" [value]="formData.created_at" disabled />
-      </div>
+      <app-audit-info
+        *ngIf="mode === 'edit'"
+        [createdAt]="formData.created_at"
+        [createdBy]="formData.invoice_create_user"
+        [modifiedAt]="formData.update_at"
+        [modifiedBy]="formData.invoice_update_user"
+      />
     </div>
 
     <div class="modal-footer">

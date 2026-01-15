@@ -5,10 +5,12 @@ import { Category, Invoice } from '../../core/models/dashboard.models';
 import { LocationService } from '../../core/services/location.service';
 import { Location } from '../../core/models/location.model';
 import { CategoryService } from '../../core/services/categoria.service';
+import { AuditInfoComponent } from '../../shared/components/audit-info/audit-info.component';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-invoice-upd-ins',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AuditInfoComponent],
   templateUrl: './invoice-upd-ins.component.html',
   styleUrl: './invoice-upd-ins.component.scss',
 })
@@ -25,7 +27,8 @@ export class InvoiceUpdInsComponent {
 
   constructor(
     private locationService: LocationService,
-    private categoriaService: CategoryService
+    private categoriaService: CategoryService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
@@ -71,8 +74,11 @@ export class InvoiceUpdInsComponent {
     category_id: 0,
     invoice_amount: '0.00',
     invoice_notes: null,
-    created_at: '',
     location_id: 0,
+    invoice_create_user: '',
+    created_at: '',
+    invoice_update_user: '',
+    update_at: '',
   };
 
   onClose() {

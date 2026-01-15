@@ -25,12 +25,12 @@ export class MenuComponent {
       icon: 'bi-plus-circle',
       route: 'daily-input',
     },
-    {
-      type: 'link',
-      label: 'Monthly P&L',
-      icon: 'bi-calendar',
-      route: 'monthly-pl',
-    },
+    // {
+    //   type: 'link',
+    //   label: 'Monthly P&L',
+    //   icon: 'bi-calendar',
+    //   route: 'monthly-pl',
+    // },
     {
       type: 'link',
       label: 'Profit Calculator',

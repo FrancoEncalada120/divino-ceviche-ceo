@@ -47,6 +47,9 @@
 /* Body */
 .modal-body {
   padding: 20px;
+  .modal-body {
+    overflow: auto;
+  }
 
   .form-group {
     display: flex;

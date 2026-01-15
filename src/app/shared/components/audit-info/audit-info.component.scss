@@ -1,0 +1,15 @@
+.audit-card {
+  width: 100%;
+}
+
+.audit-grid {
+  row-gap: 0.75rem; // separacion vertical
+  column-gap: 0.75rem; // separacion horizontal
+}
+
+.audit-input {
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap; // importante: el input no envuelve
+}

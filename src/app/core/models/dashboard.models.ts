@@ -14,10 +14,13 @@ export interface Invoice {
   category_id: number;
   invoice_amount: string; // viene como string del backend
   invoice_notes: string | null;
-  created_at: string; // ISO datetime
   location_id: number;
   category: Category;
   locations: Location;
+  invoice_create_user: string;
+  created_at: string;
+  invoice_update_user: string;
+  update_at: string;
 }
 
 export interface Category {
@@ -54,8 +57,6 @@ export interface TotalMetric {
   icon: string;
   signo: string;
 }
-
-
 
 export interface Eval {
   color: string;
