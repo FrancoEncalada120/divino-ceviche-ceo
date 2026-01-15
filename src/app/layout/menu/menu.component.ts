@@ -18,26 +18,24 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 export class MenuComponent {
   items: MenuItem[] = [
     { type: 'section', label: 'OPERATIONS' },
-
-    { type: 'link', label: 'AI Agent', icon: 'bi-robot', route: '/ai-agent' },
-    { type: 'link', label: 'Dashboard', icon: 'bi-grid', route: '/dashboard' },
+    { type: 'link', label: 'Dashboard', icon: 'bi-grid', route: 'dashboard' },
     {
       type: 'link',
       label: 'Daily Input',
       icon: 'bi-plus-circle',
-      route: '/daily-input',
+      route: 'daily-input',
     },
     {
       type: 'link',
       label: 'Monthly P&L',
       icon: 'bi-calendar',
-      route: '/monthly-pl',
+      route: 'monthly-pl',
     },
     {
       type: 'link',
       label: 'Profit Calculator',
       icon: 'bi-calculator',
-      route: '/calculator',
+      route: 'calculator',
     },
     {
       type: 'link',
@@ -55,19 +53,19 @@ export class MenuComponent {
           type: 'link',
           label: 'Profile',
           icon: 'bi-person',
-          route: '/settings/profile',
+          route: 'settings/profile',
         },
         {
           type: 'link',
           label: 'Locations',
           icon: 'bi-building',
-          route: '/settings/Locacions',
+          route: 'settings/Locacions',
         },
         {
           type: 'link',
           label: 'Goals',
           icon: 'bi-building',
-          route: '/settings/Goals',
+          route: 'settings/Goals',
         },
       ],
     },

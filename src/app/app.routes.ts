@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './auth/login/login.component';
 import { ShellComponent } from './layout/shell/shell.component';
-
-import { LocationPriComponent } from './pages/locations/location-pri/location-pri.component';
+import { authGuardGuard } from './core/Guard/auth-guard.guard';
 
 export const routes: Routes = [
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
-
   {
-    path: '',
+    path: 'CEO',
     component: ShellComponent,
+    canActivate: [authGuardGuard],
     children: [
       {
         path: 'dashboard',
@@ -25,13 +25,6 @@ export const routes: Routes = [
             (m) => m.DailymetricComponent
           ),
       },
-      // {
-      //   path: 'monthly-pl',
-      //   loadComponent: () =>
-      //     import('./pages/monthly-pl/monthly-pl.component').then(
-      //       (m) => m.MonthlyPlComponent
-      //     ),
-      // },
       {
         path: 'calculator',
         loadComponent: () =>
@@ -67,5 +60,5 @@ export const routes: Routes = [
     ],
   },
 
-  { path: '**', redirectTo: 'dashboard' },
+  { path: '**', redirectTo: 'login' },
 ];

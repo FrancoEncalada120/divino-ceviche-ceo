@@ -8,45 +8,26 @@
     <form (ngSubmit)="login()" #f="ngForm" novalidate>
       <div class="mb-3">
         <label class="form-label">Email address</label>
-        <input
-          class="form-control form-control-lg"
-          type="email"
-          name="email"
-          [(ngModel)]="email"
-          required
-          email
-          placeholder="info@divinoceviche.com"
-        />
+        <input class="form-control form-control-lg" type="email" name="email" [(ngModel)]="email" required email
+          placeholder="info@divinoceviche.com" />
       </div>
 
       <div class="mb-3">
         <label class="form-label">Password</label>
 
         <div class="input-group input-group-lg">
-          <input
-            class="form-control"
-            [type]="showPassword ? 'text' : 'password'"
-            name="password"
-            [(ngModel)]="password"
-            required
-            placeholder="••••••••••"
-          />
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="togglePassword()"
-            aria-label="Toggle password visibility"
-          >
+          <input class="form-control" [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password"
+            required placeholder="••••••••••" />
+          <button type="button" class="btn btn-outline-secondary" (click)="togglePassword()"
+            aria-label="Toggle password visibility">
             {{ showPassword ? "Hide" : "Show" }}
           </button>
         </div>
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary btn-lg w-100 mt-2"
-        [disabled]="f.invalid || isSubmitting"
-      >
+      <label *ngIf="berror" class="text-danger" >{{lblerror}}</label>
+
+      <button type="submit" class="btn btn-primary btn-lg w-100 mt-2" [disabled]="f.invalid || isSubmitting">
         <span *ngIf="!isSubmitting">Sign in</span>
         <span *ngIf="isSubmitting">Signing in…</span>
       </button>
