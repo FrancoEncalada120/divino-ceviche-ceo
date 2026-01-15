@@ -33,4 +33,9 @@ export class UserService {
     this.userLogin = null;
     localStorage.removeItem('user');
   }
+
+  getUser(){
+    return this.userLogin;
+  }
+
 }
