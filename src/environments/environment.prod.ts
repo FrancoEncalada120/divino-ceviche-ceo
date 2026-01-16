@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://api.tudominio.com',
+  apiBaseUrl: 'https://dcapps.brunellalecca.com/',
 };
