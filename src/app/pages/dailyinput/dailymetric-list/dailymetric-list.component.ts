@@ -89,7 +89,7 @@ export class DailymetricListComponent {
           this.dailyMetric = data; // DailyMetric[]
           const dailyMetric = data ?? []; // ✅ array real
 
-          console.log('Dashboard items:', dailyMetric.length, dailyMetric);
+          console.log('dailyMetric items:', dailyMetric.length, dailyMetric);
         },
         error: (err) => {
           console.error(err);

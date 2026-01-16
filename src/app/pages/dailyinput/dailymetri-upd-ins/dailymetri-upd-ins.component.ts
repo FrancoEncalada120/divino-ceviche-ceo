@@ -1,6 +1,11 @@
 import { CommonModule, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 
 import { LocationService } from '../../../core/services/location.service';
 import { DailyMetricService } from '../../../core/services/dailymetri.service';
@@ -19,6 +24,17 @@ import { TabViewModule } from 'primeng/tabview';
 import { Location as AppLocation } from '../../../core/models/location.model';
 import { DatePickerModule } from 'primeng/datepicker';
 import { DropdownModule } from 'primeng/dropdown';
+import { UserService } from '../../../core/services/user.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { User } from '../../../core/models/user.models';
+
+type DailyMetricForm = {
+  location_id: FormControl<number | null>;
+  date: FormControl<Date | null>;
+  tickets: FormControl<number | null>;
+  netSales: FormControl<number | null>;
+  dailyHourly: FormControl<number | null>;
+};
 
 @Component({
   selector: 'app-dailymetri-upd-ins',
@@ -46,21 +62,40 @@ export class DailymetriUpdInsComponent {
   locations: AppLocation[] = [];
   private locationChange$ = new Subject<void>();
   saving = false;
+  user: User | null = null;
 
-  form = this.fb.group({
-    location_id: [null, [Validators.required]],
-    date: [null as Date | null, [Validators.required]],
-    tickets: [0, [Validators.required, Validators.min(0)]],
-    netSales: [0, [Validators.required, Validators.min(0)]],
-    dailyHourly: [0, [Validators.required, Validators.min(0)]],
+  form = this.fb.group<DailyMetricForm>({
+    location_id: this.fb.control<number | null>(null, {
+      validators: [Validators.required],
+    }),
+    date: this.fb.control<Date | null>(null, {
+      validators: [Validators.required],
+    }),
+
+    // ✅ tickets NO obligatorio
+    tickets: this.fb.control<number | null>(0, {
+      validators: [Validators.min(0)],
+    }),
+
+    // ✅ obligatorios
+    netSales: this.fb.control<number | null>(null, {
+      validators: [Validators.required, Validators.min(0)],
+    }),
+    dailyHourly: this.fb.control<number | null>(null, {
+      validators: [Validators.required, Validators.min(0)],
+    }),
   });
 
   constructor(
     private locationService: LocationService,
-    private dailyMetricService: DailyMetricService
+    private dailyMetricService: DailyMetricService,
+    private userService: UserService,
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit(): void {
+    this.user = this.userService.currentUser;
     this.loadLocations();
     this.form.patchValue({ date: new Date() });
   }
@@ -98,16 +133,18 @@ export class DailymetriUpdInsComponent {
     }
 
     const v = this.form.getRawValue();
+    const auditUserId = this.userService.getUser2()?.user_id;
 
     const location_id = Number(v.location_id);
-    const date = v.date as Date;
+    const date = v.date!;
 
     const payload = {
       location_id,
       daily_metric_date: this.dateToYYYYMMDD(date),
-      daily_metric_tickets: Number(v.tickets),
+      daily_metric_tickets: Number(v.tickets ?? 0),
       daily_metric_net_sales: Number(v.netSales),
       daily_metric_daily_hourly: Number(v.dailyHourly),
+      clientUser: auditUserId,
     };
 
     this.saving = true;
@@ -127,7 +164,11 @@ export class DailymetriUpdInsComponent {
           this.form.markAsPristine();
           this.form.markAsUntouched();
 
-          alert('Saved!');
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Saved',
+            detail: 'Daily metric saved successfully',
+          });
         },
         error: (err) => {
           console.error(err);

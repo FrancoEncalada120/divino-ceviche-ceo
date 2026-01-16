@@ -77,8 +77,12 @@
             </th>
 
             <th pSortableColumn="AOV" class="text-end">
-              AOV
+              Tickets
               <p-sortIcon field="AOV"></p-sortIcon>
+            </th>
+            <th pSortableColumn="User">
+              Tickets
+              <p-sortIcon field="User"></p-sortIcon>
             </th>
           </tr>
         </ng-template>
@@ -87,20 +91,29 @@
         <ng-template pTemplate="body" let-row>
           <tr>
             <td>{{ row.daily_metric_date }}</td>
-            <td>{{ row.location_name }}</td>
+            <td>{{ row.locations.location_name }}</td>
 
             <td class="text-end">
-              {{ row.totalNetSales | number : "1.2-2" }}
+              {{ row.daily_metric_net_sales | number : "1.2-2" }}
             </td>
 
             <td class="text-end">
-              {{ row.totalDailyHourly | number : "1.2-2" }}
+              {{ row.daily_metric_daily_hourly | number : "1.2-2" }}
             </td>
 
-            <td class="text-end">{{ row.LaborCost | number : "1.2-2" }} %</td>
+            <td class="text-end">
+              {{
+                (row.daily_metric_daily_hourly / row.daily_metric_net_sales) *
+                  100 | number : "1.2-2"
+              }}
+              %
+            </td>
 
             <td class="text-end">
-              {{ row.AOV | number : "1.2-2" }}
+              {{ row.daily_metric_tickets }}
+            </td>
+            <td class="text-end">
+              {{ row.user.user_name }}
             </td>
           </tr>
         </ng-template>

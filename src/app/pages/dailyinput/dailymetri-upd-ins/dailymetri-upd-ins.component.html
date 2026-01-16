@@ -96,7 +96,7 @@
         type="submit"
         label="{{ saving ? 'Saving...' : 'Save New Entry' }}"
         icon="pi pi-save"
-        [disabled]="saving"
+        [disabled]="saving || form.invalid"
         styleClass="p-button-primary mt-3"
       ></p-button>
     </form>
