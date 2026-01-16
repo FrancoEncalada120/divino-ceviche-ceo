@@ -146,8 +146,6 @@ export class DailymetriUpdInsComponent {
 
     this.saving = true;
 
-    console.log('payload', payload);
-
     this.dailyMetricService
       .create(payload)
       .pipe(finalize(() => (this.saving = false)))

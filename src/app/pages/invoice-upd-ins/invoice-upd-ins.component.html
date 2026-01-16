@@ -151,11 +151,15 @@
 
         <app-audit-info
           *ngIf="mode === 'edit'"
-          [createdAt]="formData.created_at"
-          [createdBy]="formData.invoice_create_user"
-          [modifiedAt]="formData.update_at"
-          [modifiedBy]="formData.invoice_update_user"
-        />
+          [createdAt]="formData.created_at ?? undefined"
+          [createdBy]="
+            formData.created_user?.user_name ?? formData.invoice_create_user
+          "
+          [modifiedAt]="formData.update_at ?? undefined"
+          [modifiedBy]="
+            formData.updated_user?.user_name ?? formData.invoice_update_user
+          "
+        ></app-audit-info>
       </form>
     </div>
 

@@ -1,4 +1,5 @@
 import { Location } from './location.model';
+import { User } from './user.models';
 
 export interface DashboardResponse {
   success: boolean;
@@ -21,6 +22,8 @@ export interface Invoice {
   created_at: string;
   invoice_update_user: string;
   update_at: string;
+  created_user?: User;
+  updated_user?: User;
 }
 
 export interface Category {
@@ -50,6 +53,8 @@ export interface DailyMetricCreateDto {
   updated_at?: string | Date | null;
   created_by?: number | null;
   updated_by?: number | null;
+  created_user?: User;
+  updated_user?: User;
 }
 
 export interface TotalMetric {

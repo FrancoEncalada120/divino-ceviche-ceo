@@ -17,6 +17,7 @@ import { InvoiceService } from '../../core/services/invoice.service';
 import { UserService } from '../../core/services/user.service';
 import { User } from '../../core/models/user.models';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { InvoiceTableComponent } from '../../shared/components/invoice-table/invoice-table.component';
 
 @Component({
   selector: 'app-invoice',
@@ -32,6 +33,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     CardModule,
     InvoiceUpdInsComponent,
     NgIf,
+    InvoiceTableComponent,
   ],
 
   templateUrl: './invoice.component.html',
@@ -123,6 +125,8 @@ export class InvoiceComponent {
         this.dasboard = res;
 
         const invoices = res.invoices ?? []; // <-- array real
+
+        console.log('invoices  ====>:', invoices);
 
         this.invoice01 = invoices.filter(
           (x) => Number(x.category.invoice_type_id) === 1

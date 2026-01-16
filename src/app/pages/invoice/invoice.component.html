@@ -124,299 +124,39 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="COGS Invoice">
-        <p-table
-          [value]="invoice01"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="invoice_id">
-                ID <p-sortIcon field="invoice_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_date">
-                Date <p-sortIcon field="invoice_date"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_vendor_description">
-                Vendor
-                <p-sortIcon field="invoice_vendor_description"></p-sortIcon>
-              </th>
-              <th pSortableColumn="category_id">
-                Category <p-sortIcon field="category_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_amount" class="text-end">
-                Amount <p-sortIcon field="invoice_amount"></p-sortIcon>
-              </th>
-              <th>Notes</th>
-              <th pSortableColumn="location_id">
-                Location <p-sortIcon field="location_id"></p-sortIcon>
-              </th>
-              <th style="width: 140px">Actions</th>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="body" let-item>
-            <tr>
-              <td>{{ item.invoice_id }}</td>
-              <td>{{ item.invoice_date }}</td>
-              <td>{{ item.invoice_vendor_description }}</td>
-              <td>{{ item.category.category_code }}</td>
-              <td class="text-end">{{ item.invoice_amount }}</td>
-              <td>{{ item.invoice_notes || "-" }}</td>
-              <td>{{ item.locations.location_name }}</td>
-              <td class="text-end">
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-pencil"
-                  class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 1)"
-                ></button>
-
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"
-                  (click)="openDeleteInvoice(item)"
-                ></button>
-              </td>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="8" class="text-center py-4">No hay invoices</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <app-invoice-table
+          [items]="invoice01"
+          [tabKey]="1"
+          (edit)="openUpdateInvoice($event, 1)"
+          (remove)="openDeleteInvoice($event)"
+        ></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel header="Fixed Expense">
-        <p-table
-          [value]="invoice02"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="invoice_id">
-                ID <p-sortIcon field="invoice_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_date">
-                Date <p-sortIcon field="invoice_date"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_vendor_description">
-                Vendor
-                <p-sortIcon field="invoice_vendor_description"></p-sortIcon>
-              </th>
-              <th pSortableColumn="category_id">
-                Category <p-sortIcon field="category_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_amount" class="text-end">
-                Amount <p-sortIcon field="invoice_amount"></p-sortIcon>
-              </th>
-              <th>Notes</th>
-              <th pSortableColumn="location_id">
-                Location <p-sortIcon field="location_id"></p-sortIcon>
-              </th>
-              <th style="width: 140px">Actions</th>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="body" let-item>
-            <tr>
-              <td>{{ item.invoice_id }}</td>
-              <td>{{ item.invoice_date }}</td>
-              <td>{{ item.invoice_vendor_description }}</td>
-              <td>{{ item.category.category_code }}</td>
-              <td class="text-end">{{ item.invoice_amount }}</td>
-              <td>{{ item.invoice_notes || "-" }}</td>
-              <td>{{ item.locations.location_name }}</td>
-              <td class="text-end">
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-pencil"
-                  class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 2)"
-                ></button>
-
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"
-                  (click)="openDeleteInvoice(item)"
-                ></button>
-              </td>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="8" class="text-center py-4">No hay invoices</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <app-invoice-table
+          [items]="invoice02"
+          [tabKey]="2"
+          (edit)="openUpdateInvoice($event, 2)"
+          (remove)="openDeleteInvoice($event)"
+        ></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel header="Other Invoice">
-        <p-table
-          [value]="invoice03"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="invoice_id">
-                ID <p-sortIcon field="invoice_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_date">
-                Date <p-sortIcon field="invoice_date"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_vendor_description">
-                Vendor
-                <p-sortIcon field="invoice_vendor_description"></p-sortIcon>
-              </th>
-              <th pSortableColumn="category_id">
-                Category <p-sortIcon field="category_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_amount" class="text-end">
-                Amount <p-sortIcon field="invoice_amount"></p-sortIcon>
-              </th>
-              <th>Notes</th>
-              <th pSortableColumn="location_id">
-                Location <p-sortIcon field="location_id"></p-sortIcon>
-              </th>
-              <th style="width: 140px">Actions</th>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="body" let-item>
-            <tr>
-              <td>{{ item.invoice_id }}</td>
-              <td>{{ item.invoice_date }}</td>
-              <td>{{ item.invoice_vendor_description }}</td>
-              <td>{{ item.category.category_code }}</td>
-              <td class="text-end">{{ item.invoice_amount }}</td>
-              <td>{{ item.invoice_notes || "-" }}</td>
-              <td>{{ item.locations.location_name }}</td>
-              <td class="text-end">
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-pencil"
-                  class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 3)"
-                ></button>
-
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"
-                  (click)="openDeleteInvoice(item)"
-                ></button>
-              </td>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="8" class="text-center py-4">No hay invoices</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <app-invoice-table
+          [items]="invoice03"
+          [tabKey]="3"
+          (edit)="openUpdateInvoice($event, 3)"
+          (remove)="openDeleteInvoice($event)"
+        ></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel header="Unassigned Invoice">
-        <p-table
-          [value]="invoice04"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'scroll'"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-        >
-          <ng-template pTemplate="header">
-            <tr>
-              <th pSortableColumn="invoice_id">
-                ID <p-sortIcon field="invoice_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_date">
-                Date <p-sortIcon field="invoice_date"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_vendor_description">
-                Vendor
-                <p-sortIcon field="invoice_vendor_description"></p-sortIcon>
-              </th>
-              <th pSortableColumn="category_id">
-                Category <p-sortIcon field="category_id"></p-sortIcon>
-              </th>
-              <th pSortableColumn="invoice_amount" class="text-end">
-                Amount <p-sortIcon field="invoice_amount"></p-sortIcon>
-              </th>
-              <th>Notes</th>
-              <th pSortableColumn="location_id">
-                Location <p-sortIcon field="location_id"></p-sortIcon>
-              </th>
-              <th style="width: 140px">Actions</th>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="body" let-item>
-            <tr>
-              <td>{{ item.invoice_id }}</td>
-              <td>{{ item.invoice_date }}</td>
-              <td>{{ item.invoice_vendor_description }}</td>
-              <td>{{ item.category.category_code }}</td>
-              <td class="text-end">{{ item.invoice_amount }}</td>
-              <td>{{ item.invoice_notes || "-" }}</td>
-              <td>{{ item.locations.location_name }}</td>
-              <td class="text-end">
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-pencil"
-                  class="p-button-text p-button-sm"
-                  (click)="openUpdateInvoice(item, 4)"
-                ></button>
-
-                <button
-                  pButton
-                  type="button"
-                  icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"
-                  (click)="openDeleteInvoice(item)"
-                ></button>
-              </td>
-            </tr>
-          </ng-template>
-
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="8" class="text-center py-4">No hay invoices</td>
-            </tr>
-          </ng-template>
-        </p-table>
+        <app-invoice-table
+          [items]="invoice04"
+          [tabKey]="4"
+          (edit)="openUpdateInvoice($event, 4)"
+          (remove)="openDeleteInvoice($event)"
+        ></app-invoice-table>
       </p-tabPanel>
     </p-tabView>
   </div>

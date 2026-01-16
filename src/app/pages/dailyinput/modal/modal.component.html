@@ -139,12 +139,16 @@
         </div>
 
         <!-- Audit info (solo edit) -->
-        <!-- <app-audit-info
+        <app-audit-info
           [createdAt]="formData.created_at ?? undefined"
-          [createdBy]="formData.created_by ?? undefined"
+          [createdBy]="
+            formData.created_user?.user_name ?? formData.created_by ?? undefined
+          "
           [modifiedAt]="formData.updated_at ?? undefined"
-          [modifiedBy]="formData.updated_by ?? undefined"
-        ></app-audit-info> -->
+          [modifiedBy]="
+            formData.updated_user?.user_name ?? formData.created_by ?? undefined
+          "
+        ></app-audit-info>
       </form>
     </div>
 

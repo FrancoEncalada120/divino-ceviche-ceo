@@ -1,0 +1,11 @@
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th,
+:host ::ng-deep .p-datatable .p-datatable-tbody > tr > td {
+  padding: 14px 16px; // antes suele ser 8px
+  vertical-align: middle;
+  line-height: 1.3;
+}
+
+:host ::ng-deep .p-datatable .p-datatable-thead > tr > th {
+  font-weight: 600;
+  white-space: nowrap; // evita que “Amount” se parta raro
+}

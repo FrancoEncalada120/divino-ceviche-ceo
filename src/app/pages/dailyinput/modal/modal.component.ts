@@ -34,13 +34,12 @@ export class ModalComponent {
     daily_metric_net_sales: 0,
     daily_metric_daily_hourly: 0,
     created_at: null,
-    created_by: null,
+    created_by: 0,
     updated_at: null,
-    updated_by: null,
+    updated_by: 0,
   };
 
   ngOnInit(): void {
-    console.log('dailyMetric', this.dailyMetric);
     this.formData = { ...this.dailyMetric };
 
     this.load();
@@ -49,7 +48,6 @@ export class ModalComponent {
   load(): void {
     this.locationService.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.locations = data ?? [];
       },
       error: (err) => {

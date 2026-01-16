@@ -12,9 +12,9 @@ import { InputTextModule } from 'primeng/inputtext';
 })
 export class AuditInfoComponent {
   @Input() createdAt?: Date | string;
-  @Input() createdBy?: string;
+  @Input() createdBy?: number | string;
   @Input() modifiedAt?: Date | string;
-  @Input() modifiedBy?: string;
+  @Input() modifiedBy?: number | string;
 
   expanded = false;
 
