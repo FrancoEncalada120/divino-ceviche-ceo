@@ -6,8 +6,6 @@ import { LocationService } from '../../core/services/location.service';
 import { Location } from '../../core/models/location.model';
 import { CategoryService } from '../../core/services/categoria.service';
 import { AuditInfoComponent } from '../../shared/components/audit-info/audit-info.component';
-import { UserService } from '../../core/services/user.service';
-import { User } from '../../core/models/user.models';
 
 @Component({
   selector: 'app-invoice-upd-ins',

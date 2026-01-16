@@ -8,16 +8,21 @@ import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { LocationService } from '../../../core/services/location.service';
 import { Location } from '../../../core/models/location.model';
-import { Subject } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 import { FormsModule } from '@angular/forms';
-import { DailyMetric } from '../../../core/models/dashboard.models';
+import {
+  DailyMetric,
+  DailyMetricCreateDto,
+} from '../../../core/models/dashboard.models';
 import { DailyMetricService } from '../../../core/services/dailymetri.service';
+import { ModalComponent } from '../modal/modal.component';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-dailymetric-list',
   imports: [
     CommonModule,
-
     DatePickerModule,
     MultiSelectModule,
     TabViewModule,
@@ -26,6 +31,7 @@ import { DailyMetricService } from '../../../core/services/dailymetri.service';
     CardModule,
     MultiSelectModule,
     FormsModule,
+    ModalComponent,
   ],
   templateUrl: './dailymetric-list.component.html',
   styleUrl: './dailymetric-list.component.scss',
@@ -36,12 +42,17 @@ export class DailymetricListComponent {
   dateRange: Date[] | null = null;
   private locationChange$ = new Subject<void>();
   loading = false;
-
+  showAddLocationModal = false;
+  editingDailyMetric: DailyMetricCreateDto | null = null;
   dailyMetric: DailyMetric[] = [];
+  saving = false;
 
   constructor(
     private locationService: LocationService,
-    private dailymetric: DailyMetricService
+    private dailymetricService: DailyMetricService,
+    private messageService: MessageService,
+    private userService: UserService,
+    private confirmationService: ConfirmationService
   ) {}
 
   ngOnInit(): void {
@@ -78,7 +89,7 @@ export class DailymetricListComponent {
 
     this.loading = true;
 
-    this.dailymetric
+    this.dailymetricService
       .getAll({
         locacion: locales,
         fechaIni: startDate, // string
@@ -86,7 +97,7 @@ export class DailymetricListComponent {
       })
       .subscribe({
         next: (data) => {
-          this.dailyMetric = data; // DailyMetric[]
+          this.dailyMetric = data;
           const dailyMetric = data ?? []; // ✅ array real
 
           console.log('dailyMetric items:', dailyMetric.length, dailyMetric);
@@ -127,5 +138,123 @@ export class DailymetricListComponent {
   onLocationsChangeDate(event: any) {
     console.log('Rango de fechas cambiado:', event);
     this.load();
+  }
+
+  openUpdateInvoice(item: DailyMetricCreateDto) {
+    this.editingDailyMetric = item;
+    this.showAddLocationModal = true;
+  }
+
+  openDeleteInvoice(item: DailyMetricCreateDto) {
+    const id = item.daily_metric_id ?? null;
+
+    if (!id) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Missing ID',
+        detail: 'Cannot delete: daily_metric_id is missing.',
+      });
+      return;
+    }
+
+    const title = `Delete daily metric #${id}?`;
+    const detail = `This action cannot be undone.`;
+
+    this.confirmationService.confirm({
+      header: title,
+      message: detail,
+      icon: 'pi pi-exclamation-triangle',
+      acceptLabel: 'Delete',
+      rejectLabel: 'Cancel',
+
+      accept: () => {
+        this.saving = true;
+
+        this.dailymetricService
+          .delete(id)
+          .pipe(finalize(() => (this.saving = false)))
+          .subscribe({
+            next: (res) => {
+              this.messageService.add({
+                severity: 'success',
+                summary: 'Deleted',
+                detail: res.message ?? 'Daily metric deleted successfully',
+              });
+
+              // ✅ refresca tu lista (usa el método que ya tengas)
+              this.load();
+              // o si tienes array local:
+              // this.items = this.items.filter(x => x.daily_metric_id !== id);
+            },
+            error: (err) => {
+              console.error(err);
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Error',
+                detail:
+                  err?.message ??
+                  err?.error?.message ??
+                  'Error deleting daily metric',
+              });
+            },
+          });
+      },
+    });
+  }
+
+  closeModal() {
+    this.showAddLocationModal = false;
+  }
+
+  handleSubmit(invoice: DailyMetricCreateDto) {
+    // ✅ Validación: para update necesitas ID
+    const id = invoice.daily_metric_id ?? null;
+    if (!id) {
+      console.error(
+        '[handleSubmit] Missing daily_metric_id for update',
+        invoice
+      );
+      alert('Missing daily_metric_id to update');
+      return;
+    }
+
+    const auditUserId = this.userService.getUser2()?.user_id;
+    // ✅ Payload parcial (no mandes el id en el body)
+    const payload: Partial<DailyMetricCreateDto> = {
+      location_id: invoice.location_id,
+      daily_metric_date: invoice.daily_metric_date, // string YYYY-MM-DD
+      daily_metric_tickets: invoice.daily_metric_tickets,
+      daily_metric_net_sales: invoice.daily_metric_net_sales,
+      daily_metric_daily_hourly: invoice.daily_metric_daily_hourly,
+      updated_by: auditUserId ?? null, // si lo usas
+    };
+
+    this.saving = true;
+
+    console.log('[payload', payload);
+    this.dailymetricService
+      .update(id, payload)
+      .pipe(finalize(() => (this.saving = false)))
+      .subscribe({
+        next: (updated) => {
+          console.log('[handleSubmit] Updated ok', updated);
+
+          // opcional: cerrar modal / refrescar lista
+          this.closeModal();
+          this.load();
+
+          this.messageService?.add?.({
+            severity: 'success',
+            summary: 'Updated',
+            detail: 'Daily metric updated successfully',
+          });
+        },
+        error: (err) => {
+          console.error('[handleSubmit] Update error', err);
+          alert(
+            err?.message ?? err?.error?.message ?? 'Error updating daily metric'
+          );
+        },
+      });
   }
 }

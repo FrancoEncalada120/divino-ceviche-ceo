@@ -41,11 +41,15 @@ export interface DailyMetric {
 
 export interface DailyMetricCreateDto {
   daily_metric_id?: number | null;
-  location_id: number;
-  daily_metric_date: number;
+  location_id: number; // ✅ CORRECTO
+  daily_metric_date: string; // YYYY-MM-DD
   daily_metric_tickets: number;
   daily_metric_net_sales: number;
   daily_metric_daily_hourly: number;
+  created_at?: string | Date | null;
+  updated_at?: string | Date | null;
+  created_by?: number | null;
+  updated_by?: number | null;
 }
 
 export interface TotalMetric {

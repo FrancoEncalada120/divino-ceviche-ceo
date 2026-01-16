@@ -27,6 +27,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { UserService } from '../../../core/services/user.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { User } from '../../../core/models/user.models';
+import { DailyMetricCreateDto } from '../../../core/models/dashboard.models';
 
 type DailyMetricForm = {
   location_id: FormControl<number | null>;
@@ -117,12 +118,11 @@ export class DailymetriUpdInsComponent {
     const c = this.form.controls[controlName];
     return !!(c.touched && c.invalid);
   }
-
-  private dateToYYYYMMDD(d: Date): number {
+  private dateToYYYYMMDD(d: Date): string {
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth() + 1).padStart(2, '0');
     const dd = String(d.getDate()).padStart(2, '0');
-    return Number(`${yyyy}${mm}${dd}`);
+    return `${yyyy}-${mm}-${dd}`; // ✅ string YYYY-MM-DD
   }
 
   save(): void {
@@ -135,26 +135,24 @@ export class DailymetriUpdInsComponent {
     const v = this.form.getRawValue();
     const auditUserId = this.userService.getUser2()?.user_id;
 
-    const location_id = Number(v.location_id);
-    const date = v.date!;
-
-    const payload = {
-      location_id,
-      daily_metric_date: this.dateToYYYYMMDD(date),
+    const payload: DailyMetricCreateDto = {
+      location_id: Number(v.location_id),
+      daily_metric_date: this.dateToYYYYMMDD(v.date!),
       daily_metric_tickets: Number(v.tickets ?? 0),
       daily_metric_net_sales: Number(v.netSales),
       daily_metric_daily_hourly: Number(v.dailyHourly),
-      clientUser: auditUserId,
+      created_by: auditUserId ?? null,
     };
 
     this.saving = true;
+
+    console.log('payload', payload);
 
     this.dailyMetricService
       .create(payload)
       .pipe(finalize(() => (this.saving = false)))
       .subscribe({
         next: () => {
-          // deja location_id y date, limpia métricas
           this.form.patchValue({
             tickets: 0,
             netSales: 0,

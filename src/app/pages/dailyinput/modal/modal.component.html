@@ -1,0 +1,166 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>
+        {{ "Update Daily Metric" }}
+      </h2>
+      <button class="close-btn" type="button" (click)="onClose()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <form #dmForm="ngForm">
+        <!-- ID (hidden) -->
+        <input
+          type="hidden"
+          [(ngModel)]="formData.daily_metric_id"
+          name="daily_metric_id"
+        />
+
+        <!-- Row: Date + Location -->
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Date</label>
+              <input
+                type="date"
+                [(ngModel)]="formData.daily_metric_date"
+                name="daily_metric_date"
+                required
+                #metricDate="ngModel"
+              />
+
+              <small
+                class="error"
+                *ngIf="
+                  metricDate.invalid && (metricDate.touched || dmForm.submitted)
+                "
+              >
+                Date is required
+              </small>
+            </div>
+
+            <div class="field">
+              <label>Location</label>
+              <select
+                [(ngModel)]="formData.location_id"
+                name="location_id"
+                required
+                #location="ngModel"
+              >
+                <option [ngValue]="''">Select location</option>
+                <option
+                  *ngFor="let loc of locations"
+                  [ngValue]="loc.location_id"
+                >
+                  {{ loc.location_name }}
+                </option>
+              </select>
+
+              <small
+                class="error"
+                *ngIf="
+                  location.invalid && (location.touched || dmForm.submitted)
+                "
+              >
+                Location is required
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row: Tickets + Net Sales -->
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Tickets</label>
+              <input
+                type="number"
+                min="0"
+                step="1"
+                [(ngModel)]="formData.daily_metric_tickets"
+                name="daily_metric_tickets"
+                required
+                #tickets="ngModel"
+              />
+
+              <small
+                class="error"
+                *ngIf="tickets.invalid && (tickets.touched || dmForm.submitted)"
+              >
+                Tickets are required
+              </small>
+            </div>
+
+            <div class="field">
+              <label>Net Sales</label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                [(ngModel)]="formData.daily_metric_net_sales"
+                name="daily_metric_net_sales"
+                required
+                #netSales="ngModel"
+              />
+
+              <small
+                class="error"
+                *ngIf="
+                  netSales.invalid && (netSales.touched || dmForm.submitted)
+                "
+              >
+                Net sales are required
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Hourly -->
+        <div class="form-group">
+          <label>Daily Hourly</label>
+          <input
+            type="number"
+            min="0"
+            step="0.01"
+            [(ngModel)]="formData.daily_metric_daily_hourly"
+            name="daily_metric_daily_hourly"
+            required
+            #dailyHourly="ngModel"
+          />
+
+          <small
+            class="error"
+            *ngIf="
+              dailyHourly.invalid && (dailyHourly.touched || dmForm.submitted)
+            "
+          >
+            Daily hourly is required
+          </small>
+        </div>
+
+        <!-- Audit info (solo edit) -->
+        <!-- <app-audit-info
+          [createdAt]="formData.created_at ?? undefined"
+          [createdBy]="formData.created_by ?? undefined"
+          [modifiedAt]="formData.updated_at ?? undefined"
+          [modifiedBy]="formData.updated_by ?? undefined"
+        ></app-audit-info> -->
+      </form>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" type="button" (click)="onClose()">
+        Cancel
+      </button>
+
+      <button
+        class="btn btn-primary"
+        type="button"
+        (click)="onSubmit()"
+        [disabled]="dmForm.invalid"
+      >
+        {{ "Save Changes" }}
+      </button>
+    </div>
+  </div>
+</div>
