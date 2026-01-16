@@ -1,0 +1,37 @@
+<table class="table align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>id</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Email</th>
+      <th>Estado</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let item of users">
+
+      <td>{{ item.user_id }}</td>
+      <td>{{ item.user_name }}</td>
+      <td>{{ item.user_apellido }}</td>
+      <td>{{ item.user_email }}</td>
+      <td>{{ item.user_estado }}</td>
+
+
+      <td class="text-end">
+        <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
+          Edit
+        </button>
+      </td>
+    </tr>
+
+    <tr *ngIf="!users.length">
+      <td colspan="12" class="text-center text-muted py-4">
+        No goals set for this period for the selected location.<br>
+        Click 'Add Goal' to set targets or switch to 'All Locations' to see all goals.
+      </td>
+    </tr>
+  </tbody>
+</table>

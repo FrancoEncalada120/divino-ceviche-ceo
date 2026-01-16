@@ -1,8 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { User, UserRequest, UserResponse } from '../models/user.models';
+
+type ApiResponse<T> = {
+  success: boolean;
+  data: T;
+  message?: string;
+};
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
@@ -16,6 +22,47 @@ export class UserService {
 
   get currentUser(): User | null {
     return this.userLogin;
+  }
+
+  getAll(): Observable<User[]> {
+    console.log('[UserService] GET', this.apiUrl);
+
+    return this.http.get<ApiResponse<User[]>>(this.apiUrl).pipe(
+      map((res) => {
+        const arr = res?.data;
+        return Array.isArray(arr) ? arr : [];
+      })
+    );
+  }
+
+  create(user: User): Observable<User> {
+
+console.log('user: User', user);
+
+    return this.http
+      .post<ApiResponse<User>>(this.apiUrl + "/create", user)
+      .pipe(
+        map(res => {
+
+          if (!res.success) {
+            throw new Error(res.message || 'Error creating user');
+          }
+          return res.data;
+        })
+      );
+  }
+
+  update(location: User): Observable<User> {
+    return this.http
+      .put<ApiResponse<User>>(`${this.apiUrl}/${location.user_id}`, location)
+      .pipe(
+        map(res => {
+          if (!res.success) {
+            throw new Error(res.message || 'Error updating user');
+          }
+          return res.data;
+        })
+      );
   }
 
   login(email: string, password: string): Observable<UserResponse> {

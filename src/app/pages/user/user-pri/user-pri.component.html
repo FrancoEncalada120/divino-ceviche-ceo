@@ -1,0 +1,21 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h4 class="fw-bold mb-1">Monthly Goals</h4>
+    <p class="text-muted mb-0">Set targets for sales, costs, and margins by location</p>
+  </div>
+
+  <button class="btn btn-primary" (click)="openCreate()">Add Goal</button>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div *ngIf="loading" class="text-muted py-3">Loading...</div>
+
+    <app-user-list (edit)="openEdit($event)" [users]="users"></app-user-list>
+
+  </div>
+</div>
+
+<app-user-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" [user]="selectedUser" (close)="closeModal()"
+  (submit)="handleSubmit($event)">
+</app-user-upd-ins>

@@ -47,6 +47,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'settings/Profile',
+        loadComponent: () =>
+          import('./pages/user/user-pri/user-pri.component').then(
+            (m) => m.UserPriComponent
+          ),
+      },
+      {
         path: 'settings/Goals',
         loadComponent: () =>
           import('./pages/goals/goal-pri/goal-pri.component').then(

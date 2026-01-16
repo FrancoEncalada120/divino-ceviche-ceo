@@ -64,7 +64,7 @@ export class MenuComponent {
           type: 'link',
           label: 'Profile',
           icon: 'bi-person',
-          route: 'settings/profile',
+          route: 'settings/Profile',
         },
         {
           type: 'link',
