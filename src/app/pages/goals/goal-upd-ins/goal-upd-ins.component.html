@@ -51,12 +51,14 @@
 
           <div class="field">
             <label>Target Sales ($)</label>
-            <input type="number" [(ngModel)]="formData.goal_target_sales" />
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_target_sales" />
           </div>
 
           <div class="field">
             <label>Target AOV ($)</label>
-            <input type="number" [(ngModel)]="formData.goal_target_AOV" />
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_target_AOV" />
           </div>
 
         </div>
@@ -67,12 +69,14 @@
 
           <div class="field">
             <label>Food Cost %</label>
-            <input type="number" [(ngModel)]="formData.goal_food_cost" />
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_food_cost" />
           </div>
 
           <div class="field">
             <label>Labor Cost %</label>
-            <input type="number" [(ngModel)]="formData.goal_labor_cost" />
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_labor_cost" />
           </div>
 
         </div>
@@ -83,7 +87,8 @@
 
           <div class="field">
             <label>Net Margin %</label>
-            <input type="number" [(ngModel)]="formData.goal_net_margin" />
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*"
+              decimalOnly [(ngModel)]="formData.goal_net_margin" />
           </div>
 
           <div class="field">
@@ -106,5 +111,3 @@
   </div>
 
 </div>
-
-

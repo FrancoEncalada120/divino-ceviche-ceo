@@ -10,6 +10,7 @@ import { filter } from 'rxjs';
 import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { UserService } from '../../core/services/user.service';
 
 @Component({
   selector: 'app-menu',
@@ -82,7 +83,7 @@ export class MenuComponent {
     },
   ];
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: UserService) {
     // Auto-abre el group Settings si estás dentro de /settings/...
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
@@ -103,4 +104,12 @@ export class MenuComponent {
       }
     }
   }
+
+  logout() {
+    this.authService.logout();
+
+    this.router.navigate(['/login']);
+
+  }
+
 }

@@ -1,10 +1,14 @@
-import { NgFor, NgIf } from '@angular/common';
+import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Goal } from '../../../core/models/goal.models';
+import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 
 @Component({
   selector: 'app-goal-list',
-  imports: [NgFor, NgIf],
+  imports: [NgFor, NgIf, TxtsignoPipe],
+  providers: [
+    DecimalPipe    // 👈 NECESARIO
+  ],
   templateUrl: './goal-list.component.html',
   styleUrl: './goal-list.component.scss'
 })

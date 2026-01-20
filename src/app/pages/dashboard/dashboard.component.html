@@ -1,178 +1,191 @@
 <div class="container-fluid py-3">
-  <!-- ✅ FORM WRAPPER -->
 
-  <!-- Top controls -->
-  <div class="row g-3 align-items-center mb-5">
+  <!-- ===================== -->
+  <!-- FILTERS (RESPONSIVE) -->
+  <!-- ===================== -->
+  <div class="row g-3 mb-4">
 
-    <div class="filters-bar">
-      <div class="filter-item">
-        <label class="filter-label">
-          <i class="pi pi-map-marker"></i> Locations
-        </label>
+    <!-- Locations -->
+    <div class="col-12 col-md-6">
+      <label class="filter-label d-block mb-1">
+        <i class="pi pi-map-marker"></i> Locations
+      </label>
 
-        <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
-          placeholder="Select locations" [maxSelectedLabels]="3" display="chip" styleClass="w-100"
-          (onChange)="onLocationsChange()"></p-multiSelect>
-      </div>
-
-      <div class="filter-item">
-        <label class="filter-label">
-          <i class="pi pi-calendar"></i> Date Range
-        </label>
-
-        <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
-          [readonlyInput]="true" placeholder="Select date range" styleClass="w-100"
-          (ngModelChange)="onLocationsChangeDate($event)"></p-datepicker>
-      </div>
+      <p-multiSelect
+        [options]="locations"
+        [(ngModel)]="selectedLocation"
+        optionLabel="location_name"
+        placeholder="Select locations"
+        display="chip"
+        class="w-100"
+        (onChange)="onLocationsChange()">
+      </p-multiSelect>
     </div>
 
-    <!-- Subheader -->
-    <div class="mt-3 d-flex align-items-center justify-content-between">
-      <div class="text-muted small">
+    <!-- Date range -->
+    <div class="col-12 col-md-6">
+      <label class="filter-label d-block mb-1">
+        <i class="pi pi-calendar"></i> Date Range
+      </label>
 
-        <ng-container *ngIf="selectedLocation.length; else noneSelected">
-          {{
-          selectedLocationNames
-          }}
-        </ng-container>
-
-        <ng-template #noneSelected>
-          None
-        </ng-template>
-        <div class="text-muted small">
-          {{ formattedDateRange }}
-        </div>
-      </div>
-
+      <p-datepicker
+        [(ngModel)]="dateRange"
+        selectionMode="range"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        [readonlyInput]="true"
+        class="w-100"
+        (ngModelChange)="onLocationsChangeDate($event)">
+      </p-datepicker>
     </div>
-
-    <!-- Cards -->
-    <div class="row g-2">
-      <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
-
-        <div class="kpi-card bg-white">
-          <!-- <div class="kpi-header">
-            <span class="kpi-title">{{item.name}}</span>
-            <span class="kpi-currency">
-              <i [class]="item.icon"></i>
-            </span>
-          </div> -->
-          <div class="sum-inner">
-            <div class="sum-top">
-              <i [class]="item.icon"></i>
-              <span class="sum-title">{{item.name}}</span>
-            </div>
-
-
-            <div class="kpi-value">
-              {{item.Result | txtsigno:item.signo }}
-            </div>
-
-            <div class="kpi-footer">
-              <span class="kpi-target">
-                Target: {{item.goal | txtsigno:item.signo }}
-              </span>
-
-              <span [class]="item.eval.color">
-                <i [class]="item.eval.arrow"></i>
-                {{item.diff | txtsigno:item.signo }}
-              </span>
-
-
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Loading -->
-    <div class="mt-3 text-muted small" *ngIf="loading">Loading...</div>
   </div>
 
+  <!-- ===================== -->
+  <!-- SUBHEADER -->
+  <!-- ===================== -->
+  <div class="mb-4">
+    <div class="text-muted small">
+      <ng-container *ngIf="selectedLocation.length; else noneSelected">
+        {{ selectedLocationNames }}
+      </ng-container>
 
+      <ng-template #noneSelected>
+        None
+      </ng-template>
 
+      <div class="small">
+        {{ formattedDateRange }}
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== -->
+  <!-- KPI CARDS -->
+  <!-- ===================== -->
+  <div class="row g-3 mb-4">
+    <div
+      class="col-12 col-sm-6 col-lg-4"
+      *ngFor="let item of dasboard?.totales">
+
+      <div class="kpi-card bg-white">
+        <div class="sum-inner">
+
+          <div class="sum-top d-flex align-items-center gap-2">
+            <i [class]="item.icon"></i>
+            <span class="sum-title">{{ item.name }}</span>
+          </div>
+
+          <div class="kpi-value">
+            {{ item.Result | txtsigno:item.signo }}
+          </div>
+
+          <div class="kpi-footer">
+            <span class="kpi-target">
+              Target: {{ item.goal | txtsigno:item.signo }}
+            </span>
+
+            <span [class]="item.eval.color">
+              <i [class]="item.eval.arrow"></i>
+              {{ item.diff | txtsigno:item.signo }}
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
+
+  <!-- ===================== -->
+  <!-- DAILY SCORECARD -->
+  <!-- ===================== -->
   <div class="card mb-5">
     <div class="card-header bg-white">
       Daily Scorecard
     </div>
-    <div *ngIf="dasboard?.dailyMetrics?.length; else elseTemplate" class="card-body">
-      <table class="table align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>Sales</th>
-            <th>Labor Cost</th>
-            <th>Labor %</th>
-            <th>AOV</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          <tr *ngFor="let item of dasboard?.dailyMetrics">
+    <div *ngIf="dasboard?.dailyMetrics?.length; else noDaily" class="card-body">
 
-            <td>{{ item.daily_metric_date }}</td>
-            <td>{{ item.location_name}}</td>
-            <td>{{ item.totalNetSales | number:'1.0-3' }}</td>
-            <td>{{ item.totalDailyHourly }}</td>
-            <td>{{ item.LaborCost | number:'1.0-3' }}</td>
-            <td>{{ item.AOV | number:'1.0-3' }}</td>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th>
+              <th>Location</th>
+              <th>Sales</th>
+              <th class="d-none d-md-table-cell">Labor Cost</th>
+              <th class="d-none d-md-table-cell">Labor %</th>
+              <th>AOV</th>
+            </tr>
+          </thead>
 
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr *ngFor="let item of dasboard?.dailyMetrics">
+              <td>{{ item.daily_metric_date }}</td>
+              <td>{{ item.location_name }}</td>
+              <td>{{ item.totalNetSales | number:'1.0-3' }}</td>
+              <td class="d-none d-md-table-cell">{{ item.totalDailyHourly }}</td>
+              <td class="d-none d-md-table-cell">{{ item.LaborCost | number:'1.0-3' }}</td>
+              <td>{{ item.AOV | number:'1.0-3' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-    <ng-template #elseTemplate>
-      <div class="alert alert-danger d-flex align-items-center m-0" role="alert">
+    <ng-template #noDaily>
+      <div class="alert alert-danger m-0">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <div>No Daily exist for the selected dates and locations</div>
+        No Daily exist for the selected dates and locations
       </div>
     </ng-template>
-
   </div>
 
-
-
+  <!-- ===================== -->
+  <!-- INVOICES -->
+  <!-- ===================== -->
   <div class="card mb-5">
-    <div class="card-header  bg-white">
+    <div class="card-header bg-white">
       Invoices
     </div>
-    <div *ngIf="dasboard?.invoices?.length; else elseTemplate" class="card-body">
-      <table class="table align-middle">
-        <thead class="table-light">
-          <tr>
-            <th>Date</th>
-            <th>Location</th>
-            <th>category</th>
-            <th>Description Cost</th>
-            <th style="text-align: right;">Amount %</th>
-          </tr>
-        </thead>
 
-        <tbody>
-          <tr *ngFor="let item of dasboard?.invoices">
+    <div *ngIf="dasboard?.invoices?.length; else noInvoices" class="card-body">
 
-            <td>{{ item.invoice_date }}</td>
-            <td>{{ item.locations.location_name}}</td>
-            <td>{{ item.category.category_code }}</td>
-            <td style="width: 30%;" >{{ item.invoice_vendor_description }}</td>
-            <td style="text-align: right;" >{{ item.invoice_amount }}</td>
+      <div class="table-responsive">
+        <table class="table align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th>
+              <th>Location</th>
+              <th class="d-none d-md-table-cell">Category</th>
+              <th>Description</th>
+              <th class="text-end">Amount</th>
+            </tr>
+          </thead>
 
-          </tr>
-        </tbody>
-      </table>
+          <tbody>
+            <tr *ngFor="let item of dasboard?.invoices">
+              <td>{{ item.invoice_date }}</td>
+              <td>{{ item.locations.location_name }}</td>
+              <td class="d-none d-md-table-cell">{{ item.category.category_code }}</td>
+              <td>{{ item.invoice_vendor_description }}</td>
+              <td class="text-end">{{ item.invoice_amount }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-    <ng-template #elseTemplate1>
-      <div class="alert alert-danger d-flex align-items-center m-0" role="alert">
+    <ng-template #noInvoices>
+      <div class="alert alert-danger m-0">
         <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        <div>No invoices exist for the selected dates and locations</div>
+        No invoices exist for the selected dates and locations
       </div>
     </ng-template>
-
-
   </div>
 
 </div>

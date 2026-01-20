@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LocationService } from '../../../core/services/location.service';
 import { Location } from '../../../core/models/location.model';
+import { DecimalOnlyDirective } from "../../../core/directives/decimal-only.directive";
 
 
 @Component({
   selector: 'app-goal-upd-ins',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, DecimalOnlyDirective],
   templateUrl: './goal-upd-ins.component.html',
   styleUrl: './goal-upd-ins.component.scss'
 })

@@ -53,14 +53,14 @@ export class DailymetricListComponent {
     private messageService: MessageService,
     private userService: UserService,
     private confirmationService: ConfirmationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     this.dateRange = [new Date(yesterday), new Date(yesterday)];
     this.loadLocations();
-    this.load();
+
   }
 
   load(): void {
@@ -118,6 +118,9 @@ export class DailymetricListComponent {
 
         // 👇 TODOS seleccionados por defecto
         this.selectedLocation = [...this.locations];
+
+        this.load();
+
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);

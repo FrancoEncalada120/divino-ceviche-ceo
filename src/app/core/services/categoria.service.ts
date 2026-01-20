@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Category } from '../models/dashboard.models';
+import { Category, Invoicetype } from '../models/dashboard.models';
 import { map, Observable } from 'rxjs';
 
 type ApiResponse<T> = {
@@ -13,6 +13,7 @@ type ApiResponse<T> = {
 @Injectable({ providedIn: 'root' })
 export class CategoryService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/category`;
+  private readonly apiUrlType = `${environment.apiBaseUrl}/ceo/invoiceType`;
 
   constructor(private http: HttpClient) {}
 
@@ -20,6 +21,17 @@ export class CategoryService {
     console.log('[CategoryService] GET', this.apiUrl);
 
     return this.http.get<ApiResponse<Category[]>>(this.apiUrl).pipe(
+      map((res) => {
+        const arr = res?.data;
+        return Array.isArray(arr) ? arr : [];
+      })
+    );
+  }
+
+    getAllType(): Observable<Invoicetype[]> {
+    console.log('[getAllType] GET', this.apiUrl);
+
+    return this.http.get<ApiResponse<Invoicetype[]>>(this.apiUrlType).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];

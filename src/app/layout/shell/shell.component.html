@@ -1,11 +1,22 @@
 <div class="app-shell">
-  <app-menu></app-menu>
+  <!-- Sidebar -->
+  <aside class="sidebar" [class.open]="menuOpen">
+    <app-menu></app-menu>
+  </aside>
 
+  <!-- Overlay mobile -->
+  <div class="overlay" *ngIf="menuOpen" (click)="toggleMenu()"></div>
+
+  <!-- Main -->
   <main class="app-content">
+    <header class="app-header">
+
+      <p-button icon="pi pi-bars" class="p-button-text d-md-none" (onClick)="toggleMenu()">
+      </p-button>
+    </header>
+
     <div class="page-wrapper">
-      <div class="page-container">
-        <router-outlet></router-outlet>
-      </div>
+      <router-outlet></router-outlet>
     </div>
   </main>
 </div>

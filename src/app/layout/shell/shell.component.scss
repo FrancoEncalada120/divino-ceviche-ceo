@@ -8,3 +8,57 @@
   padding: 24px;
   background: #f8fafc;
 }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background: #111;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    transform: translateX(-100%);
+    z-index: 1000;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+  }
+}
+
+@media (min-width: 769px) {
+  .sidebar {
+    transform: none !important;
+    position: relative;
+  }
+
+  .overlay {
+    display: none;
+  }
+}
+
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.menu-link,
+.menu-child {
+  white-space: nowrap;
+}

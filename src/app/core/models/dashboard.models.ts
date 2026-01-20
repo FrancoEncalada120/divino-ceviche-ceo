@@ -33,6 +33,12 @@ export interface Category {
   category_code: string;
 }
 
+export interface Invoicetype {
+  invoice_type_id: number;
+  type_code: number;
+  description: string;
+}
+
 export interface DailyMetric {
   daily_metric_date: string;
   location_name: string;

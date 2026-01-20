@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, input, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Category, Invoice } from '../../core/models/dashboard.models';
+import { Category, Invoice, Invoicetype } from '../../core/models/dashboard.models';
 import { LocationService } from '../../core/services/location.service';
 import { Location } from '../../core/models/location.model';
 import { CategoryService } from '../../core/services/categoria.service';
@@ -23,11 +23,13 @@ export class InvoiceUpdInsComponent {
 
   locations: Location[] = [];
   categories: Category[] = [];
+  typeInvoices: Invoicetype[] = [];
+  selectedInvoiceTypeId: number | null = null;
 
   constructor(
     private locationService: LocationService,
     private categoriaService: CategoryService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.load();
@@ -36,6 +38,11 @@ export class InvoiceUpdInsComponent {
       // Copia defensiva (muy importante)
       this.formData = { ...this.invoice };
     }
+
+    if (this.formData?.category) {
+      this.selectedInvoiceTypeId = this.formData.category.invoice_type_id;
+    }
+
   }
 
   load(): void {
@@ -58,11 +65,27 @@ export class InvoiceUpdInsComponent {
         this.categories = data.filter(
           (x) => Number(x.invoice_type_id) === this.categoryType
         );
+
+        this.selectedInvoiceTypeId = this.categoryType;
+
       },
       error: (err) => {
         console.error('[Categories] GET error:', err);
       },
     });
+
+    this.categoriaService.getAllType().subscribe({
+      next: (data) => {
+        console.log('[getAllType] GET ok, items:', data?.length, data);
+        this.typeInvoices = data ?? [];
+
+
+      },
+      error: (err) => {
+        console.error('[Categories] GET error:', err);
+      },
+    });
+
   }
 
   formData: Partial<Invoice> = {
@@ -77,6 +100,12 @@ export class InvoiceUpdInsComponent {
     created_at: '',
     invoice_update_user: '',
     update_at: '',
+    category: {
+      category_code: "",
+      category_id: 0,
+      description: '',
+      invoice_type_id: 0
+    }
   };
 
   onClose() {
@@ -86,4 +115,23 @@ export class InvoiceUpdInsComponent {
   onSubmit() {
     this.submit.emit(this.formData as Invoice);
   }
+
+  onInvoiceTypeChange() {
+
+    this.categoriaService.getAll().subscribe({
+      next: (data) => {
+        console.log('[Categories] GET ok, items:', data?.length, data);
+        this.categories = data ?? [];
+
+        this.categories = data.filter(
+          (x) => Number(x.invoice_type_id) === this.selectedInvoiceTypeId
+        );
+      },
+      error: (err) => {
+        console.error('[Categories] GET error:', err);
+      },
+    });
+
+  }
+
 }

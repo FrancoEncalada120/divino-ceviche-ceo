@@ -46,7 +46,7 @@ export class GoalService {
 
   update(location: Goal): Observable<Goal> {
     return this.http
-      .put<ApiResponse<Goal>>(`${this.apiUrl}/${location.location_id}`, location)
+      .put<ApiResponse<Goal>>(`${this.apiUrl}/${location.goal_id}`, location)
       .pipe(
         map(res => {
           if (!res.success) {

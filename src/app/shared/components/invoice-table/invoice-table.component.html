@@ -3,48 +3,54 @@
   [paginator]="true"
   [rows]="10"
   [rowsPerPageOptions]="[10, 20, 50]"
-  [responsiveLayout]="'scroll'"
+  responsiveLayout="scroll"
   sortMode="multiple"
   [showCurrentPageReport]="true"
   currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
 >
   <ng-template pTemplate="header">
     <tr>
-      <th pSortableColumn="invoice_id">
-        ID <p-sortIcon field="invoice_id"></p-sortIcon>
-      </th>
-      <th pSortableColumn="invoice_date">
+
+      <th class="col-date" pSortableColumn="invoice_date">
         Date <p-sortIcon field="invoice_date"></p-sortIcon>
       </th>
-      <th pSortableColumn="invoice_vendor_description">
+
+      <th class="col-vendor" pSortableColumn="invoice_vendor_description">
         Vendor <p-sortIcon field="invoice_vendor_description"></p-sortIcon>
       </th>
-      <th pSortableColumn="category_id">
+
+      <th class="col-category" pSortableColumn="category_id">
         Category <p-sortIcon field="category_id"></p-sortIcon>
       </th>
-      <th pSortableColumn="invoice_amount" class="text-end">
+
+      <th class="col-amount text-end" pSortableColumn="invoice_amount">
         Amount <p-sortIcon field="invoice_amount"></p-sortIcon>
       </th>
-      <th>Notes</th>
-      <th pSortableColumn="location_id">
+
+      <th class="col-notes">Notes</th>
+
+      <th class="col-location" pSortableColumn="location_id">
         Location <p-sortIcon field="location_id"></p-sortIcon>
       </th>
-      <th style="width: 140px">User</th>
-      <th style="width: 140px">Actions</th>
+
+      <th class="col-user">User</th>
+
+      <th class="col-actions">Actions</th>
     </tr>
   </ng-template>
 
   <ng-template pTemplate="body" let-item>
     <tr>
-      <td>{{ item.invoice_id }}</td>
-      <td>{{ item.invoice_date }}</td>
-      <td>{{ item.invoice_vendor_description }}</td>
-      <td>{{ item.category?.category_code }}</td>
-      <td class="text-end">{{ item.invoice_amount }}</td>
-      <td>{{ item.invoice_notes || "-" }}</td>
-      <td>{{ item.locations?.location_name }}</td>
-      <td>{{ item.created_user.user_name }}</td>
-      <td class="text-end">
+
+      <td class="col-date">{{ item.invoice_date }}</td>
+      <td class="col-vendor">{{ item.invoice_vendor_description }}</td>
+      <td class="col-category">{{ item.category?.category_code }}</td>
+      <td class="col-amount text-end">{{ item.invoice_amount }}</td>
+      <td class="col-notes">{{ item.invoice_notes || "-" }}</td>
+      <td class="col-location">{{ item.locations?.location_name }}</td>
+      <td class="col-user">{{ item.created_user.user_name }}</td>
+
+      <td class="col-actions text-end">
         <button
           pButton
           type="button"
@@ -61,12 +67,6 @@
           (click)="onRemove(item)"
         ></button>
       </td>
-    </tr>
-  </ng-template>
-
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="8" class="text-center py-4">No hay invoices</td>
     </tr>
   </ng-template>
 </p-table>

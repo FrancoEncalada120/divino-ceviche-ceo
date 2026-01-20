@@ -2,24 +2,32 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 
 @Pipe({
-  name: 'txtsigno'
+  name: 'txtsigno',
+  standalone: true
 })
 export class TxtsignoPipe implements PipeTransform {
 
-  constructor(private decimalPipe: DecimalPipe) { }
+  constructor(private decimalPipe: DecimalPipe) {}
 
-  transform(
-    value: number,
-    signo: string
-  ): string {
-
+  transform(value: any, signo: string): string {
     if (value === null || value === undefined) {
       return '-';
     }
 
-    const text = value.toString();
+    let numericValue: number;
 
-    const formatted = this.decimalPipe.transform(value, '1.2-2');
+    if (typeof value === 'string') {
+      // 🔥 Quitar SOLO el .000 final
+      numericValue = Number(value.replace(/\.000$/, ''));
+    } else {
+      numericValue = value;
+    }
+
+    if (isNaN(numericValue)) {
+      return '-';
+    }
+
+    const formatted = this.decimalPipe.transform(numericValue, '1.2-2');
 
     if (!formatted) {
       return '-';
@@ -33,7 +41,6 @@ export class TxtsignoPipe implements PipeTransform {
       return `${formatted} %`;
     }
 
-    return text;
+    return formatted;
   }
-
 }
