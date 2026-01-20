@@ -1,158 +1,102 @@
-<div class="filters-bar">
-  <div class="filter-item">
-    <label class="filter-label">
+<div class="row g-3 mb-4 bg-white">
+
+  <div class="col-12 col-md-6">
+    <label class="filter-label d-block mb-1">
       <i class="pi pi-map-marker"></i> Locations
     </label>
 
-    <p-multiSelect
-      [options]="locations"
-      [(ngModel)]="selectedLocation"
-      optionLabel="location_name"
-      placeholder="Select locations"
-      [maxSelectedLabels]="3"
-      display="chip"
-      styleClass="w-100"
-      (onChange)="onLocationsChange()"
-    ></p-multiSelect>
+    <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+      placeholder="Select locations" display="chip" class="w-100" (onChange)="onLocationsChange()">
+    </p-multiSelect>
   </div>
 
-  <div class="filter-item">
-    <label class="filter-label">
+  <!-- Date range -->
+  <div class="col-12 col-md-6">
+    <label class="filter-label d-block mb-1">
       <i class="pi pi-calendar"></i> Date Range
     </label>
 
-    <p-datepicker
-      [(ngModel)]="dateRange"
-      selectionMode="range"
-      dateFormat="dd/mm/yy"
-      [showIcon]="true"
-      [readonlyInput]="true"
-      placeholder="Select date range"
-      styleClass="w-100"
-      (ngModelChange)="onLocationsChangeDate($event)"
-    ></p-datepicker>
+    <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
+      [readonlyInput]="true" class="w-100" (ngModelChange)="onLocationsChangeDate($event)">
+    </p-datepicker>
+  </div>
+
+</div>
+
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="Daily Metrics">
+        <p-table [value]="dailyMetric" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <!-- Header -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th class="col-date" pSortableColumn="daily_metric_date">Date</th>
+              <th class="col-location" pSortableColumn="location_name">Location</th>
+              <th class="col-sales text-end" pSortableColumn="totalNetSales">Net Sales</th>
+              <th class="col-hourly" pSortableColumn="daily_metric_daily_hourly">
+                Daily Hourly
+              </th>
+              <th class="col-labor text-end">Labor %</th>
+              <th class="col-tickets text-end">Tickets</th>
+              <th class="col-user">User</th>
+              <th class="col-actions"></th>
+            </tr>
+          </ng-template>
+
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="col-date">{{ row.daily_metric_date }}</td>
+              <td class="col-location">{{ row.locations.location_name }}</td>
+
+              <td class="col-sales text-end">
+                {{ row.daily_metric_net_sales | number : "1.2-2" }}
+              </td>
+
+              <td class="col-hourly text-end">
+                {{ row.daily_metric_daily_hourly | number : "1.2-2" }}
+              </td>
+
+              <td class="col-labor text-end">
+                {{
+                (row.daily_metric_daily_hourly / row.daily_metric_net_sales) * 100
+                | number : "1.2-2"
+                }} %
+              </td>
+
+              <td class="col-tickets text-end">
+                {{ row.daily_metric_tickets }}
+              </td>
+
+              <td class="col-user">
+                {{ row.created_user.user_name }}
+              </td>
+
+              <td class="col-actions text-end">
+                <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
+                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger p-button-sm"></button>
+              </td>
+
+            </tr>
+          </ng-template>
+
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                No records found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>
 
-<div class="card">
-  <p-tabView>
-    <p-tabPanel header="Daily Metrics">
-      <p-table
-        [value]="dailyMetric"
-        [paginator]="true"
-        [rows]="10"
-        [rowsPerPageOptions]="[10, 20, 50]"
-        [responsiveLayout]="'scroll'"
-        sortMode="multiple"
-        [showCurrentPageReport]="true"
-        currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-        styleClass="p-datatable-sm"
-      >
-        <!-- Header -->
-        <ng-template pTemplate="header">
-          <tr>
-            <th pSortableColumn="daily_metric_date">
-              Date
-              <p-sortIcon field="daily_metric_date"></p-sortIcon>
-            </th>
-
-            <th pSortableColumn="location_name">
-              Location
-              <p-sortIcon field="location_name"></p-sortIcon>
-            </th>
-
-            <th pSortableColumn="totalNetSales" class="text-end">
-              Net Sales
-              <p-sortIcon field="totalNetSales"></p-sortIcon>
-            </th>
-
-            <th pSortableColumn="totalDailyHourly" class="text-end">
-              Daily Hourly
-              <p-sortIcon field="totalDailyHourly"></p-sortIcon>
-            </th>
-
-            <th pSortableColumn="LaborCost" class="text-end">
-              Labor Cost %
-              <p-sortIcon field="LaborCost"></p-sortIcon>
-            </th>
-
-            <th pSortableColumn="AOV" class="text-end">
-              Tickets
-              <p-sortIcon field="AOV"></p-sortIcon>
-            </th>
-            <th pSortableColumn="User">
-              Usuario
-              <p-sortIcon field="User"></p-sortIcon>
-            </th>
-            <th pSortableColumn="User"></th>
-          </tr>
-        </ng-template>
-
-        <!-- Body -->
-        <ng-template pTemplate="body" let-row>
-          <tr>
-            <td>{{ row.daily_metric_date }}</td>
-            <td>{{ row.locations.location_name }}</td>
-
-            <td class="text-end">
-              {{ row.daily_metric_net_sales | number : "1.2-2" }}
-            </td>
-
-            <td class="text-end">
-              {{ row.daily_metric_daily_hourly | number : "1.2-2" }}
-            </td>
-
-            <td class="text-end">
-              {{
-                (row.daily_metric_daily_hourly / row.daily_metric_net_sales) *
-                  100 | number : "1.2-2"
-              }}
-              %
-            </td>
-
-            <td class="text-end">
-              {{ row.daily_metric_tickets }}
-            </td>
-            <td class="text-end">
-              {{ row.created_user.user_name }}
-            </td>
-            <td class="text-end">
-              <button
-                pButton
-                type="button"
-                icon="pi pi-pencil"
-                class="p-button-text p-button-sm"
-                (click)="openUpdateInvoice(row)"
-              ></button>
-
-              <button
-                pButton
-                type="button"
-                icon="pi pi-trash"
-                class="p-button-text p-button-danger p-button-sm"
-                (click)="openDeleteInvoice(row)"
-              ></button>
-            </td>
-          </tr>
-        </ng-template>
-
-        <!-- Empty -->
-        <ng-template pTemplate="emptymessage">
-          <tr>
-            <td colspan="6" class="text-center text-muted py-4">
-              No records found
-            </td>
-          </tr>
-        </ng-template>
-      </p-table>
-    </p-tabPanel>
-  </p-tabView>
-</div>
-
-<app-modal
-  *ngIf="showAddLocationModal"
-  (close)="closeModal()"
-  (submit)="handleSubmit($event)"
-  [dailyMetric]="editingDailyMetric"
->
+<app-modal *ngIf="showAddLocationModal" (close)="closeModal()" (submit)="handleSubmit($event)"
+  [dailyMetric]="editingDailyMetric">
 </app-modal>

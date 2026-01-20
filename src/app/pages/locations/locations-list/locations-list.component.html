@@ -1,4 +1,4 @@
-<table class="table align-middle">
+<table class="table table-responsive-custom align-middle">
   <thead class="table-light">
     <tr>
       <th>Status</th>
@@ -10,18 +10,27 @@
 
   <tbody>
     <tr *ngFor="let loc of locations">
-      <td>
-        <span class="badge" [ngClass]="{
+      <td data-label="Status">
+        <span
+          class="badge"
+          [ngClass]="{
             'bg-success': loc.location_status === 'A',
             'bg-secondary': loc.location_status !== 'A'
-          }">
+          }"
+        >
           {{ loc.location_status === 'A' ? 'Active' : 'Inactive' }}
         </span>
       </td>
-      <td>{{ loc.location_name }}</td>
-      <td>{{ loc.location_AccountNumber || "—" }}</td>
 
-      <td class="text-end">
+      <td data-label="Name">
+        {{ loc.location_name }}
+      </td>
+
+      <td data-label="Account Number">
+        {{ loc.location_AccountNumber || "—" }}
+      </td>
+
+      <td data-label="Actions" class="text-end">
         <button class="btn btn-sm btn-danger" (click)="onEdit(loc)">
           Edit
         </button>
@@ -29,7 +38,7 @@
     </tr>
 
     <tr *ngIf="!locations.length">
-      <td colspan="3" class="text-center text-muted py-4">
+      <td colspan="4" class="text-center text-muted py-4">
         No locations found
       </td>
     </tr>

@@ -136,17 +136,59 @@
   padding-top: 0.75rem;
 }
 
-/* ===== Responsive ===== */
 @media (max-width: 768px) {
   .filters-bar {
-    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
   }
 
   .filter-item {
     min-width: 100%;
   }
+}
 
-  .card {
-    padding: 0.75rem;
+
+@media (max-width: 768px) {
+  /* ocultamos columnas no esenciales */
+  .col-hourly,
+  .col-labor,
+  .col-user {
+    display: none;
+  }
+
+  /* dejamos solo 4 columnas */
+  .col-date {
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .col-location {
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .col-sales {
+    font-weight: 700;
+  }
+
+  /* acciones más compactas */
+  .col-actions button {
+    padding: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* aún más limpio */
+  .col-date {
+    font-size: 0.8rem;
+  }
+
+  .col-location {
+    max-width: 110px;
+  }
+
+  .p-datatable {
+    font-size: 0.85rem;
   }
 }

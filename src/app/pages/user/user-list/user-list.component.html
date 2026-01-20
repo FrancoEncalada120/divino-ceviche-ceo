@@ -1,7 +1,7 @@
-<table class="table align-middle">
+<table class="table table-responsive-custom align-middle">
   <thead class="table-light">
     <tr>
-      <th>id</th>
+      <th>ID</th>
       <th>Nombre</th>
       <th>Apellido</th>
       <th>Email</th>
@@ -12,25 +12,47 @@
 
   <tbody>
     <tr *ngFor="let item of users">
+      <td data-label="ID">
+        {{ item.user_id }}
+      </td>
 
-      <td>{{ item.user_id }}</td>
-      <td>{{ item.user_name }}</td>
-      <td>{{ item.user_apellido }}</td>
-      <td>{{ item.user_email }}</td>
-      <td>{{ item.user_estado }}</td>
+      <td data-label="Nombre">
+        {{ item.user_name }}
+      </td>
 
+      <td data-label="Apellido">
+        {{ item.user_apellido }}
+      </td>
 
-      <td class="text-end">
-        <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
+      <td data-label="Email">
+        {{ item.user_email }}
+      </td>
+
+      <td data-label="Estado">
+        <span
+          class="badge"
+          [ngClass]="{
+            'bg-success': item.user_estado === 'A',
+            'bg-secondary': item.user_estado !== 'A'
+          }"
+        >
+          {{ item.user_estado === 'A' ? 'Activo' : 'Inactivo' }}
+        </span>
+      </td>
+
+      <td data-label="Actions" class="text-end">
+        <button
+          class="btn btn-sm btn-danger m-1"
+          (click)="onEdit(item)"
+        >
           Edit
         </button>
       </td>
     </tr>
 
     <tr *ngIf="!users.length">
-      <td colspan="12" class="text-center text-muted py-4">
-        No goals set for this period for the selected location.<br>
-        Click 'Add Goal' to set targets or switch to 'All Locations' to see all goals.
+      <td colspan="6" class="text-center text-muted py-4">
+        No users found.
       </td>
     </tr>
   </tbody>

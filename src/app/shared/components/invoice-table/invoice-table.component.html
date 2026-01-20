@@ -1,13 +1,6 @@
-<p-table
-  [value]="items"
-  [paginator]="true"
-  [rows]="10"
-  [rowsPerPageOptions]="[10, 20, 50]"
-  responsiveLayout="scroll"
-  sortMode="multiple"
-  [showCurrentPageReport]="true"
-  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
->
+<p-table [value]="items" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" [responsiveLayout]="'stack'"
+  breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}">
   <ng-template pTemplate="header">
     <tr>
 
@@ -51,21 +44,11 @@
       <td class="col-user">{{ item.created_user.user_name }}</td>
 
       <td class="col-actions text-end">
-        <button
-          pButton
-          type="button"
-          icon="pi pi-pencil"
-          class="p-button-text p-button-sm"
-          (click)="onEdit(item)"
-        ></button>
+        <button pButton type="button" icon="pi pi-pencil" class="p-button-text p-button-sm"
+          (click)="onEdit(item)"></button>
 
-        <button
-          pButton
-          type="button"
-          icon="pi pi-trash"
-          class="p-button-text p-button-danger p-button-sm"
-          (click)="onRemove(item)"
-        ></button>
+        <button pButton type="button" icon="pi pi-trash" class="p-button-text p-button-danger p-button-sm"
+          (click)="onRemove(item)"></button>
       </td>
     </tr>
   </ng-template>

@@ -1,4 +1,4 @@
-<table class="table align-middle">
+<table class="table table-responsive-custom align-middle">
   <thead class="table-light">
     <tr>
       <th>Location</th>
@@ -14,16 +14,35 @@
 
   <tbody>
     <tr *ngFor="let item of goals">
+      <td data-label="Location">
+        {{ item.locations.location_name }}
+      </td>
 
-      <td>{{ item.locations.location_name }}</td>
-      <td>{{ item.goal_target_sales | txtsigno:'$' }}</td>
-      <td>{{ item.goal_food_cost | txtsigno:'%' }}</td>
-      <td>{{ item.goal_labor_cost | txtsigno:'%' }}</td>
-      <td> {{ (+item.goal_food_cost + +item.goal_labor_cost) | txtsigno:'%' }}</td>
-      <td>{{ item.goal_net_margin | txtsigno:'%'}}</td>
-      <td>{{ item.goal_target_AOV | txtsigno:'$' }}</td>
+      <td data-label="Sales Target">
+        {{ item.goal_target_sales | txtsigno:'$' }}
+      </td>
 
-      <td class="text-end">
+      <td data-label="Food %">
+        {{ item.goal_food_cost | txtsigno:'%' }}
+      </td>
+
+      <td data-label="Labor %">
+        {{ item.goal_labor_cost | txtsigno:'%' }}
+      </td>
+
+      <td data-label="Prime %">
+        {{ (+item.goal_food_cost + +item.goal_labor_cost) | txtsigno:'%' }}
+      </td>
+
+      <td data-label="Net Margin %">
+        {{ item.goal_net_margin | txtsigno:'%' }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_target_AOV | txtsigno:'$' }}
+      </td>
+
+      <td data-label="Actions" class="text-end">
         <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
           Edit
         </button>
@@ -34,9 +53,9 @@
     </tr>
 
     <tr *ngIf="!goals.length">
-      <td colspan="12" class="text-center text-muted py-4">
-        No goals set for this period for the selected location.<br>
-        Click 'Add Goal' to set targets or switch to 'All Locations' to see all goals.
+      <td colspan="8" class="text-center text-muted py-4">
+        No goals set for this period for the selected location.<br />
+        Click <strong>Add Goal</strong> or switch to <strong>All Locations</strong>.
       </td>
     </tr>
   </tbody>
