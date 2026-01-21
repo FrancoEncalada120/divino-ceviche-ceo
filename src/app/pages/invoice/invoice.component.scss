@@ -48,14 +48,11 @@ app-root {
   }
 }
 
-
 .summary-row {
-
- display: grid;
+  display: grid;
   grid-template-columns: repeat(2, minmax(220px, 1fr));
   gap: 0.75rem;
   width: 100%;
-
 }
 
 /* Card estilo “botón” */
@@ -65,7 +62,9 @@ app-root {
   overflow: hidden;
   border: 1px solid #e9ecef;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 /* Contenido interno estilo botón */
@@ -87,7 +86,7 @@ app-root {
   border-left: 6px solid #ffc107;
 }
 
-.sum-unsig{
+.sum-unsig {
   border-left: 6px solid red;
 }
 
@@ -118,8 +117,6 @@ app-root {
   font-size: 0.9rem;
   color: #6c757d;
 }
-
-
 
 /* BOTÓN BASE */
 .action-btn {
@@ -175,7 +172,6 @@ app-root {
   border-left: 5px solid #ffc107 !important;
 }
 
-
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(220px, 1fr));
@@ -230,3 +226,8 @@ app-root {
   }
 }
 
+.invoice-container {
+  max-width: 1400px; // ancho profesional tipo dashboard
+  margin-left: auto;
+  margin-right: auto;
+}
