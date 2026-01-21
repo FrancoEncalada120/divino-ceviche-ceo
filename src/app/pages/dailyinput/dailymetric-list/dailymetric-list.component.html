@@ -76,8 +76,10 @@
               </td>
 
               <td class="col-actions text-end">
-                <button pButton icon="pi pi-pencil" class="p-button-text p-button-sm"></button>
-                <button pButton icon="pi pi-trash" class="p-button-text p-button-danger p-button-sm"></button>
+                <button pButton icon="pi pi-pencil" (click)="openUpdateInvoice(row)"
+                  class="p-button-text p-button-sm"></button>
+                <button pButton icon="pi pi-trash" (click)="openDeleteInvoice(row)"
+                  class="p-button-text p-button-danger p-button-sm"></button>
               </td>
 
             </tr>
