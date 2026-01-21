@@ -93,10 +93,10 @@ export class DailymetriUpdInsComponent {
     private userService: UserService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
-    this.user = this.userService.currentUser;
+    this.user = this.userService.getUser();
     this.loadLocations();
     this.form.patchValue({ date: new Date() });
   }
@@ -133,7 +133,7 @@ export class DailymetriUpdInsComponent {
     }
 
     const v = this.form.getRawValue();
-    const auditUserId = this.userService.getUser2()?.user_id;
+    const auditUserId = this.userService.getUser()?.user_id;
 
     const payload: DailyMetricCreateDto = {
       location_id: Number(v.location_id),

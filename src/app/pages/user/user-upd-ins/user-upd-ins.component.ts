@@ -26,7 +26,8 @@ export class UserUpdInsComponent {
     user_estado: 'A',
     user_id: 0,
     user_name: '',
-    user_password: ''
+    user_password: '',
+    user_rol: 3
   };
 
   ngOnInit() {

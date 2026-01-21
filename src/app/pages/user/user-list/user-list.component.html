@@ -6,6 +6,7 @@
       <th>Apellido</th>
       <th>Email</th>
       <th>Estado</th>
+      <th>Rol</th>
       <th class="text-end">Actions</th>
     </tr>
   </thead>
@@ -29,22 +30,20 @@
       </td>
 
       <td data-label="Estado">
-        <span
-          class="badge"
-          [ngClass]="{
+        <span class="badge" [ngClass]="{
             'bg-success': item.user_estado === 'A',
             'bg-secondary': item.user_estado !== 'A'
-          }"
-        >
+          }">
           {{ item.user_estado === 'A' ? 'Activo' : 'Inactivo' }}
         </span>
       </td>
 
+      <td data-label="Rol">
+        {{ item.user_rol == 1 ? 'SYSTEM' : item.user_rol == 2 ? 'ADMIN' : 'USER' }}
+      </td>
+
       <td data-label="Actions" class="text-end">
-        <button
-          class="btn btn-sm btn-danger m-1"
-          (click)="onEdit(item)"
-        >
+        <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
           Edit
         </button>
       </td>

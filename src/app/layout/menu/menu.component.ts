@@ -12,6 +12,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserService } from '../../core/services/user.service';
 import { ChangePasswordComponent } from '../../auth/change-password/change-password.component';
+import { User } from '../../core/models/user.models';
 
 @Component({
   selector: 'app-menu',
@@ -96,6 +97,9 @@ export class MenuComponent {
       .pipe(filter((e) => e instanceof NavigationEnd))
       .subscribe(() => this.syncOpenGroups());
     this.syncOpenGroups();
+
+    console.log('constructor', 'constructor Menu');
+
   }
 
   toggleGroup(item: MenuItem) {
@@ -127,6 +131,12 @@ export class MenuComponent {
     } catch {
       return 0;
     }
+  }
+
+  get User(): User | null {
+
+    return this.authService.getUser();
+
   }
 
   openChangePassword() {

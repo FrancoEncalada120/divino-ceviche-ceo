@@ -5,6 +5,7 @@ export interface User {
   user_password: string;
   user_estado: string;
   user_email: string;
+  user_rol: number;
 }
 
 export interface UserRequest {

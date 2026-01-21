@@ -84,7 +84,7 @@ export class InvoiceComponent {
   ) {}
 
   ngOnInit(): void {
-    this.user = this.userService.currentUser;
+    this.user = this.userService.getUser();
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
     this.dateRange = [new Date(yesterday), new Date(yesterday)];
@@ -242,7 +242,7 @@ export class InvoiceComponent {
   }
 
   handleSubmit(invoice: Invoice) {
-    const auditUserId = this.userService.getUser2()?.user_id;
+    const auditUserId = this.userService.getUser()?.user_id;
 
     console.log(auditUserId);
 

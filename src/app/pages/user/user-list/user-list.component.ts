@@ -10,7 +10,7 @@ import { User } from '../../../core/models/user.models';
 })
 export class UserListComponent {
 
- @Input()
+  @Input()
   users: User[] = [];
 
   @Output() edit = new EventEmitter<User>();

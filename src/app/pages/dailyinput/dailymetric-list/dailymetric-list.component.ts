@@ -221,7 +221,7 @@ export class DailymetricListComponent {
       return;
     }
 
-    const auditUserId = this.userService.getUser2()?.user_id;
+    const auditUserId = this.userService.getUser()?.user_id;
     // ✅ Payload parcial (no mandes el id en el body)
     const payload: Partial<DailyMetricCreateDto> = {
       location_id: invoice.location_id,
