@@ -1,5 +1,4 @@
-<div class="container-fluid py-3 px-0" style="width: 100%;">
-
+<div class="container-fluid py-3 px-0" style="width: 100%">
   <div class="row g-3 mb-4">
     <div class="col-12 col-md-6">
       <div class="page-title">
@@ -12,14 +11,20 @@
   </div>
 
   <div class="row g-3 mb-4 bg-white">
-
     <div class="col-12 col-md-6">
       <label class="filter-label d-block mb-1">
         <i class="pi pi-map-marker"></i> Locations
       </label>
 
-      <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
-        placeholder="Select locations" display="chip" class="w-100" (onChange)="onLocationsChange()">
+      <p-multiSelect
+        [options]="locations"
+        [(ngModel)]="selectedLocation"
+        optionLabel="location_name"
+        placeholder="Select locations"
+        display="chip"
+        class="w-100"
+        (onChange)="onLocationsChange()"
+      >
       </p-multiSelect>
     </div>
 
@@ -29,24 +34,29 @@
         <i class="pi pi-calendar"></i> Date Range
       </label>
 
-      <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
-        [readonlyInput]="true" class="w-100" (ngModelChange)="onLocationsChangeDate($event)">
+      <p-datepicker
+        [(ngModel)]="dateRange"
+        selectionMode="range"
+        dateFormat="dd/mm/yy"
+        [showIcon]="true"
+        [readonlyInput]="true"
+        class="w-100"
+        (ngModelChange)="onLocationsChangeDate($event)"
+      >
       </p-datepicker>
     </div>
-
   </div>
 
   <div class="row g-3 mb-4">
     <div class="col-12">
       <div class="summary-grid">
-
         <p-card class="sum-card sum-cogs" (click)="activeTab = 1">
           <div class="sum-inner">
             <div class="sum-top">
               <i class="pi pi-wallet"></i>
               <span class="sum-title">COGS</span>
             </div>
-            <div class="sum-value">{{ totalCat1 | number : "1.2-2" }}</div>
+            <div class="sum-value">{{ totalCat1 | number: "1.2-2" }}</div>
             <div class="sum-sub">{{ cantidadCat1 }} entries</div>
           </div>
         </p-card>
@@ -57,7 +67,7 @@
               <i class="pi pi-briefcase"></i>
               <span class="sum-title">Fixed Expense</span>
             </div>
-            <div class="sum-value">{{ totalCat2 | number : "1.2-2" }}</div>
+            <div class="sum-value">{{ totalCat2 | number: "1.2-2" }}</div>
             <div class="sum-sub">{{ cantidadCat2 }} entries</div>
           </div>
         </p-card>
@@ -68,7 +78,7 @@
               <i class="pi pi-file"></i>
               <span class="sum-title">Other Invoice</span>
             </div>
-            <div class="sum-value">{{ totalCat3 | number : "1.2-2" }}</div>
+            <div class="sum-value">{{ totalCat3 | number: "1.2-2" }}</div>
             <div class="sum-sub">{{ cantidadCat3 }} entries</div>
           </div>
         </p-card>
@@ -79,73 +89,99 @@
               <i class="pi pi-file"></i>
               <span class="sum-title">Unassigned Invoice</span>
             </div>
-            <div class="sum-value">{{ totalCat4 | number : "1.2-2" }}</div>
+            <div class="sum-value">{{ totalCat4 | number: "1.2-2" }}</div>
             <div class="sum-sub">{{ cantidadCat4 }} entries</div>
           </div>
         </p-card>
-
       </div>
     </div>
   </div>
 
-
-
   <div class="row mb-4 mx-0">
     <div class="col-12">
-
       <div class="invoice-actions">
+        <button
+          pButton
+          type="button"
+          label="Add COGS Invoice"
+          icon="pi pi-plus"
+          class="p-button-success action-btn"
+          (click)="openAddInvoice(1)"
+        ></button>
 
-        <button pButton type="button" label="Add COGS Invoice" icon="pi pi-plus" class="p-button-success action-btn"
-          (click)="openAddInvoice(1)">
-        </button>
+        <button
+          pButton
+          type="button"
+          label="Add Fixed Expense"
+          icon="pi pi-plus"
+          class="p-button-info action-btn"
+          (click)="openAddInvoice(2)"
+        ></button>
 
-        <button pButton type="button" label="Add Fixed Expense" icon="pi pi-plus" class="p-button-info action-btn"
-          (click)="openAddInvoice(2)">
-        </button>
+        <button
+          pButton
+          type="button"
+          label="Add Other Invoice"
+          icon="pi pi-plus"
+          class="p-button-warning action-btn"
+          (click)="openAddInvoice(3)"
+        ></button>
 
-        <button pButton type="button" label="Add Other Invoice" icon="pi pi-plus" class="p-button-warning action-btn"
-          (click)="openAddInvoice(3)">
-        </button>
-
+        <button
+          pButton
+          type="button"
+          label="Download invoices"
+          icon="pi pi-download"
+          class="p-button-secondary action-btn"
+          (click)="downloadInvoices()"
+        ></button>
       </div>
-
     </div>
   </div>
 
   <div class="row mb-4">
     <div class="col-12">
-
       <div class="invoice-tabs-card">
         <p-tabView [scrollable]="true">
-
           <p-tabPanel header="COGS">
-            <app-invoice-table [items]="invoice01" [tabKey]="1" (edit)="openUpdateInvoice($event, 1)"
-              (remove)="openDeleteInvoice($event)"></app-invoice-table>
+            <app-invoice-table
+              [items]="invoice01"
+              [tabKey]="1"
+              (edit)="openUpdateInvoice($event, 1)"
+              (remove)="openDeleteInvoice($event)"
+            ></app-invoice-table>
           </p-tabPanel>
 
           <p-tabPanel header="Fixed">
-            <app-invoice-table [items]="invoice02" [tabKey]="2" (edit)="openUpdateInvoice($event, 2)"
-              (remove)="openDeleteInvoice($event)"></app-invoice-table>
+            <app-invoice-table
+              [items]="invoice02"
+              [tabKey]="2"
+              (edit)="openUpdateInvoice($event, 2)"
+              (remove)="openDeleteInvoice($event)"
+            ></app-invoice-table>
           </p-tabPanel>
 
           <p-tabPanel header="Other">
-            <app-invoice-table [items]="invoice03" [tabKey]="3" (edit)="openUpdateInvoice($event, 3)"
-              (remove)="openDeleteInvoice($event)"></app-invoice-table>
+            <app-invoice-table
+              [items]="invoice03"
+              [tabKey]="3"
+              (edit)="openUpdateInvoice($event, 3)"
+              (remove)="openDeleteInvoice($event)"
+            ></app-invoice-table>
           </p-tabPanel>
 
           <p-tabPanel header="Unassigned">
-            <app-invoice-table [items]="invoice04" [tabKey]="4" (edit)="openUpdateInvoice($event, 4)"
-              (remove)="openDeleteInvoice($event)"></app-invoice-table>
+            <app-invoice-table
+              [items]="invoice04"
+              [tabKey]="4"
+              (edit)="openUpdateInvoice($event, 4)"
+              (remove)="openDeleteInvoice($event)"
+            ></app-invoice-table>
           </p-tabPanel>
-
         </p-tabView>
       </div>
-
     </div>
   </div>
-
-
-
 
   <!--
 
@@ -192,6 +228,12 @@
   </div> -->
 </div>
 
-<app-invoice-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModal()"
-  (submit)="handleSubmit($event)" [invoice]="editingInvoice" [categoryType]="selectedCategoryType">
+<app-invoice-upd-ins
+  *ngIf="showAddLocationModal"
+  [mode]="modalMode"
+  (close)="closeModal()"
+  (submit)="handleSubmit($event)"
+  [invoice]="editingInvoice"
+  [categoryType]="selectedCategoryType"
+>
 </app-invoice-upd-ins>

@@ -11,6 +11,7 @@ import { NgClass, NgFor, NgIf } from '@angular/common';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { UserService } from '../../core/services/user.service';
+import { ChangePasswordComponent } from '../../auth/change-password/change-password.component';
 
 @Component({
   selector: 'app-menu',
@@ -23,6 +24,7 @@ import { UserService } from '../../core/services/user.service';
     NgClass,
     ToastModule,
     ConfirmDialogModule,
+    ChangePasswordComponent,
   ],
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.scss',
@@ -83,7 +85,12 @@ export class MenuComponent {
     },
   ];
 
-  constructor(private router: Router, private authService: UserService) {
+  showChangePasswordModal = false;
+
+  constructor(
+    private router: Router,
+    private authService: UserService,
+  ) {
     // Auto-abre el group Settings si estás dentro de /settings/...
     this.router.events
       .pipe(filter((e) => e instanceof NavigationEnd))
@@ -109,7 +116,33 @@ export class MenuComponent {
     this.authService.logout();
 
     this.router.navigate(['/login']);
-
   }
 
+  get currentUserId(): number {
+    const raw = localStorage.getItem('user'); // o 'auth_user'
+    if (!raw) return 0;
+    try {
+      const u = JSON.parse(raw);
+      return Number(u.user_id ?? u.id ?? 0);
+    } catch {
+      return 0;
+    }
+  }
+
+  openChangePassword() {
+    if (!this.currentUserId) {
+      // si ya usas toast global, puedes mostrarlo aquí
+      console.warn('No hay userId en storage');
+      return;
+    }
+    this.showChangePasswordModal = true;
+  }
+
+  onPasswordChanged() {
+    // opcional: si quieres forzar logout luego de cambiar pass:
+    // this.logout();
+
+    // o solo un log/refresh
+    console.log('Password changed');
+  }
 }

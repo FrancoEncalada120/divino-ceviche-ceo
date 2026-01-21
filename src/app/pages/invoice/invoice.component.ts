@@ -18,6 +18,8 @@ import { UserService } from '../../core/services/user.service';
 import { User } from '../../core/models/user.models';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InvoiceTableComponent } from '../../shared/components/invoice-table/invoice-table.component';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-invoice',
@@ -53,6 +55,7 @@ export class InvoiceComponent {
   invoice02: Invoice[] = [];
   invoice03: Invoice[] = [];
   invoice04: Invoice[] = [];
+  allInvoices: any[] = [];
 
   totalCat1 = 0;
   totalCat2 = 0;
@@ -77,7 +80,7 @@ export class InvoiceComponent {
     private invoiceService: InvoiceService,
     private userService: UserService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService
+    private messageService: MessageService,
   ) {}
 
   ngOnInit(): void {
@@ -129,17 +132,19 @@ export class InvoiceComponent {
         console.log('invoices  ====>:', invoices);
 
         this.invoice01 = invoices.filter(
-          (x) => Number(x.category.invoice_type_id) === 1
+          (x) => Number(x.category.invoice_type_id) === 1,
         );
         this.invoice02 = invoices.filter(
-          (x) => Number(x.category.invoice_type_id) === 2
+          (x) => Number(x.category.invoice_type_id) === 2,
         );
         this.invoice03 = invoices.filter(
-          (x) => Number(x.category.invoice_type_id) === 3
+          (x) => Number(x.category.invoice_type_id) === 3,
         );
         this.invoice04 = invoices.filter(
-          (x) => Number(x.category.invoice_type_id) === 4
+          (x) => Number(x.category.invoice_type_id) === 4,
         );
+
+        this.allInvoices = invoices;
 
         this.calculateTotals(invoices);
       },
@@ -192,29 +197,29 @@ export class InvoiceComponent {
       list.reduce((acc, x) => acc + Number(x.invoice_amount || 0), 0);
 
     this.totalCat1 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 1)
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 1),
     );
     this.totalCat2 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 2)
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 2),
     );
     this.totalCat3 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 3)
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 3),
     );
     this.totalCat4 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 4)
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 4),
     );
 
     this.cantidadCat1 = invoices.filter(
-      (x) => Number(x.category.invoice_type_id) === 1
+      (x) => Number(x.category.invoice_type_id) === 1,
     ).length;
     this.cantidadCat2 = invoices.filter(
-      (x) => Number(x.category.invoice_type_id) === 2
+      (x) => Number(x.category.invoice_type_id) === 2,
     ).length;
     this.cantidadCat3 = invoices.filter(
-      (x) => Number(x.category.invoice_type_id) === 3
+      (x) => Number(x.category.invoice_type_id) === 3,
     ).length;
     this.cantidadCat4 = invoices.filter(
-      (x) => Number(x.category.invoice_type_id) === 4
+      (x) => Number(x.category.invoice_type_id) === 4,
     ).length;
   }
 
@@ -309,5 +314,52 @@ export class InvoiceComponent {
         console.log('[ConfirmDialog] REJECT');
       },
     });
+  }
+
+  downloadInvoices() {
+    if (!this.allInvoices.length) {
+      console.warn('No hay invoices para descargar');
+      return;
+    }
+    console.log('allInvoices', this.allInvoices);
+
+    const data = this.allInvoices.map((item) => ({
+      Date: item.invoice_date,
+      Vendor: item.invoice_vendor_description,
+      Category: this.getInvoiceCategory(item.category?.invoice_type_id),
+      CategoryCode: item.category?.category_code ?? '',
+      Amount: item.invoice_amount,
+      Notes: item.invoice_notes || '-',
+      Location: item.locations?.location_name ?? '',
+      User: item.created_user?.user_name ?? '',
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Invoices');
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    saveAs(blob, `invoices_${new Date().toISOString().slice(0, 10)}.xlsx`);
+  }
+
+  getInvoiceCategory(typeId: number): string {
+    switch (Number(typeId)) {
+      case 1:
+        return 'COGS';
+      case 2:
+        return 'Fixed Expense';
+      case 3:
+        return 'Other Expense';
+      default:
+        return 'Unknown';
+    }
   }
 }

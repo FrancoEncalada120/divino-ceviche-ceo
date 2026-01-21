@@ -31,24 +31,22 @@ export class UserService {
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];
-      })
+      }),
     );
   }
 
   create(user: User): Observable<User> {
-
-console.log('user: User', user);
+    console.log('user: User', user);
 
     return this.http
-      .post<ApiResponse<User>>(this.apiUrl + "/create", user)
+      .post<ApiResponse<User>>(this.apiUrl + '/create', user)
       .pipe(
-        map(res => {
-
+        map((res) => {
           if (!res.success) {
             throw new Error(res.message || 'Error creating user');
           }
           return res.data;
-        })
+        }),
       );
   }
 
@@ -56,12 +54,12 @@ console.log('user: User', user);
     return this.http
       .put<ApiResponse<User>>(`${this.apiUrl}/${location.user_id}`, location)
       .pipe(
-        map(res => {
+        map((res) => {
           if (!res.success) {
             throw new Error(res.message || 'Error updating user');
           }
           return res.data;
-        })
+        }),
       );
   }
 
@@ -72,7 +70,7 @@ console.log('user: User', user);
       tap((res) => {
         this.userLogin = res.user;
         localStorage.setItem('user', JSON.stringify(res.user));
-      })
+      }),
     );
   }
 
@@ -92,5 +90,12 @@ console.log('user: User', user);
     } catch {
       return null;
     }
+  }
+
+  changePassword(
+    userId: number,
+    payload: { currentPassword: string; newPassword: string },
+  ): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${userId}/change-password`, payload);
   }
 }
