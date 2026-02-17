@@ -15,53 +15,61 @@ export const routes: Routes = [
         path: 'dashboard',
         loadComponent: () =>
           import('./pages/dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent
+            (m) => m.DashboardComponent,
           ),
       },
       {
         path: 'daily-input',
         loadComponent: () =>
           import('./pages/dailyinput/dailymetric/dailymetric.component').then(
-            (m) => m.DailymetricComponent
+            (m) => m.DailymetricComponent,
           ),
       },
       {
         path: 'calculator',
         loadComponent: () =>
           import('./pages/calculator/calculator.component').then(
-            (m) => m.CalculatorComponent
+            (m) => m.CalculatorComponent,
           ),
       },
       {
         path: 'invoice-tracker',
         loadComponent: () =>
           import('./pages/invoice/invoice.component').then(
-            (m) => m.InvoiceComponent
+            (m) => m.InvoiceComponent,
           ),
       },
       {
         path: 'settings/Locacions',
         loadComponent: () =>
           import('./pages/locations/location-pri/location-pri.component').then(
-            (m) => m.LocationPriComponent
+            (m) => m.LocationPriComponent,
           ),
       },
       {
         path: 'settings/Profile',
         loadComponent: () =>
           import('./pages/user/user-pri/user-pri.component').then(
-            (m) => m.UserPriComponent
+            (m) => m.UserPriComponent,
           ),
       },
       {
         path: 'settings/Goals',
         loadComponent: () =>
           import('./pages/goals/goal-pri/goal-pri.component').then(
-            (m) => m.GoalPriComponent
+            (m) => m.GoalPriComponent,
           ),
       },
 
-      //------
+      //------ Recetas
+
+      {
+        path: 'settings/insumos',
+        loadComponent: () =>
+          import('./pages/receta/insumos/insumos-pri/insumos-pri.component').then(
+            (m) => m.InsumosPriComponent,
+          ),
+      },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

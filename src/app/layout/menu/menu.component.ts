@@ -40,12 +40,7 @@ export class MenuComponent {
       icon: 'bi-plus-circle',
       route: 'daily-input',
     },
-    // {
-    //   type: 'link',
-    //   label: 'Monthly P&L',
-    //   icon: 'bi-calendar',
-    //   route: 'monthly-pl',
-    // },
+
     {
       type: 'link',
       label: 'Profit Calculator',
@@ -84,6 +79,22 @@ export class MenuComponent {
         },
       ],
     },
+
+    { type: 'section', label: 'RECIPES' },
+    {
+      type: 'group',
+      label: 'Settings',
+      icon: 'bi-gear',
+      isOpen: false,
+      children: [
+        {
+          type: 'link',
+          label: 'Insumos',
+          icon: 'bi-person',
+          route: 'settings/insumos',
+        },
+      ],
+    },
   ];
 
   showChangePasswordModal = false;
@@ -99,7 +110,6 @@ export class MenuComponent {
     this.syncOpenGroups();
 
     console.log('constructor', 'constructor Menu');
-
   }
 
   toggleGroup(item: MenuItem) {
@@ -134,9 +144,7 @@ export class MenuComponent {
   }
 
   get User(): User | null {
-
     return this.authService.getUser();
-
   }
 
   openChangePassword() {
