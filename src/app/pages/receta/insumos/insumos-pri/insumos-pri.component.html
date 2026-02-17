@@ -3,11 +3,11 @@
     <div class="col-12">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h4 class="fw-bold mb-1">Insumos</h4>
-          <p class="text-muted mb-0">Manage your Insumos</p>
+          <h4 class="fw-bold mb-1">Supplies</h4>
+          <p class="text-muted mb-0">Manage your supplies</p>
         </div>
         <button class="btn btn-primary" (click)="openCreate()">
-          Add Location
+          Add Supply
         </button>
       </div>
     </div>
@@ -19,7 +19,7 @@
 
           <app-insumos-lista
             (edit)="openEdit($event)"
-            [insumo]="insumo"
+            [insumos]="insumo"
           ></app-insumos-lista>
         </div>
       </div>
