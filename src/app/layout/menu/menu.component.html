@@ -74,8 +74,5 @@
 <p-toast></p-toast>
 <p-confirmDialog></p-confirmDialog>
 
-<app-change-password
-  [(visible)]="showChangePasswordModal"
-  [userId]="currentUserId"
-  (changed)="onPasswordChanged()"
-></app-change-password>
+<app-change-password [(visible)]="showChangePasswordModal" [userId]="currentUserId"
+  (changed)="onPasswordChanged()"></app-change-password>
