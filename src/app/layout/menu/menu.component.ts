@@ -108,6 +108,7 @@ export class MenuComponent {
       },
 
       { type: 'section', label: 'RECIPES' },
+      { type: 'link', label: 'Purchase', icon: 'bi-grid', route: 'Purchase' },
       {
         type: 'group',
         label: 'Settings',
@@ -116,7 +117,7 @@ export class MenuComponent {
         children: [
           {
             type: 'link',
-            label: 'Insumos',
+            label: 'Supplies',
             icon: 'bi-person',
             route: 'settings/insumos',
           },
