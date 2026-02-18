@@ -106,6 +106,24 @@ export class MenuComponent {
           },
         ],
       },
+
+      { type: 'section', label: 'RECIPES' },
+      {
+        type: 'group',
+        label: 'Settings',
+        icon: 'bi-gear',
+        isOpen: false,
+        children: [
+          {
+            type: 'link',
+            label: 'Insumos',
+            icon: 'bi-person',
+            route: 'settings/insumos',
+          },
+        ],
+      },
+
+
     ];
   }
 
