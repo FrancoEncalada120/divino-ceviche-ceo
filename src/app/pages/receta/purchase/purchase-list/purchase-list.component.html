@@ -1,0 +1,44 @@
+<table class="table table-responsive-custom align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Id</th>
+      <th>Date</th>
+      <th>Total</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let item of compras">
+      <td data-label="Location">
+        {{ item.compra_id}}
+      </td>
+
+      <td data-label="Sales Target">
+        {{ item.fecha| txtsigno:'$' }}
+      </td>
+
+      <td data-label="Food %">
+        {{ item.total| txtsigno:'$' }}
+      </td>
+
+
+
+      <td data-label="Actions" class="text-end">
+        <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
+          Edit
+        </button>
+        <button class="btn btn-sm btn-primary m-1" (click)="onDelete(item)">
+          Delete
+        </button>
+      </td>
+    </tr>
+
+    <tr *ngIf="!compras.length">
+      <td colspan="8" class="text-center text-muted py-4">
+        No goals set for this period for the selected location.<br />
+        Click <strong>Add Goal</strong> or switch to <strong>All Locations</strong>.
+      </td>
+    </tr>
+  </tbody>
+</table>
