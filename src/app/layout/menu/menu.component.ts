@@ -31,9 +31,7 @@ import { User } from '../../core/models/user.models';
   styleUrl: './menu.component.scss',
 })
 export class MenuComponent {
-
   items: MenuItem[] = [];
-
 
   showChangePasswordModal = false;
 
@@ -41,7 +39,6 @@ export class MenuComponent {
     private router: Router,
     private authService: UserService,
   ) {
-
     this.buildMenu();
 
     // Auto-abre el group Settings si estás dentro de /settings/...
@@ -51,7 +48,6 @@ export class MenuComponent {
     this.syncOpenGroups();
 
     console.log('constructor', 'constructor Menu');
-
   }
 
   buildMenu() {
@@ -84,13 +80,13 @@ export class MenuComponent {
         children: [
           ...(this.userRole === 2
             ? [
-              {
-                type: 'link',
-                label: 'Profile',
-                icon: 'bi-person',
-                route: 'settings/Profile',
-              } satisfies MenuLinkItem,
-            ]
+                {
+                  type: 'link',
+                  label: 'Profile',
+                  icon: 'bi-person',
+                  route: 'settings/Profile',
+                } satisfies MenuLinkItem,
+              ]
             : []),
           {
             type: 'link',
@@ -109,6 +105,7 @@ export class MenuComponent {
 
       { type: 'section', label: 'RECIPES' },
       { type: 'link', label: 'Purchase', icon: 'bi-grid', route: 'Purchase' },
+      { type: 'link', label: 'Recepy', icon: 'bi-grid', route: 'Recepy' },
       {
         type: 'group',
         label: 'Settings',
@@ -123,11 +120,8 @@ export class MenuComponent {
           },
         ],
       },
-
-
     ];
   }
-
 
   toggleGroup(item: MenuItem) {
     if (item.type !== 'group') return;

@@ -77,6 +77,13 @@ export const routes: Routes = [
             (m) => m.InsumosPriComponent,
           ),
       },
+      {
+        path: 'Recepy',
+        loadComponent: () =>
+          import('./pages/receta/recipe/recipe-pri/recipe-pri.component').then(
+            (m) => m.RecipePriComponent,
+          ),
+      },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

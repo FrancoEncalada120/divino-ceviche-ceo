@@ -1,0 +1,261 @@
+<!-- Backdrop -->
+<div class="modal-backdrop-custom" (click)="onClose()"></div>
+
+<!-- Modal -->
+<div class="modal-custom" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <!-- Header -->
+    <div class="modal-header">
+      <div>
+        <h5 class="mb-1">
+          {{ mode === "create" ? "Add Recipe" : "Edit Recipe" }}
+        </h5>
+        <small class="text-muted"
+          >Fill recipe info and ingredient details</small
+        >
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="onClose()"
+      >
+        Close
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <!-- Recipe form -->
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <p-floatLabel>
+              <input
+                pInputText
+                id="nombre"
+                formControlName="nombre"
+                class="w-100"
+              />
+              <label for="nombre">Recipe Name *</label>
+            </p-floatLabel>
+            <div
+              class="field-error"
+              *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+            >
+              Name is required (min 2 chars).
+            </div>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <p-floatLabel>
+              <p-dropdown
+                inputId="estado"
+                formControlName="estado"
+                [options]="[
+                  { label: 'Active', value: 'A' },
+                  { label: 'Inactive', value: 'I' },
+                ]"
+                optionLabel="label"
+                optionValue="value"
+                class="w-100"
+              ></p-dropdown>
+              <label for="estado">Status</label>
+            </p-floatLabel>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <p-floatLabel>
+              <input
+                pInputText
+                id="created_by"
+                formControlName="created_by"
+                class="w-100"
+              />
+              <label for="created_by">Created By</label>
+            </p-floatLabel>
+          </div>
+
+          <div class="col-12">
+            <p-floatLabel>
+              <textarea
+                pInputTextarea
+                id="descripcion"
+                rows="2"
+                formControlName="descripcion"
+                class="w-100"
+              ></textarea>
+              <label for="descripcion">Description</label>
+            </p-floatLabel>
+          </div>
+        </div>
+
+        <p-divider></p-divider>
+
+        <!-- Details -->
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div>
+            <h6 class="mb-0">Ingredients Details</h6>
+            <small class="text-muted">At least 1 item is required</small>
+          </div>
+
+          <button
+            type="button"
+            pButton
+            icon="pi pi-plus"
+            label="Add Item"
+            class="p-button-sm"
+            (click)="addDetalle()"
+          ></button>
+        </div>
+
+        <!-- Details header -->
+        <div class="detail-header">
+          <div class="c1">Ingredient</div>
+          <div class="c2">Unit</div>
+          <div class="c3 text-end">Qty</div>
+          <div class="c4 text-end">Unit Price</div>
+          <div class="c5 text-end">Subtotal</div>
+          <div class="c6"></div>
+        </div>
+
+        <div formArrayName="detalles" class="detail-rows">
+          <div
+            class="detail-row"
+            *ngFor="let g of detallesFA.controls; let i = index"
+            [formGroupName]="i"
+          >
+            <div class="c1">
+              <p-floatLabel>
+                <p-dropdown
+                  inputId="insumo_{{ i }}"
+                  formControlName="insumo_id"
+                  [options]="insumosOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  class="w-100"
+                  [filter]="true"
+                ></p-dropdown>
+                <label for="insumo_{{ i }}">Ingredient *</label>
+              </p-floatLabel>
+              <div
+                class="field-error"
+                *ngIf="
+                  g.get('insumo_id')?.touched && g.get('insumo_id')?.invalid
+                "
+              >
+                Required
+              </div>
+            </div>
+
+            <div class="c2">
+              <p-floatLabel>
+                <p-dropdown
+                  inputId="unidad_{{ i }}"
+                  formControlName="unidad_id"
+                  [options]="unidadesOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  class="w-100"
+                  [filter]="true"
+                ></p-dropdown>
+                <label for="unidad_{{ i }}">Unit *</label>
+              </p-floatLabel>
+              <div
+                class="field-error"
+                *ngIf="
+                  g.get('unidad_id')?.touched && g.get('unidad_id')?.invalid
+                "
+              >
+                Required
+              </div>
+            </div>
+
+            <div class="c3">
+              <p-floatLabel>
+                <p-inputNumber
+                  inputId="cantidad_{{ i }}"
+                  formControlName="cantidad"
+                  class="w-100"
+                  [minFractionDigits]="0"
+                  [maxFractionDigits]="4"
+                ></p-inputNumber>
+                <label for="cantidad_{{ i }}">Qty *</label>
+              </p-floatLabel>
+              <div
+                class="field-error"
+                *ngIf="g.get('cantidad')?.touched && g.get('cantidad')?.invalid"
+              >
+                Must be > 0
+              </div>
+            </div>
+
+            <div class="c4">
+              <p-floatLabel>
+                <p-inputNumber
+                  inputId="precio_{{ i }}"
+                  formControlName="precio_actual"
+                  class="w-100"
+                  [min]="0"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="4"
+                ></p-inputNumber>
+                <label for="precio_{{ i }}">Unit Price *</label>
+              </p-floatLabel>
+              <div
+                class="field-error"
+                *ngIf="
+                  g.get('precio_actual')?.touched &&
+                  g.get('precio_actual')?.invalid
+                "
+              >
+                Required
+              </div>
+            </div>
+
+            <div class="c5 text-end subtotal">
+              {{ getRowSubtotal(i) | number: "1.2-4" }}
+            </div>
+
+            <div class="c6 text-end">
+              <button
+                type="button"
+                pButton
+                icon="pi pi-trash"
+                class="p-button-text p-button-danger p-button-sm"
+                [disabled]="detallesFA.length <= 1"
+                (click)="removeDetalle(i)"
+              ></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer summary -->
+        <div class="d-flex justify-content-end mt-3">
+          <div class="total-box">
+            <div class="label">Total Cost</div>
+            <div class="value">{{ totalCosto | number: "1.2-4" }}</div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="onClose()"
+          >
+            Cancel
+          </button>
+
+          <button
+            type="submit"
+            class="btn btn-primary"
+            [disabled]="form.invalid || detallesFA.length === 0"
+          >
+            {{ mode === "create" ? "Create" : "Save" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
