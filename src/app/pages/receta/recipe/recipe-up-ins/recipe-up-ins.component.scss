@@ -16,11 +16,11 @@
 }
 
 .modal-card {
-  width: min(1100px, 100%);
+  width: min(1400px, 95%);
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
   background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
 }
 
 .modal-header {

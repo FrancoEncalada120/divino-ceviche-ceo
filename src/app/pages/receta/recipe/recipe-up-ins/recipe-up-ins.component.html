@@ -153,7 +153,7 @@
                 <p-dropdown
                   inputId="unidad_{{ i }}"
                   formControlName="unidad_id"
-                  [options]="unidadesOptions"
+                  [options]="unidadesOptionsByRow[i] || []"
                   optionLabel="label"
                   optionValue="value"
                   class="w-100"

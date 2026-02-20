@@ -26,8 +26,8 @@ export class RecipePriComponent {
   selectedReceta: Receta | null = null;
 
   recetas: Receta[] = [];
-  insumosOptions: { label: string; value: number }[] = [];
-  unidadesOptions: { label: string; value: number; grupo: string }[] = [];
+  insumosOptions: { label: string; value: number; grupo: string }[] = [];
+  unidadesOptions: { label: string; value: number }[] = [];
 
   constructor(
     private recetaService: RecetaService,
@@ -69,6 +69,7 @@ export class RecipePriComponent {
         this.insumosOptions = arr.map((x: any) => ({
           label: x.nombre, // ajusta si tu campo se llama distinto
           value: Number(x.insumo_id),
+          grupo: x.grupo,
         }));
       },
       error: (err) => console.error('[Insumos] GET error:', err),
@@ -85,7 +86,6 @@ export class RecipePriComponent {
         this.unidadesOptions = arr.map((x: any) => ({
           label: `${x.nombre} (${x.abreviatura})`, // ejemplo: "Liter (L)"
           value: Number(x.unidad_id),
-          grupo: x.grupo,
         }));
       },
       error: (err) => console.error('[Unidades] GET error:', err),

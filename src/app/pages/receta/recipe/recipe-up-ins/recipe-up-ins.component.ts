@@ -128,6 +128,7 @@ export class RecipeUpInsComponent implements OnChanges {
   }
 
   onInsumoChange(i: number, insumoId: number | null): void {
+    console.log(insumoId, i);
     // limpia unidad seleccionada
     const row = this.detallesFA.at(i) as FormGroup;
     row.get('unidad_id')?.setValue(null);
@@ -149,17 +150,27 @@ export class RecipeUpInsComponent implements OnChanges {
       return;
     }
 
-    // cargar unidades por grupo
+    console.log('grupo', grupo);
+
     this.unidadService.getByGrupo(grupo).subscribe({
       next: (unidades) => {
-        this.unidadesOptionsByRow[i] = (unidades ?? []).map((u: any) => ({
-          label: `${u.nombre} (${u.abreviatura})`,
-          value: Number(u.unidad_id),
-        }));
+        console.log('==============================');
+        console.log('[getByGrupo] Grupo enviado:', grupo);
+        console.log('[getByGrupo] Respuesta completa:', unidades);
+        console.log('[getByGrupo] Total items:', unidades?.length);
+        console.log('==============================');
+
+        this.unidadesOptionsByRow[i] = (unidades ?? []).map((u: any) => {
+          console.log('[Unidad item]', u); // 👈 ver cada objeto individual
+
+          return {
+            label: `${u.nombre} (${u.abreviatura})`,
+            value: Number(u.unidad_id),
+          };
+        });
       },
       error: (err) => {
         console.error('[Unidades] getByGrupo error:', err);
-        // fallback: muestra todas si falla
         this.unidadesOptionsByRow[i] = this.unidadesOptions;
       },
     });
