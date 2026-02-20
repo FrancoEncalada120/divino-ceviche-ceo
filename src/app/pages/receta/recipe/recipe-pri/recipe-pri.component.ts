@@ -27,7 +27,7 @@ export class RecipePriComponent {
 
   recetas: Receta[] = [];
   insumosOptions: { label: string; value: number }[] = [];
-  unidadesOptions: { label: string; value: number }[] = [];
+  unidadesOptions: { label: string; value: number; grupo: string }[] = [];
 
   constructor(
     private recetaService: RecetaService,
@@ -85,6 +85,7 @@ export class RecipePriComponent {
         this.unidadesOptions = arr.map((x: any) => ({
           label: `${x.nombre} (${x.abreviatura})`, // ejemplo: "Liter (L)"
           value: Number(x.unidad_id),
+          grupo: x.grupo,
         }));
       },
       error: (err) => console.error('[Unidades] GET error:', err),

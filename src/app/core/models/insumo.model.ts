@@ -9,4 +9,5 @@ export interface Insumo {
   created_by?: User;
   updated_at?: string | null;
   updated_by?: User;
+  grupo: string;
 }

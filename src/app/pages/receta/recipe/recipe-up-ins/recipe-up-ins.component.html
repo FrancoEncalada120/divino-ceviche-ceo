@@ -134,6 +134,7 @@
                   optionValue="value"
                   class="w-100"
                   [filter]="true"
+                  (onChange)="onInsumoChange(i, $event.value)"
                 ></p-dropdown>
                 <label for="insumo_{{ i }}">Ingredient *</label>
               </p-floatLabel>

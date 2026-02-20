@@ -23,8 +23,10 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { UnidadService } from '../../../../core/services/unidad.service';
 type ModalMode = 'create' | 'edit';
-type SelectItem = { label: string; value: number };
+type UnidadOption = { label: string; value: number };
+type InsumoOption = { label: string; value: number; grupo?: string };
 
 type RecetaPayload = {
   receta: {
@@ -63,18 +65,22 @@ type RecetaPayload = {
 export class RecipeUpInsComponent implements OnChanges {
   @Input() mode: ModalMode = 'create';
   @Input() receta: any | null = null;
-  @Input() insumosOptions: SelectItem[] = [];
-  @Input() unidadesOptions: SelectItem[] = [];
+  @Input() insumosOptions: InsumoOption[] = [];
+  @Input() unidadesOptions: UnidadOption[] = [];
 
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<RecetaPayload>();
 
+  unidadesOptionsByRow: UnidadOption[][] = [];
   saving = false;
 
   // ✅ IMPORTANTE: se crea en constructor
   form!: FormGroup;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private unidadService: UnidadService,
+  ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
         nonNullable: true,
@@ -118,6 +124,44 @@ export class RecipeUpInsComponent implements OnChanges {
         d?.created_by ?? this.form.get('created_by')?.value ?? '1',
         { nonNullable: true },
       ),
+    });
+  }
+
+  onInsumoChange(i: number, insumoId: number | null): void {
+    // limpia unidad seleccionada
+    const row = this.detallesFA.at(i) as FormGroup;
+    row.get('unidad_id')?.setValue(null);
+
+    if (!insumoId) {
+      this.unidadesOptionsByRow[i] = [];
+      return;
+    }
+
+    // buscar grupo del insumo en el combo
+    const selected = this.insumosOptions.find(
+      (x: any) => Number(x.value) === Number(insumoId),
+    );
+    const grupo = selected?.grupo;
+
+    if (!grupo) {
+      // si no hay grupo, no filtramos
+      this.unidadesOptionsByRow[i] = this.unidadesOptions;
+      return;
+    }
+
+    // cargar unidades por grupo
+    this.unidadService.getByGrupo(grupo).subscribe({
+      next: (unidades) => {
+        this.unidadesOptionsByRow[i] = (unidades ?? []).map((u: any) => ({
+          label: `${u.nombre} (${u.abreviatura})`,
+          value: Number(u.unidad_id),
+        }));
+      },
+      error: (err) => {
+        console.error('[Unidades] getByGrupo error:', err);
+        // fallback: muestra todas si falla
+        this.unidadesOptionsByRow[i] = this.unidadesOptions;
+      },
     });
   }
 
