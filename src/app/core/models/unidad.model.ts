@@ -11,4 +11,5 @@ export interface Unidad {
   created_by?: User | null;
   updated_at?: string | null;
   updated_by?: User | null;
+  grupo: string;
 }

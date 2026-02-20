@@ -66,4 +66,18 @@ export class UnidadService {
       }),
     );
   }
+
+  getByGrupo(grupo: string): Observable<Unidad[]> {
+    const url = `${this.apiUrl}/by-grupo?grupo=${grupo}`;
+
+    console.log('[UnidadService] GET', url);
+
+    return this.http.get<ApiResponse<Unidad[]>>(url).pipe(
+      map((res) => {
+        if (!res?.success) return [];
+        const arr = res.data;
+        return Array.isArray(arr) ? arr : [];
+      }),
+    );
+  }
 }
