@@ -18,20 +18,26 @@
             <div class="field">
               <label>Date</label>
 
-              <p-datepicker [showIcon]="true" dateFormat="yy-mm-dd" styleClass="w-100"
+              <p-datepicker [(ngModel)]="formData.fecha" [showIcon]="true" dateFormat="yy-mm-dd" styleClass="w-100"
                 inputStyleClass="w-100"></p-datepicker>
 
             </div>
 
             <div class="field">
               <label>Usuario</label>
-              <input type="text" [(ngModel)]="formData.created_by" placeholder="User..." disabled="true" />
+              <input type="text" [value]="(user?.user_name || '') + ' ' + (user?.user_apellido || '')"
+                disabled="true" />
             </div>
 
             <div class="field">
               <label>Location</label>
-              <input type="text" [(ngModel)]="formData.created_by" name="invoice_date" placeholder="Location.."
-                disabled="true" />
+              <select [(ngModel)]="formData.location_id" disabled="true">
+                <option [ngValue]="0">Select locations</option>
+                <option *ngFor="let loc of locations" [value]="loc.location_id">
+                  {{ loc.location_name}}
+                </option>
+              </select>
+
             </div>
 
           </div>
@@ -70,16 +76,17 @@
             <td>{{ i + 1 }}</td>
             <td>
               <p-dropdown [options]="cInsumo" optionLabel="nombre" optionValue="insumo_id" [(ngModel)]="row.insumo_id"
-                placeholder="Select Product" styleClass="w-100" appendTo="body">
+                placeholder="Select Product" styleClass="w-100" appendTo="body" [filter]="true"
+                (onChange)="onInsumoChange($event.value, row)">
               </p-dropdown>
             </td>
             <td>
               <div class="d-flex gap-2 align-items-center">
                 <p-inputNumber [(ngModel)]="row.cantidad" [showButtons]="true" mode="decimal" [minFractionDigits]="0"
-                  [maxFractionDigits]="0" [inputStyle]="{ width: '7rem' }">
+                  [maxFractionDigits]="0" [min]="1" [inputStyle]="{ width: '7rem' }">
                 </p-inputNumber>
 
-                <p-dropdown [options]="cUnidad" optionLabel="abreviatura" optionValue="unidad_id"
+                <p-dropdown [options]="row.unidadesFiltradas" optionLabel="abreviatura" optionValue="unidad_id"
                   [(ngModel)]="row.unidad_id" placeholder="Select Unid" appendTo="body">
                 </p-dropdown>
               </div>
@@ -87,12 +94,12 @@
             </td>
             <td>
               <p-inputNumber [(ngModel)]="row.precio" [showButtons]="true" mode="decimal" [minFractionDigits]="2"
-                [maxFractionDigits]="2" [inputStyle]="{ width: '7rem' }">
+                [maxFractionDigits]="2" [min]="1" [inputStyle]="{ width: '7rem' }">
               </p-inputNumber>
             </td>
             <td>
               <p-inputNumber [(ngModel)]="row.total" [showButtons]="true" mode="decimal" [minFractionDigits]="2"
-                [maxFractionDigits]="2" [inputStyle]="{ width: '7rem' }">
+                [maxFractionDigits]="2" [min]="1" [inputStyle]="{ width: '7rem' }">
               </p-inputNumber>
             </td>
             <td>
@@ -107,6 +114,13 @@
       </button>
 
 
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
+      <button class="btn btn-primary" (click)="onSubmit()">
+        {{ mode === 'edit' ? 'Save Changes' : 'Create' }}
+      </button>
     </div>
 
 

@@ -5,6 +5,7 @@ export interface Unidad {
   nombre: string;
   abreviatura: string;
   estado: string;
+  grupo:string;
 
   created_at?: string | null;
   created_by?: User | null;
