@@ -4,6 +4,8 @@
       <th>Id</th>
       <th>Date</th>
       <th>Total</th>
+      <th>User</th>
+      <th># Items</th>
       <th class="text-end">Actions</th>
     </tr>
   </thead>
@@ -15,14 +17,20 @@
       </td>
 
       <td data-label="Sales Target">
-        {{ item.fecha| txtsigno:'$' }}
+        {{ item.fecha }}
       </td>
 
       <td data-label="Food %">
         {{ item.total| txtsigno:'$' }}
       </td>
 
+      <td>
 
+      </td>
+
+      <td>
+        {{ item.detalles.length || 0 }}
+      </td>
 
       <td data-label="Actions" class="text-end">
         <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">

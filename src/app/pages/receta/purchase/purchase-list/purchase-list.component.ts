@@ -21,6 +21,8 @@ export class PurchaseListComponent {
   @Output() delete = new EventEmitter<Compra>();
 
   onEdit(comp: Compra) {
+
+    console.log('Editando compra:', comp);
     this.edit.emit(comp);
   }
 

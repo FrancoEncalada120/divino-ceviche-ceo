@@ -17,7 +17,7 @@ type ApiResponse<T> = {
 export class CompraService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_compras`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   getAll(): Observable<Compra[]> {
     console.log('[CompraService] GET', this.apiUrl);
@@ -97,4 +97,28 @@ export class CompraService {
         }),
       );
   }
+
+  updateFull(
+    payload: CompraFullCreate,
+    userId?: number,
+  ): Observable<CompraFullResponse> {
+    const url = `${this.apiUrl}/full`;
+    console.log('[CompraService] POST', url);
+    console.log('[CompraService] data', payload);
+
+    const options = userId
+      ? { headers: { 'x-user-id': String(userId) } }
+      : undefined;
+
+    return this.http
+      .post<ApiResponse<CompraFullResponse>>(url, payload, options)
+      .pipe(
+        map((res) => {
+          if (!res.success)
+            throw new Error(res.message || 'Error creating compra full');
+          return res.data;
+        }),
+      );
+  }
+
 }

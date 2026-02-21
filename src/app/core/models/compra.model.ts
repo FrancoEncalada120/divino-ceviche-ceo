@@ -7,12 +7,13 @@ export interface Compra {
   detalle: string | null;
   total: number;
 
-  detalles?: CompraDetalle[];
+  detalles: CompraDetalle[];
 
   created_at?: string | null;
   created_by?: number | null;
   updated_at?: string | null;
   updated_by?: number | null;
   location_id: number;
+
 
 }

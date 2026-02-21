@@ -48,12 +48,8 @@ export class PurchaseUpdInsComponent {
     private userService: UserService) { }
 
   ngOnInit(): void {
+
     this.load();
-
-    if (this.mode === 'edit' && this.compras) {
-      this.formData = { ...this.compras };
-    }
-
     this.user = this.userService.getUser();
 
   }
@@ -92,7 +88,25 @@ export class PurchaseUpdInsComponent {
         console.error('[cUnidad] GET error:', err);
 
       },
-      complete: () => console.log('[PurchasePriComponent] GET complete'),
+      complete: () => {
+        console.log('[PurchasePriComponent] GET complete');
+
+        if (this.mode === 'edit' && this.compras) {
+
+          this.formData = { ...this.compras };
+          this.items = this.compras.detalles ? [...this.compras.detalles] : [];
+
+          this.items.forEach(row => {
+            if (row.insumo_id) {
+              this.onInsumoChange(row.insumo_id, row);
+            }
+          });
+
+          console.log('Loaded compra for editing:', this.formData, this.items);
+
+        }
+
+      },
     });
 
   }
@@ -103,7 +117,8 @@ export class PurchaseUpdInsComponent {
     detalle: '',
     total: 0,
     location_id: 7,
-    created_by: this.user?.user_id
+    created_by: this.user?.user_id,
+    detalles: []
   };
 
   onClose() {
@@ -112,6 +127,19 @@ export class PurchaseUpdInsComponent {
   }
 
   onSubmit() {
+
+    this.formData.detalles = this.items.map(item => ({
+      detalle_id: 0,
+      compra_id: 0,
+      insumo_id: item.insumo_id,
+      unidad_id: item.unidad_id,
+      cantidad: item.cantidad,
+      precio: item.precio,
+      total: item.cantidad * item.precio,
+    }));
+
+    console.log('Submitting form with data:', this.formData);
+
     this.submit.emit(this.formData as Compra);
   }
 
@@ -162,7 +190,23 @@ export class PurchaseUpdInsComponent {
       row.unidadesFiltradas = [];
     }
 
-    row.unidad_id = null; // reset unidad
+    //row.unidad_id = null; // reset unidad
+  }
+
+  calcularTotal(row: any) {
+    const cantidad = Number(row.cantidad) || 0;
+    const precio = Number(row.precio) || 0;
+
+    row.total = cantidad * precio;
+
+    this.calcularTotalCompra();
+  }
+
+  calcularTotalCompra() {
+    this.formData.total = this.items.reduce(
+      (sum, item) => sum + (Number(item.total) || 0),
+      0
+    );
   }
 
 

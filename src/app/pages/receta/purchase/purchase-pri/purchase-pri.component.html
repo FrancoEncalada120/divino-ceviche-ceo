@@ -10,7 +10,7 @@
 <div class="card">
 
   <app-purchase-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModal()"
-    (submit)="handleSubmit($event)" [compras]="editingInvoice"></app-purchase-upd-ins>
+    (submit)="handleSubmit($event)" [compras]="selectedItem"></app-purchase-upd-ins>
 
 </div>
 
