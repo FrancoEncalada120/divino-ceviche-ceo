@@ -6,10 +6,12 @@ import { CompraService } from '../../../../core/services/compra.service';
 import { NgIf } from '@angular/common';
 import { CompraFullCreate } from '../../../../core/models/compra-full-create.model';
 import { CompraFullResponse } from '../../../../core/models/compra-full-response.model';
+import { DatePickerModule } from 'primeng/datepicker';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-purchase-pri',
-  imports: [PurchaseUpdInsComponent, PurchaseListComponent, NgIf],
+  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule],
   templateUrl: './purchase-pri.component.html',
   styleUrl: './purchase-pri.component.scss'
 })
@@ -21,11 +23,22 @@ export class PurchasePriComponent {
   compras: Compra[] = [];
   selectedItem: Compra | null = null;
   loading = false;
+  dateRange: Date[] | null = null;
 
   constructor(private service: CompraService
   ) { }
 
   ngOnInit(): void {
+
+    // 📅 Inicializar con AYER
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    this.dateRange = [new Date(yesterday), new Date(today)];
+
+    console.log('Init compras...', this.dateRange);
+
     this.load();
   }
 
@@ -33,7 +46,24 @@ export class PurchasePriComponent {
 
     this.loading = true;
 
-    this.service.getAll().subscribe({
+    if (!this.dateRange || this.dateRange.length < 2) {
+      return;
+    }
+
+    console.log('Cargando compras...', this.dateRange);
+
+    // const startDate = this.dateRange[0].toISOString().split('T')[0];
+    // const endDate = this.dateRange[1].toISOString().split('T')[0];
+
+    const startDate = this.formatDate(this.dateRange[0]);
+    const endDate = this.formatDate(this.dateRange[1]);
+
+    console.log('Cargando compras con rango de fechas:', { startDate, endDate });
+
+    this.service.getAll({
+      fechaIni: startDate, // string
+      fechaFin: endDate, // string
+    }).subscribe({
       next: (data) => {
         this.compras = data ?? [];
         this.loading = false;
@@ -49,6 +79,13 @@ export class PurchasePriComponent {
     });
 
 
+  }
+
+  formatDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   closeModal() {
@@ -108,9 +145,6 @@ export class PurchasePriComponent {
   }
 
   openEdit(compra: Compra) {
-
-    console.log('Editando compra: 2', compra);
-
     this.modalMode = 'edit';
     this.selectedItem = compra;
     this.showAddLocationModal = true;
@@ -122,6 +156,11 @@ export class PurchasePriComponent {
 
 
 
+  }
+
+  onLocationsChangeDate(event: any) {
+    console.log('Rango de fechas cambiado:', event);
+    this.load();
   }
 
 }

@@ -1,4 +1,5 @@
 import { User } from './user.models';
+import { Unidad } from './unidad.model';
 
 export interface Insumo {
   insumo_id: number;
@@ -10,4 +11,13 @@ export interface Insumo {
   updated_at?: string | null;
   updated_by?: User;
   grupo: string;
+  proveedor: Proveedor;
+  unidad: Unidad;
+  cantidad: number;
+}
+
+
+export interface Proveedor {
+  id: number;
+  nombre: string;
 }

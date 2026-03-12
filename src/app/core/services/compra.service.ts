@@ -19,10 +19,13 @@ export class CompraService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Compra[]> {
+  getAll(params?: {
+    fechaIni?: string;
+    fechaFin?: string;
+  }): Observable<Compra[]> {
     console.log('[CompraService] GET', this.apiUrl);
-
-    return this.http.get<ApiResponse<Compra[]>>(this.apiUrl).pipe(
+     console.log('[CompraService] GET - params', params);
+    return this.http.get<ApiResponse<Compra[]>>(this.apiUrl, { params: params as any }).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];

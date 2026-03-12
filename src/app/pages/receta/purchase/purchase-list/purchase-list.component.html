@@ -1,52 +1,109 @@
-<table class="table table-responsive-custom align-middle">
-  <thead class="table-light">
-    <tr>
-      <th>Id</th>
-      <th>Date</th>
-      <th>Total</th>
-      <th>User</th>
-      <th># Items</th>
-      <th class="text-end">Actions</th>
-    </tr>
-  </thead>
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
 
-  <tbody>
-    <tr *ngFor="let item of compras">
-      <td data-label="Location">
-        {{ item.compra_id}}
-      </td>
+    <p-tabView>
+      <p-tabPanel header="Purchase List">
+        <p-table [value]="compras" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <!-- Header -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Id</th>
+              <th>Reference Id</th>
+              <th>Date</th>
+              <th>
+                # items
+              </th>
+              <th>Total</th>
+              <th>User</th>
+              <th>Notes</th>
+              <th class="col-actions"></th>
+            </tr>
+          </ng-template>
 
-      <td data-label="Sales Target">
-        {{ item.fecha }}
-      </td>
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="col-date">{{ row.compra_id }}</td>
 
-      <td data-label="Food %">
-        {{ item.total| txtsigno:'$' }}
-      </td>
+              <td>
+                {{ row.referencia_id || '---' }}
+              </td>
 
-      <td>
+              <td>
+                {{ row.fecha }}
+              </td>
 
-      </td>
+              <td>
+                {{ row.detalles.length }} items
+              </td>
 
-      <td>
-        {{ item.detalles.length || 0 }}
-      </td>
+              <td>
+                {{ row.total| txtsigno:'$' }}
+              </td>
 
-      <td data-label="Actions" class="text-end">
-        <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
-          Edit
-        </button>
-        <button class="btn btn-sm btn-primary m-1" (click)="onDelete(item)">
-          Delete
-        </button>
-      </td>
-    </tr>
+              <td>
+                {{ row.created_user?.user_name }} {{ row.created_user?.user_apellido }}
+              </td>
 
-    <tr *ngIf="!compras.length">
-      <td colspan="8" class="text-center text-muted py-4">
-        No goals set for this period for the selected location.<br />
-        Click <strong>Add Goal</strong> or switch to <strong>All Locations</strong>.
-      </td>
-    </tr>
-  </tbody>
-</table>
+              <td>
+                {{ row.detalle || '---' }}
+              </td>
+
+              <td class="col-actions text-end">
+                <button class="btn btn-sm btn-info m-1" (click)="toggleRow(row.compra_id)">
+                  Details
+                </button>
+                <!-- <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
+            Edit
+          </button> -->
+                <button class="btn btn-sm btn-primary m-1" (click)="onDelete(row)">
+                  Delete
+                </button>
+              </td>
+
+            </tr>
+            <!-- FILA DETALLE -->
+            <tr *ngIf="expandedRow === row.compra_id">
+              <td colspan="8" class="bg-light p-3">
+
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Quantity</th>
+                      <th>Unit</th>
+                      <th>Price</th>
+                      <th>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let det of row.detalles">
+                      <td>{{ det.insumo?.nombre }}</td>
+                      <td>{{ det.cantidad }}</td>
+                      <td>{{ det.unidad?.abreviatura }}</td>
+                      <td>{{ det.precio }}</td>
+                      <td>{{ det.total }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+
+              </td>
+            </tr>
+          </ng-template>
+
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                No records found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
+
+  </div>
+</div>

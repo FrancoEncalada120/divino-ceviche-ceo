@@ -2,10 +2,12 @@ import { DecimalPipe, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
 import { Compra } from '../../../../core/models/compra.model';
+import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
 
 @Component({
   selector: 'app-purchase-list',
-  imports: [NgFor, NgIf, TxtsignoPipe],
+  imports: [TableModule, TabViewModule, TxtsignoPipe, NgFor, NgIf],
   providers: [
     DecimalPipe
   ],
@@ -28,6 +30,12 @@ export class PurchaseListComponent {
 
   onDelete(comp: Compra) {
     this.delete.emit(comp);
+  }
+
+  expandedRow: number | null = null;
+
+  toggleRow(id: number) {
+    this.expandedRow = this.expandedRow === id ? null : id;
   }
 
 }

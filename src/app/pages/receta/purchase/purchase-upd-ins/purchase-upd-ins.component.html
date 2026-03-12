@@ -2,7 +2,7 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h2>{{ mode === 'edit' ? 'Update Goal' : 'Add New Goal' }}</h2>
+      <h2>{{ mode === 'edit' ? 'Update Goal' : 'Add New Purchase' }}</h2>
       <button class="close-btn" (click)="onClose()">✕</button>
     </div>
 
@@ -75,9 +75,9 @@
           <tr>
             <td>{{ i + 1 }}</td>
             <td>
-              <p-dropdown [options]="cInsumo" optionLabel="nombre" optionValue="insumo_id" [(ngModel)]="row.insumo_id"
-                placeholder="Select Product" styleClass="w-100" appendTo="body" [filter]="true"
-                (onChange)="onInsumoChange($event.value, row)">
+              <p-dropdown [options]="cInsumo" optionLabel="nombreCompleto" optionValue="insumo_id"
+                [(ngModel)]="row.insumo_id" placeholder="Select Product" styleClass="w-100" appendTo="body"
+                [filter]="true" (onChange)="onInsumoChange($event.value, row)">
               </p-dropdown>
             </td>
             <td>
@@ -86,9 +86,11 @@
                   [maxFractionDigits]="0" [min]="1" [inputStyle]="{ width: '7rem' }" (onInput)="calcularTotal(row)">
                 </p-inputNumber>
 
-                <p-dropdown [options]="row.unidadesFiltradas" optionLabel="abreviatura"
-                  optionValue="unidad_id" [(ngModel)]="row.unidad_id" placeholder="Select Unid" appendTo="body">
-                </p-dropdown>
+                <input type="text" [value]="row.unidad_id" disabled="true" style="width: 4rem; text-align: center;" />
+
+                <!-- <p-dropdown [options]="row.unidadesFiltradas" optionLabel="abreviatura" optionValue="unidad_id"
+                  [(ngModel)]="row.unidad_id" placeholder="Select Unid" appendTo="body">
+                </p-dropdown> -->
               </div>
 
             </td>

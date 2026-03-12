@@ -14,6 +14,8 @@ export interface Compra {
   updated_at?: string | null;
   updated_by?: number | null;
   location_id: number;
+  created_user: User | null;
 
+  referencia_id?: string | null;
 
 }

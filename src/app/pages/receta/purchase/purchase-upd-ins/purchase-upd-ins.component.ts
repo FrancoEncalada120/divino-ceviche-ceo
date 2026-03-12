@@ -71,6 +71,11 @@ export class PurchaseUpdInsComponent {
       next: (data) => {
         this.cInsumo = data ?? [];
 
+        this.cInsumo = data.map(i => ({
+          ...i,
+          nombreCompleto: `${i.nombre}(${Number(i.cantidad || 0).toFixed(0)}x${i.unidad.abreviatura}) - ${i.proveedor?.nombre || 'Sin proveedor'}`
+        }));
+
       },
       error: (err) => {
         console.error('[cInsumo] GET error:', err);
@@ -182,12 +187,14 @@ export class PurchaseUpdInsComponent {
     const insumoSeleccionado = this.cInsumo.find(i => i.insumo_id === insumoId);
     if (insumoSeleccionado) {
 
-      row.unidadesFiltradas = this.cUnidad.filter(u =>
-        u.grupo === insumoSeleccionado.grupo
-      );
+      row.unidad_id = insumoSeleccionado.unidad.unidad_id; // asignar unidad automáticamente
+
+      // row.unidadesFiltradas = this.cUnidad.filter(u =>
+      //   u.grupo === insumoSeleccionado.grupo
+      // );
 
     } else {
-      row.unidadesFiltradas = [];
+      //row.unidadesFiltradas = [];
     }
 
     //row.unidad_id = null; // reset unidad
