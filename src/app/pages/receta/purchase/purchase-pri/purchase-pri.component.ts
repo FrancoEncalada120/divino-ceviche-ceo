@@ -8,10 +8,11 @@ import { CompraFullCreate } from '../../../../core/models/compra-full-create.mod
 import { CompraFullResponse } from '../../../../core/models/compra-full-response.model';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
+import { PurchaseStockComponent } from "../purchase-stock/purchase-stock.component";
 
 @Component({
   selector: 'app-purchase-pri',
-  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule],
+  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule, PurchaseStockComponent],
   templateUrl: './purchase-pri.component.html',
   styleUrl: './purchase-pri.component.scss'
 })
