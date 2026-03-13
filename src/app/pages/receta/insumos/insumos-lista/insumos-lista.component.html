@@ -2,13 +2,24 @@
   [value]="insumos"
   responsiveLayout="scroll"
   styleClass="p-datatable-sm"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
 >
   <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
+      <th>Id</th>
       <th>Status</th>
       <th>Ingredient Name</th>
       <th>Description</th>
+      <th>Group</th>
+      <th>Supplier</th>
+      <th>Unit</th>
+      <th class="text-end">Stock</th>
+
       <th class="text-end">Actions</th>
     </tr>
   </ng-template>
@@ -16,6 +27,11 @@
   <!-- Body -->
   <ng-template pTemplate="body" let-item>
     <tr>
+      <!-- Id -->
+      <td>
+        {{ item.insumo_id }}
+      </td>
+
       <!-- Status -->
       <td>
         <p-tag
@@ -34,16 +50,41 @@
         {{ item.descripcion || "—" }}
       </td>
 
+      <!-- Group -->
+      <td>
+        {{ item.grupo || "—" }}
+      </td>
+
+      <!-- Supplier -->
+      <td>
+        {{ item.proveedor?.nombre || "—" }}
+      </td>
+
+      <!-- Unit -->
+      <td>
+        {{ item.unidad?.abreviatura || item.unidad?.nombre || "—" }}
+      </td>
+
+      <!-- Stock -->
+      <td class="text-end">
+        {{ item.cantidad ?? 0 }}
+      </td>
+
       <!-- Actions -->
       <td class="text-end">
-        <button
+        <button class="btn btn-sm btn-info m-1" (click)="onEdit(item)">
+          View
+        </button>
+        <!-- <button class="btn btn-sm btn-warning m-1">Edit</button>
+        <button class="btn btn-sm btn-danger m-1">Delete</button> -->
+
+        <!-- <button
           pButton
           type="button"
-          label="Edit"
-          icon="pi pi-pencil"
-          class="p-button-sm"
-          (click)="onEdit(item)"
-        ></button>
+          icon="pi pi-trash"
+          class="p-button-sm p-button-danger"
+          (click)="onDelete(item)"
+        ></button> -->
       </td>
     </tr>
   </ng-template>
@@ -51,7 +92,7 @@
   <!-- Empty -->
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="4" class="text-center text-muted py-4">
+      <td colspan="10" class="text-center text-muted py-4">
         No ingredients found
       </td>
     </tr>

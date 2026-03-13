@@ -1,97 +1,126 @@
-<p-treeTable
-  [value]="nodes"
-  responsiveLayout="scroll"
-  styleClass="p-treetable-sm"
-  [rowHover]="true"
->
-  <!-- ================= MAIN HEADER (RECIPES) ================= -->
-  <ng-template pTemplate="header">
-    <tr>
-      <th style="width: 3rem"></th>
-      <th>Status</th>
-      <th>Recipe Name</th>
-      <th>Description</th>
-      <th class="text-end">Actions</th>
-    </tr>
-  </ng-template>
-
-  <!-- ================= BODY ================= -->
-  <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
-    <!-- ===== SUB HEADER FOR DETAILS ===== -->
-    <tr
-      *ngIf="
-        rowData?.type === 'detail' && rowNode?.parent?.children[0] === rowNode
-      "
-      class="detail-header"
-    >
-      <td></td>
-      <td colspan="4">
-        <div class="fw-semibold text-uppercase small text-muted">
-          Ingredients Details
-        </div>
-      </td>
-    </tr>
-
-    <!-- ===== NORMAL ROW ===== -->
-    <tr [ngClass]="{ 'detail-row': rowData?.type === 'detail' }">
-      <!-- TOGGLER ONLY FOR RECIPES -->
-      <td>
-        <p-treeTableToggler
-          *ngIf="rowData?.type === 'recipe'"
-          [rowNode]="rowNode"
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="Recipe List">
+        <p-table
+          [value]="recetas"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'"
+          breakpoint="768px"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+          styleClass="p-datatable-sm"
         >
-        </p-treeTableToggler>
-      </td>
+          <!-- Header -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Status</th>
 
-      <!-- ================= RECIPE ================= -->
-      <td *ngIf="rowData?.type === 'recipe'">
-        <p-tag
-          [severity]="rowData.receta?.estado === 'A' ? 'success' : 'secondary'"
-          [value]="rowData.receta?.estado === 'A' ? 'Active' : 'Inactive'"
-        >
-        </p-tag>
-      </td>
+              <th class="col-actions"></th>
+            </tr>
+          </ng-template>
 
-      <td *ngIf="rowData?.type === 'recipe'">
-        {{ rowData.receta?.nombre }}
-      </td>
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.receta_id }}</td>
 
-      <td *ngIf="rowData?.type === 'recipe'">
-        {{ rowData.receta?.descripcion || "—" }}
-      </td>
+              <td>
+                {{ row.nombre }}
+              </td>
 
-      <td *ngIf="rowData?.type === 'recipe'" class="text-end">
-        <button
-          pButton
-          type="button"
-          label="Edit"
-          icon="pi pi-pencil"
-          class="p-button-sm"
-          (click)="onEdit(rowData.receta)"
-        ></button>
-      </td>
+              <td>
+                {{ row.descripcion || "---" }}
+              </td>
 
-      <!-- ================= DETAIL ================= -->
-      <td *ngIf="rowData?.type === 'detail'">—</td>
+              <td>
+                <span
+                  class="badge"
+                  [ngClass]="row.estado === 'A' ? 'bg-success' : 'bg-secondary'"
+                >
+                  {{ row.estado === "A" ? "Active" : "Inactive" }}
+                </span>
+              </td>
 
-      <td *ngIf="rowData?.type === 'detail'">
-        {{ rowData.detalle?.insumo?.nombre || rowData.detalle?.insumo_id }}
-      </td>
+              <td class="col-actions text-end">
+                <button
+                  class="btn btn-sm btn-secondary m-1"
+                  (click)="toggleRow(row.receta_id)"
+                >
+                  Details
+                </button>
 
-      <td *ngIf="rowData?.type === 'detail'">
-        {{ rowData.detalle?.unidad?.abreviatura || rowData.detalle?.unidad_id }}
-      </td>
+                <button
+                  class="btn btn-sm btn-warning m-1"
+                  (click)="onEdit(row)"
+                >
+                  Edit
+                </button>
 
-      <td *ngIf="rowData?.type === 'detail'" class="text-end">
-        {{ rowData.detalle?.cantidad }}
-      </td>
-    </tr>
-  </ng-template>
+                <button class="btn btn-sm btn-danger m-1" (click)="onEdit(row)">
+                  Delete
+                </button>
 
-  <!-- ================= EMPTY ================= -->
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td colspan="5" class="text-center text-muted py-4">No recipes found</td>
-    </tr>
-  </ng-template>
-</p-treeTable>
+                <!-- <button
+                  class="btn btn-sm btn-primary m-1"
+                  (click)="onDelete(row)"
+                >
+                  Delete
+                </button> -->
+              </td>
+            </tr>
+
+            <!-- DETAIL ROW -->
+            <tr *ngIf="expandedRow === row.receta_id">
+              <td colspan="8" class="bg-light p-3">
+                <table class="table table-sm mb-0">
+                  <thead>
+                    <tr>
+                      <th>Detail Id</th>
+                      <th>Ingredient</th>
+                      <th>Unit</th>
+                      <th>Quantity</th>
+                      <th>Current Price</th>
+                      <th>Line Cost</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let det of row.detalles">
+                      <td>{{ det.receta_detalle_id }}</td>
+                      <td>{{ det.insumo?.nombre || det.insumo_id }}</td>
+                      <td>{{ det.unidad?.abreviatura || det.unidad_id }}</td>
+                      <td>{{ det.cantidad }}</td>
+                      <td>{{ det.precio_actual }}</td>
+                      <td>{{ det.costo_linea ?? "---" }}</td>
+                    </tr>
+
+                    <tr *ngIf="!row.detalles || row.detalles.length === 0">
+                      <td colspan="6" class="text-center text-muted">
+                        No detail records found
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </ng-template>
+
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="8" class="text-center text-muted py-4">
+                No recipes found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>

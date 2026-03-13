@@ -2,6 +2,10 @@ export interface RecetaFullCreate {
   receta: {
     nombre: string;
     descripcion?: string | null;
+    porcenta_venta?: number;
+    costo_preparacion?: number;
+    costo_neto?: number;
+    costo_total?: number;
   };
   detalles: {
     insumo_id: number;

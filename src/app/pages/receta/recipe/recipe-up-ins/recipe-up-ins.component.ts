@@ -24,26 +24,28 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { UnidadService } from '../../../../core/services/unidad.service';
+import { RecetaService } from '../../../../core/services/receta.service';
+import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
 type ModalMode = 'create' | 'edit';
 type UnidadOption = { label: string; value: number };
 type InsumoOption = { label: string; value: number; grupo?: string };
 
-type RecetaPayload = {
-  receta: {
-    receta_id?: number;
-    nombre: string;
-    descripcion?: string | null;
-    estado?: 'A' | 'I';
-    created_by?: string | null;
-  };
-  detalles: Array<{
-    insumo_id: number;
-    unidad_id: number;
-    cantidad: number;
-    precio_actual: number;
-    created_by?: string | null;
-  }>;
-};
+// type RecetaPayload = {
+//   receta: {
+//     receta_id?: number;
+//     nombre: string;
+//     descripcion?: string | null;
+//     estado?: 'A' | 'I';
+//     created_by?: string | null;
+//   };
+//   detalles: Array<{
+//     insumo_id: number;
+//     unidad_id: number;
+//     cantidad: number;
+//     precio_actual: number;
+//     created_by?: string | null;
+//   }>;
+// };
 
 @Component({
   selector: 'app-recipe-up-ins',
@@ -69,7 +71,12 @@ export class RecipeUpInsComponent implements OnChanges {
   @Input() unidadesOptions: UnidadOption[] = [];
 
   @Output() close = new EventEmitter<void>();
-  @Output() submit = new EventEmitter<RecetaPayload>();
+  @Output() submit = new EventEmitter<RecetaFullCreate>();
+
+  vCosto_total: number = 0;
+  vPorcenta_venta: number = 0;
+  vCosto_preparacion: number = 0;
+  vCosto_neto: number = 0;
 
   unidadesOptionsByRow: UnidadOption[][] = [];
   saving = false;
@@ -80,6 +87,7 @@ export class RecipeUpInsComponent implements OnChanges {
   constructor(
     private fb: FormBuilder,
     private unidadService: UnidadService,
+    private recetaservice: RecetaService,
   ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
@@ -218,7 +226,14 @@ export class RecipeUpInsComponent implements OnChanges {
     const g = this.detallesFA.at(i) as FormGroup;
     const cantidad = Number(g.get('cantidad')?.value ?? 0);
     const precio = Number(g.get('precio_actual')?.value ?? 0);
-    return cantidad * precio;
+
+    const subtotal = cantidad * precio;
+    this.vCosto_total = subtotal;
+    this.vPorcenta_venta = subtotal * 0.2;
+    this.vCosto_preparacion = 10;
+    this.vCosto_neto =
+      subtotal + this.vPorcenta_venta + this.vCosto_preparacion;
+    return subtotal;
   }
 
   get totalCosto(): number {
@@ -239,28 +254,31 @@ export class RecipeUpInsComponent implements OnChanges {
       this.addDetalle();
       return;
     }
+
     if (this.form.invalid) return;
 
     const v = this.form.getRawValue();
 
-    const payload: RecetaPayload = {
+    const payload: RecetaFullCreate = {
       receta: {
         nombre: (v.nombre ?? '').trim(),
         descripcion: v.descripcion?.trim() || null,
-        estado: v.estado ?? 'A',
-        created_by: v.created_by ?? '1',
+        porcenta_venta: Number(this.vPorcenta_venta ?? 0),
+        costo_preparacion: Number(this.vCosto_preparacion ?? 0),
+        costo_neto: Number(this.vCosto_neto ?? 0),
+        costo_total: Number(this.vCosto_total ?? 0),
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),
         unidad_id: Number(d.unidad_id),
         cantidad: Number(d.cantidad),
         precio_actual: Number(d.precio_actual),
-        created_by: d.created_by ?? v.created_by ?? '1',
       })),
     };
 
     if (!payload.detalles.length) return;
 
+    console.log('[RecipeUpInsComponent] submit payload =>', payload);
     this.submit.emit(payload);
   }
 }

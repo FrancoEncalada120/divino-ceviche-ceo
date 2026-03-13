@@ -6,15 +6,16 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Receta } from '../../../../core/models/receta.model';
-import { CommonModule, NgIf } from '@angular/common';
-import { TreeTableModule } from 'primeng/treetable';
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
+
 import { TreeNode } from 'primeng/api';
+import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
+import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
 
 @Component({
   selector: 'app-recipe-list',
-  imports: [CommonModule, TreeTableModule, ButtonModule, TagModule],
+  imports: [CommonModule, TableModule, TabViewModule, NgFor, NgIf],
   templateUrl: './recipe-list.component.html',
   styleUrl: './recipe-list.component.scss',
   standalone: true,
@@ -65,5 +66,11 @@ export class RecipeListComponent {
 
   Number(v: any): number {
     return Number(v ?? 0);
+  }
+
+  expandedRow: number | null = null;
+
+  toggleRow(id: number) {
+    this.expandedRow = this.expandedRow === id ? null : id;
   }
 }

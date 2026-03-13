@@ -1,20 +1,26 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
-
     <p-tabView>
       <p-tabPanel header="Purchase List">
-        <p-table [value]="compras" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+        <p-table
+          [value]="compras"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'"
+          breakpoint="768px"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          styleClass="p-datatable-sm"
+        >
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
               <th>Id</th>
               <th>Reference Id</th>
               <th>Date</th>
-              <th>
-                # items
-              </th>
+              <th># items</th>
               <th>Total</th>
               <th>User</th>
               <th>Notes</th>
@@ -28,46 +34,49 @@
               <td class="col-date">{{ row.compra_id }}</td>
 
               <td>
-                {{ row.referencia_id || '---' }}
+                {{ row.referencia_id || "---" }}
               </td>
 
               <td>
                 {{ row.fecha }}
               </td>
 
+              <td>{{ row.detalles.length }} items</td>
+
               <td>
-                {{ row.detalles.length }} items
+                {{ row.total | txtsigno: "$" }}
               </td>
 
               <td>
-                {{ row.total| txtsigno:'$' }}
+                {{ row.created_user?.user_name }}
+                {{ row.created_user?.user_apellido }}
               </td>
 
               <td>
-                {{ row.created_user?.user_name }} {{ row.created_user?.user_apellido }}
-              </td>
-
-              <td>
-                {{ row.detalle || '---' }}
+                {{ row.detalle || "---" }}
               </td>
 
               <td class="col-actions text-end">
-                <button class="btn btn-sm btn-info m-1" (click)="toggleRow(row.compra_id)">
+                <button
+                  class="btn btn-sm btn-secondary m-1"
+                  (click)="toggleRow(row.compra_id)"
+                >
                   Details
                 </button>
                 <!-- <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
             Edit
           </button> -->
-                <button class="btn btn-sm btn-primary m-1" (click)="onDelete(row)">
+                <button
+                  class="btn btn-sm btn-danger m-1"
+                  (click)="onDelete(row)"
+                >
                   Delete
                 </button>
               </td>
-
             </tr>
             <!-- FILA DETALLE -->
             <tr *ngIf="expandedRow === row.compra_id">
               <td colspan="8" class="bg-light p-3">
-
                 <table class="table table-sm mb-0">
                   <thead>
                     <tr>
@@ -88,7 +97,6 @@
                     </tr>
                   </tbody>
                 </table>
-
               </td>
             </tr>
           </ng-template>
@@ -104,6 +112,5 @@
         </p-table>
       </p-tabPanel>
     </p-tabView>
-
   </div>
 </div>
