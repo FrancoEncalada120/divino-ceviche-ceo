@@ -6,6 +6,11 @@ export interface Receta {
   nombre: string;
   descripcion: string | null;
   estado: string;
+  porciones: number;
+  porcenta_venta?: number;
+  costo_preparacion?: number;
+  costo_neto?: number;
+  costo_total?: number;
 
   detalles?: RecetaDetalle[];
 

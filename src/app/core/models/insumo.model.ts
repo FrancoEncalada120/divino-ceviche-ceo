@@ -16,8 +16,20 @@ export interface Insumo {
   cantidad: number;
 }
 
-
 export interface Proveedor {
   id: number;
   nombre: string;
+}
+
+export interface CalcularPrecioRequest {
+  insumo_id: number;
+  unidad_receta: number;
+  cantidad_receta: number;
+  precio: number;
+  unidad_id: number;
+  cantidad: number;
+}
+
+export interface CalcularPrecioResponse {
+  precio_calculado: number;
 }

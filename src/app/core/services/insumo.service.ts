@@ -2,7 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Insumo } from '../models/insumo.model';
+import {
+  CalcularPrecioRequest,
+  CalcularPrecioResponse,
+  Insumo,
+} from '../models/insumo.model';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -66,6 +70,23 @@ export class InsumoService {
           throw new Error(res.message || 'Error updating insumo');
         }
         return res.data;
+      }),
+    );
+  }
+
+  calcularPrecio(data: CalcularPrecioRequest): Observable<number> {
+    const url = `${this.apiUrl}/calcular-precio`;
+
+    console.log('[InsumoService] POST', url);
+    console.log('[InsumoService] data', data);
+
+    return this.http.post<ApiResponse<CalcularPrecioResponse>>(url, data).pipe(
+      map((res) => {
+        if (!res.success) {
+          throw new Error(res.message || 'Error calculando precio');
+        }
+
+        return Number(res.data?.precio_calculado ?? 0);
       }),
     );
   }
