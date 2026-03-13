@@ -8,11 +8,10 @@ import { CompraFullCreate } from '../../../../core/models/compra-full-create.mod
 import { CompraFullResponse } from '../../../../core/models/compra-full-response.model';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
-import { PurchaseStockComponent } from "../purchase-stock/purchase-stock.component";
 
 @Component({
   selector: 'app-purchase-pri',
-  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule, PurchaseStockComponent],
+  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule],
   templateUrl: './purchase-pri.component.html',
   styleUrl: './purchase-pri.component.scss'
 })
@@ -119,6 +118,7 @@ export class PurchasePriComponent {
         if (isCreate) {
           // ➕ CREATE → agregar al array
           this.compras.push(savedLocation.compra);
+          this.load(); // recargar para mostrar la nueva compra
         } else {
           // ✏️ UPDATE → reemplazar en el array
           const index = this.compras.findIndex(

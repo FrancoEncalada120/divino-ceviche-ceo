@@ -1,0 +1,30 @@
+<div class="container-fluid py-3 px-0" style="width: 100%;">
+
+  <div class="page">
+    <h2 class="title">Low Stock Alert</h2>
+    <p class="subtitle">Items listed below have inventory levels lower than the recommended stock level and should be
+      replenished.</p>
+
+    <div class="row">
+      <div class="col-3  mb-3" *ngFor="let item of insumos">
+
+        <div class="card-stock" [ngClass]="item.stock < item.stock_ideal ? 'stock-bajo' : 'stock-ok'">
+
+          <div class="card-header">
+            {{item.nombre}} <br>
+            {{item.cantidad}}x{{item.unidad.abreviatura}} {{item.proveedor.nombre}}
+          </div>
+
+          <div class="card-body">
+            <p>Stock actual: {{item.stock}}</p>
+            <p>Stock mínimo: {{item.stock_ideal}}</p>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</div>

@@ -1,13 +1,17 @@
 <div class="container-fluid py-3 px-0" style="width: 100%;">
 
-  <div class="page">
-    <h2 class="title">Purchase Management</h2>
-    <p class="subtitle">Register and manage purchase records, including suppliers, products, quantities, and
-      total amounts</p>
+  <div class="col-12">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div class="page">
+        <h2 class="title">Purchase Management</h2>
+        <p class="subtitle">Register and manage purchase records, including suppliers, products, quantities, and
+          total amounts</p>
 
+      </div>
+
+        <button class="btn btn-primary" (click)="openCreate()">Add New Purchase</button>
+    </div>
   </div>
-
-  <app-purchase-stock></app-purchase-stock>
 
   <div class="row g-3 mb-4 bg-white">
 
@@ -21,17 +25,6 @@
         [readonlyInput]="true" class="w-100" (ngModelChange)="onLocationsChangeDate($event)">
       </p-datepicker>
 
-
-    </div>
-
-
-    <!-- Date range -->
-    <div class="col-12 col-md-6">
-
-      <label class="filter-label d-block mb-1">
-        <i class="pi pi-calendar"></i> Date Range
-      </label>
-      <button class="btn btn-primary" (click)="openCreate()">Add New Purchase</button>
 
     </div>
 

@@ -71,6 +71,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'Stock',
+        loadComponent: () =>
+          import('./pages/receta/stock/stock-list/stock-list.component').then(
+            (m) => m.StockListComponent,
+          ),
+      },
+      {
         path: 'settings/insumos',
         loadComponent: () =>
           import('./pages/receta/insumos/insumos-pri/insumos-pri.component').then(

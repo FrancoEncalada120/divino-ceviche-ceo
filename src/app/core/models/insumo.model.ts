@@ -14,6 +14,8 @@ export interface Insumo {
   proveedor: Proveedor;
   unidad: Unidad;
   cantidad: number;
+  stock_ideal: number;
+  stock: number;
 }
 
 

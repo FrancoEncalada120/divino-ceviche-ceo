@@ -106,6 +106,7 @@ export class MenuComponent {
       { type: 'section', label: 'RECIPES' },
       { type: 'link', label: 'Purchase', icon: 'bi-grid', route: 'Purchase' },
       { type: 'link', label: 'Recepy', icon: 'bi-grid', route: 'Recepy' },
+      { type: 'link', label: 'Stock', icon: 'bi-grid', route: 'Stock' },
       {
         type: 'group',
         label: 'Settings',
