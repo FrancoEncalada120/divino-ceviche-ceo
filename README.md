@@ -57,4 +57,14 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
 # divino-ceviche-ceo
+
+| Acción             | Clase Bootstrap | Color      | Uso                 |
+| ------------------ | --------------- | ---------- | ------------------- |
+| Ver                | `btn-info`      | Azul claro | Mostrar información |
+| Detalle / Expandir | `btn-secondary` | Gris       | Acción neutra       |
+| Editar             | `btn-warning`   | Amarillo   | Modificar registro  |
+| Guardar            | `btn-success`   | Verde      | Confirmar cambios   |
+| Eliminar           | `btn-danger`    | Rojo       | Acción destructiva  |
+| Crear / Nuevo      | `btn-primary`   | Azul       | Crear registro      |

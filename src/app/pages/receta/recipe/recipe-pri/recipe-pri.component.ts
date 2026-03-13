@@ -112,9 +112,17 @@ export class RecipePriComponent {
 
   // Lo conectaremos cuando tengas el modal receta-up-ins
   handleSubmit(payload: any): void {
-    // Create: recetaService.createFull(payload)
-    // Edit: recetaService.update(...)
-    this.closeModal();
-    this.load();
+    console.log('[Recetas] payload recibido', payload);
+
+    this.recetaService.createFull(payload).subscribe({
+      next: () => {
+        console.log('[Recetas] receta creada');
+        this.closeModal();
+        this.load();
+      },
+      error: (err) => {
+        console.error('[Recetas] error', err);
+      },
+    });
   }
 }

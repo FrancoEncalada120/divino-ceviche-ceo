@@ -10,9 +10,6 @@
         <h5 class="mb-1">
           {{ mode === "create" ? "Add Recipe" : "Edit Recipe" }}
         </h5>
-        <small class="text-muted"
-          >Fill recipe info and ingredient details</small
-        >
       </div>
 
       <button
@@ -46,41 +43,12 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-3">
-            <p-floatLabel>
-              <p-dropdown
-                inputId="estado"
-                formControlName="estado"
-                [options]="[
-                  { label: 'Active', value: 'A' },
-                  { label: 'Inactive', value: 'I' },
-                ]"
-                optionLabel="label"
-                optionValue="value"
-                class="w-100"
-              ></p-dropdown>
-              <label for="estado">Status</label>
-            </p-floatLabel>
-          </div>
-
-          <div class="col-12 col-md-3">
-            <p-floatLabel>
-              <input
-                pInputText
-                id="created_by"
-                formControlName="created_by"
-                class="w-100"
-              />
-              <label for="created_by">Created By</label>
-            </p-floatLabel>
-          </div>
-
-          <div class="col-12">
+          <div class="col-12 col-md-6">
             <p-floatLabel>
               <textarea
                 pInputTextarea
                 id="descripcion"
-                rows="2"
+                rows="3"
                 formControlName="descripcion"
                 class="w-100"
               ></textarea>
@@ -98,14 +66,31 @@
             <small class="text-muted">At least 1 item is required</small>
           </div>
 
-          <button
-            type="button"
-            pButton
-            icon="pi pi-plus"
-            label="Add Item"
-            class="p-button-sm"
-            (click)="addDetalle()"
-          ></button>
+          <div class="modal-footer">
+            <!-- <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="onClose()"
+            >
+              Cancel
+            </button> -->
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              (click)="addDetalle()"
+            >
+              Add item
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-success"
+              [disabled]="form.invalid || detallesFA.length === 0"
+            >
+              {{ mode === "create" ? "Create" : "Save" }}
+            </button>
+          </div>
         </div>
 
         <!-- Details header -->
@@ -230,31 +215,31 @@
           </div>
         </div>
 
-        <!-- Footer summary -->
-        <div class="d-flex justify-content-end mt-3">
-          <div class="total-box">
-            <div class="label">Total Cost</div>
-            <div class="value">{{ totalCosto | number: "1.2-4" }}</div>
+        <div class="col-12">
+          <!-- Footer summary -->
+          <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
+            <div class="total-box">
+              <div class="label">Costo total</div>
+              <div class="value">{{ totalCosto | number: "1.2-4" }}</div>
+            </div>
+
+            <div class="total-box">
+              <div class="label">% Venta</div>
+              <div class="value">{{ vPorcenta_venta | number: "1.0-2" }}%</div>
+            </div>
+
+            <div class="total-box">
+              <div class="label">Costo preparación</div>
+              <div class="value">
+                {{ vCosto_preparacion | number: "1.2-4" }}
+              </div>
+            </div>
+
+            <div class="total-box">
+              <div class="label">Costo neto</div>
+              <div class="value">{{ vCosto_neto | number: "1.2-4" }}</div>
+            </div>
           </div>
-        </div>
-
-        <!-- Actions -->
-        <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="onClose()"
-          >
-            Cancel
-          </button>
-
-          <button
-            type="submit"
-            class="btn btn-primary"
-            [disabled]="form.invalid || detallesFA.length === 0"
-          >
-            {{ mode === "create" ? "Create" : "Save" }}
-          </button>
         </div>
       </form>
     </div>

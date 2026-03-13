@@ -14,16 +14,12 @@
     </div>
 
     <div class="col-12">
-      <div class="card shadow-sm">
-        <div class="card-body">
-          <div *ngIf="loading" class="text-muted py-3">Loading...</div>
+      <div *ngIf="loading" class="text-muted py-3">Loading...</div>
 
-          <app-recipe-list
-            (edit)="openEdit($event)"
-            [recetas]="recetas"
-          ></app-recipe-list>
-        </div>
-      </div>
+      <app-recipe-list
+        (edit)="openEdit($event)"
+        [recetas]="recetas"
+      ></app-recipe-list>
     </div>
   </div>
 </div>
