@@ -6,6 +6,7 @@ export interface RecetaFullCreate {
     costo_preparacion?: number;
     costo_neto?: number;
     costo_total?: number;
+    porciones: number;
   };
   detalles: {
     insumo_id: number;

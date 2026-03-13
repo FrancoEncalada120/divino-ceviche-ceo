@@ -19,7 +19,10 @@
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th>Description</th>
+              <th class="text-end">Costo total</th>
+              <th class="text-end">% Venta</th>
+              <th class="text-end">Costo preparación</th>
+              <th class="text-end">Costo neto</th>
               <th>Status</th>
 
               <th class="col-actions"></th>
@@ -34,10 +37,14 @@
               <td>
                 {{ row.nombre }}
               </td>
-
-              <td>
-                {{ row.descripcion || "---" }}
+              <td class="text-end">{{ row.costo_total | number: "1.2-4" }}</td>
+              <td class="text-end">
+                {{ row.porcenta_venta | number: "1.0-2" }}
               </td>
+              <td class="text-end">
+                {{ row.costo_preparacion | number: "1.2-4" }}
+              </td>
+              <td class="text-end">{{ row.costo_neto | number: "1.2-4" }}</td>
 
               <td>
                 <span

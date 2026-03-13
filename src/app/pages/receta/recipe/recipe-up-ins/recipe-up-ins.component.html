@@ -5,241 +5,296 @@
 <div class="modal-custom" role="dialog" aria-modal="true">
   <div class="modal-card">
     <!-- Header -->
-    <div class="modal-header">
+    <!-- <div class="modal-header">
       <div>
         <h5 class="mb-1">
           {{ mode === "create" ? "Add Recipe" : "Edit Recipe" }}
         </h5>
       </div>
-
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        (click)="onClose()"
-      >
-        Close
-      </button>
-    </div>
+    </div> -->
 
     <div class="modal-body">
-      <!-- Recipe form -->
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
-        <div class="row g-3">
-          <div class="col-12 col-md-6">
-            <p-floatLabel>
-              <input
-                pInputText
-                id="nombre"
-                formControlName="nombre"
-                class="w-100"
-              />
-              <label for="nombre">Recipe Name *</label>
-            </p-floatLabel>
+        <p-tabView>
+          <!-- TAB 1 -->
+          <p-tabPanel header="General Information">
+            <div class="row g-3 pt-2">
+              <div class="col-12 col-md-9">
+                <div class="form-field">
+                  <label for="nombre" class="form-label">Recipe Name *</label>
+
+                  <input
+                    pInputText
+                    id="nombre"
+                    formControlName="nombre"
+                    placeholder="Recipe Name"
+                    class="w-100"
+                  />
+                </div>
+
+                <div
+                  class="field-error"
+                  *ngIf="
+                    form.get('nombre')?.touched && form.get('nombre')?.invalid
+                  "
+                >
+                  Name is required (min 2 chars).
+                </div>
+              </div>
+
+              <div class="col-12 col-md-2">
+                <div class="form-field">
+                  <label for="nombre" class="form-label">Serving *</label>
+                  <p-inputNumber
+                    inputId="porciones"
+                    formControlName="porciones"
+                    placeholder="Servings"
+                    class="w-100"
+                    [min]="1"
+                    [minFractionDigits]="0"
+                    [maxFractionDigits]="0"
+                    [useGrouping]="false"
+                  ></p-inputNumber>
+                </div>
+
+                <div
+                  class="field-error"
+                  *ngIf="
+                    form.get('porciones')?.touched &&
+                    form.get('porciones')?.invalid
+                  "
+                >
+                  Must be greater than 0
+                </div>
+              </div>
+
+              <div class="col-12">
+                <div class="form-field">
+                  <textarea
+                    pInputTextarea
+                    id="descripcion"
+                    rows="7"
+                    formControlName="descripcion"
+                    placeholder="Descripcion"
+                    class="w-100"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <!-- TAB 2 -->
+          <p-tabPanel header="Ingredients Details">
             <div
-              class="field-error"
-              *ngIf="form.get('nombre')?.touched && form.get('nombre')?.invalid"
+              class="d-flex justify-content-between align-items-center mb-3 pt-2"
             >
-              Name is required (min 2 chars).
-            </div>
-          </div>
-
-          <div class="col-12 col-md-6">
-            <p-floatLabel>
-              <textarea
-                pInputTextarea
-                id="descripcion"
-                rows="3"
-                formControlName="descripcion"
-                class="w-100"
-              ></textarea>
-              <label for="descripcion">Description</label>
-            </p-floatLabel>
-          </div>
-        </div>
-
-        <p-divider></p-divider>
-
-        <!-- Details -->
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <div>
-            <h6 class="mb-0">Ingredients Details</h6>
-            <small class="text-muted">At least 1 item is required</small>
-          </div>
-
-          <div class="modal-footer">
-            <!-- <button
-              type="button"
-              class="btn btn-outline-secondary"
-              (click)="onClose()"
-            >
-              Cancel
-            </button> -->
-
-            <button
-              type="button"
-              class="btn btn-primary"
-              (click)="addDetalle()"
-            >
-              Add item
-            </button>
-
-            <button
-              type="submit"
-              class="btn btn-success"
-              [disabled]="form.invalid || detallesFA.length === 0"
-            >
-              {{ mode === "create" ? "Create" : "Save" }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Details header -->
-        <div class="detail-header">
-          <div class="c1">Ingredient</div>
-          <div class="c2">Unit</div>
-          <div class="c3 text-end">Qty</div>
-          <div class="c4 text-end">Unit Price</div>
-          <div class="c5 text-end">Subtotal</div>
-          <div class="c6"></div>
-        </div>
-
-        <div formArrayName="detalles" class="detail-rows">
-          <div
-            class="detail-row"
-            *ngFor="let g of detallesFA.controls; let i = index"
-            [formGroupName]="i"
-          >
-            <div class="c1">
-              <p-floatLabel>
-                <p-dropdown
-                  inputId="insumo_{{ i }}"
-                  formControlName="insumo_id"
-                  [options]="insumosOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  class="w-100"
-                  [filter]="true"
-                  (onChange)="onInsumoChange(i, $event.value)"
-                ></p-dropdown>
-                <label for="insumo_{{ i }}">Ingredient *</label>
-              </p-floatLabel>
-              <div
-                class="field-error"
-                *ngIf="
-                  g.get('insumo_id')?.touched && g.get('insumo_id')?.invalid
-                "
-              >
-                Required
+              <div>
+                <h6 class="mb-0">Ingredients Details</h6>
+                <small class="text-muted">At least 1 item is required</small>
               </div>
-            </div>
 
-            <div class="c2">
-              <p-floatLabel>
-                <p-dropdown
-                  inputId="unidad_{{ i }}"
-                  formControlName="unidad_id"
-                  [options]="unidadesOptionsByRow[i] || []"
-                  optionLabel="label"
-                  optionValue="value"
-                  class="w-100"
-                  [filter]="true"
-                ></p-dropdown>
-                <label for="unidad_{{ i }}">Unit *</label>
-              </p-floatLabel>
-              <div
-                class="field-error"
-                *ngIf="
-                  g.get('unidad_id')?.touched && g.get('unidad_id')?.invalid
-                "
-              >
-                Required
-              </div>
-            </div>
-
-            <div class="c3">
-              <p-floatLabel>
-                <p-inputNumber
-                  inputId="cantidad_{{ i }}"
-                  formControlName="cantidad"
-                  class="w-100"
-                  [minFractionDigits]="0"
-                  [maxFractionDigits]="4"
-                ></p-inputNumber>
-                <label for="cantidad_{{ i }}">Qty *</label>
-              </p-floatLabel>
-              <div
-                class="field-error"
-                *ngIf="g.get('cantidad')?.touched && g.get('cantidad')?.invalid"
-              >
-                Must be > 0
-              </div>
-            </div>
-
-            <div class="c4">
-              <p-floatLabel>
-                <p-inputNumber
-                  inputId="precio_{{ i }}"
-                  formControlName="precio_actual"
-                  class="w-100"
-                  [min]="0"
-                  [minFractionDigits]="2"
-                  [maxFractionDigits]="4"
-                ></p-inputNumber>
-                <label for="precio_{{ i }}">Unit Price *</label>
-              </p-floatLabel>
-              <div
-                class="field-error"
-                *ngIf="
-                  g.get('precio_actual')?.touched &&
-                  g.get('precio_actual')?.invalid
-                "
-              >
-                Required
-              </div>
-            </div>
-
-            <div class="c5 text-end subtotal">
-              {{ getRowSubtotal(i) | number: "1.2-4" }}
-            </div>
-
-            <div class="c6 text-end">
               <button
                 type="button"
-                pButton
-                icon="pi pi-trash"
-                class="p-button-text p-button-danger p-button-sm"
-                [disabled]="detallesFA.length <= 1"
-                (click)="removeDetalle(i)"
-              ></button>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-12">
-          <!-- Footer summary -->
-          <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
-            <div class="total-box">
-              <div class="label">Costo total</div>
-              <div class="value">{{ totalCosto | number: "1.2-4" }}</div>
+                class="btn btn-primary"
+                (click)="addDetalle()"
+              >
+                Add item
+              </button>
             </div>
 
-            <div class="total-box">
-              <div class="label">% Venta</div>
-              <div class="value">{{ vPorcenta_venta | number: "1.0-2" }}%</div>
+            <div class="detail-header">
+              <div class="c1">Ingredient</div>
+              <div class="c2">Unit</div>
+              <div class="c3 text-end">Qty</div>
+              <div class="c4 text-end">Unit Price</div>
+              <div class="c5 text-end">Subtotal</div>
+              <div class="c6"></div>
             </div>
 
-            <div class="total-box">
-              <div class="label">Costo preparación</div>
-              <div class="value">
-                {{ vCosto_preparacion | number: "1.2-4" }}
+            <div class="ingredients-scroll">
+              <div formArrayName="detalles" class="detail-rows">
+                <div
+                  class="detail-row"
+                  *ngFor="let g of detallesFA.controls; let i = index"
+                  [formGroupName]="i"
+                >
+                  <div class="c1">
+                    <div class="form-field">
+                      <label for="insumo_{{ i }}" class="form-label">
+                        Ingredient *
+                      </label>
+                      <p-dropdown
+                        inputId="insumo_{{ i }}"
+                        formControlName="insumo_id"
+                        [options]="insumosOptions"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-100"
+                        [filter]="true"
+                        appendTo="body"
+                        [autoZIndex]="true"
+                        [baseZIndex]="10000"
+                        (onChange)="onInsumoChange(i, $event.value)"
+                      ></p-dropdown>
+                    </div>
+
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        g.get('insumo_id')?.touched &&
+                        g.get('insumo_id')?.invalid
+                      "
+                    >
+                      Required
+                    </div>
+                  </div>
+
+                  <div class="c2">
+                    <div class="form-field">
+                      <label for="unidad_{{ i }}" class="form-label"
+                        >Unit *</label
+                      >
+                      <p-dropdown
+                        inputId="unidad_{{ i }}"
+                        formControlName="unidad_id"
+                        [options]="unidadesOptionsByRow[i] || []"
+                        optionLabel="label"
+                        optionValue="value"
+                        class="w-100"
+                        [filter]="true"
+                        appendTo="body"
+                        [autoZIndex]="true"
+                        [baseZIndex]="10000"
+                      ></p-dropdown>
+                    </div>
+
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        g.get('unidad_id')?.touched &&
+                        g.get('unidad_id')?.invalid
+                      "
+                    >
+                      Required
+                    </div>
+                  </div>
+
+                  <div class="c3">
+                    <div class="form-field">
+                      <label for="cantidad_{{ i }}" class="form-label"
+                        >Qty *</label
+                      >
+                      <p-inputNumber
+                        inputId="cantidad_{{ i }}"
+                        formControlName="cantidad"
+                        class="w-100"
+                        [minFractionDigits]="0"
+                        [maxFractionDigits]="4"
+                        (onInput)="onCantidadChange(i)"
+                      ></p-inputNumber>
+                    </div>
+
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        g.get('cantidad')?.touched && g.get('cantidad')?.invalid
+                      "
+                    >
+                      Must be > 0
+                    </div>
+                  </div>
+
+                  <div class="c4">
+                    <div class="form-field">
+                      <label for="precio_{{ i }}" class="form-label">
+                        Unit Price *
+                      </label>
+                      <p-inputNumber
+                        inputId="precio_{{ i }}"
+                        formControlName="precio_actual"
+                        class="w-100"
+                        [min]="0"
+                        [minFractionDigits]="2"
+                        [maxFractionDigits]="4"
+                        (onInput)="calcularPrecioFila(i)"
+                      ></p-inputNumber>
+                    </div>
+
+                    <div
+                      class="field-error"
+                      *ngIf="
+                        g.get('precio_actual')?.touched &&
+                        g.get('precio_actual')?.invalid
+                      "
+                    >
+                      Required
+                    </div>
+                  </div>
+
+                  <div class="c5 text-end subtotal">
+                    {{ getRowSubtotal(i) | number: "1.2-4" }}
+                  </div>
+
+                  <div class="c6 text-end">
+                    <button
+                      type="button"
+                      pButton
+                      icon="pi pi-trash"
+                      class="p-button-text p-button-danger p-button-sm"
+                      [disabled]="detallesFA.length <= 1"
+                      (click)="removeDetalle(i)"
+                    ></button>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="total-box">
-              <div class="label">Costo neto</div>
-              <div class="value">{{ vCosto_neto | number: "1.2-4" }}</div>
+            <div class="col-12">
+              <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
+                <div class="total-box">
+                  <div class="label">Costo total</div>
+                  <div class="value">{{ totalCosto | number: "1.2-4" }}</div>
+                </div>
+
+                <div class="total-box">
+                  <div class="label">% Venta</div>
+                  <div class="value">
+                    {{ vPorcenta_venta | number: "1.0-2" }}
+                  </div>
+                </div>
+
+                <div class="total-box">
+                  <div class="label">Costo preparación</div>
+                  <div class="value">
+                    {{ vCosto_preparacion | number: "1.2-4" }}
+                  </div>
+                </div>
+
+                <div class="total-box">
+                  <div class="label">Costo neto</div>
+                  <div class="value">{{ vCosto_neto | number: "1.2-4" }}</div>
+                </div>
+              </div>
             </div>
-          </div>
+          </p-tabPanel>
+        </p-tabView>
+
+        <!-- Footer -->
+        <div class="modal-footer mt-3">
+          <button
+            type="submit"
+            class="btn btn-success"
+            [disabled]="form.invalid || detallesFA.length === 0"
+          >
+            {{ mode === "create" ? "Create" : "Save" }}
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-secondary"
+            (click)="onClose()"
+          >
+            Close
+          </button>
         </div>
       </form>
     </div>

@@ -26,26 +26,11 @@ import { DividerModule } from 'primeng/divider';
 import { UnidadService } from '../../../../core/services/unidad.service';
 import { RecetaService } from '../../../../core/services/receta.service';
 import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
+import { InsumoService } from '../../../../core/services/insumo.service';
+import { TabViewModule } from 'primeng/tabview';
 type ModalMode = 'create' | 'edit';
 type UnidadOption = { label: string; value: number };
 type InsumoOption = { label: string; value: number; grupo?: string };
-
-// type RecetaPayload = {
-//   receta: {
-//     receta_id?: number;
-//     nombre: string;
-//     descripcion?: string | null;
-//     estado?: 'A' | 'I';
-//     created_by?: string | null;
-//   };
-//   detalles: Array<{
-//     insumo_id: number;
-//     unidad_id: number;
-//     cantidad: number;
-//     precio_actual: number;
-//     created_by?: string | null;
-//   }>;
-// };
 
 @Component({
   selector: 'app-recipe-up-ins',
@@ -60,6 +45,7 @@ type InsumoOption = { label: string; value: number; grupo?: string };
     DropdownModule,
     ButtonModule,
     DividerModule,
+    TabViewModule,
   ],
   templateUrl: './recipe-up-ins.component.html',
   styleUrl: './recipe-up-ins.component.scss',
@@ -88,6 +74,7 @@ export class RecipeUpInsComponent implements OnChanges {
     private fb: FormBuilder,
     private unidadService: UnidadService,
     private recetaservice: RecetaService,
+    private insumoService: InsumoService,
   ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
@@ -98,6 +85,9 @@ export class RecipeUpInsComponent implements OnChanges {
       estado: new FormControl<'A' | 'I'>('A', { nonNullable: true }),
       created_by: new FormControl<string>('1', { nonNullable: true }),
       detalles: this.fb.array([]),
+      porciones: new FormControl<number | null>(1, {
+        validators: [Validators.required, Validators.min(1)],
+      }),
     });
 
     // arranca con 1 detalle por defecto
@@ -160,7 +150,7 @@ export class RecipeUpInsComponent implements OnChanges {
 
     console.log('grupo', grupo);
 
-    this.unidadService.getByGrupo(grupo).subscribe({
+    this.unidadService.getAll().subscribe({
       next: (unidades) => {
         console.log('==============================');
         console.log('[getByGrupo] Grupo enviado:', grupo);
@@ -226,13 +216,17 @@ export class RecipeUpInsComponent implements OnChanges {
     const g = this.detallesFA.at(i) as FormGroup;
     const cantidad = Number(g.get('cantidad')?.value ?? 0);
     const precio = Number(g.get('precio_actual')?.value ?? 0);
+    const porciones = Number(this.form.get('porciones')?.value ?? 1);
+
+    console.log('porcion', porciones);
 
     const subtotal = cantidad * precio;
     this.vCosto_total = subtotal;
-    this.vPorcenta_venta = subtotal * 0.2;
+    this.vPorcenta_venta = subtotal * 0.02;
     this.vCosto_preparacion = 10;
     this.vCosto_neto =
-      subtotal + this.vPorcenta_venta + this.vCosto_preparacion;
+      (subtotal + this.vPorcenta_venta + this.vCosto_preparacion) / porciones;
+
     return subtotal;
   }
 
@@ -267,6 +261,7 @@ export class RecipeUpInsComponent implements OnChanges {
         costo_preparacion: Number(this.vCosto_preparacion ?? 0),
         costo_neto: Number(this.vCosto_neto ?? 0),
         costo_total: Number(this.vCosto_total ?? 0),
+        porciones: Number(this.form.get('porciones')?.value ?? 1),
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),
@@ -280,5 +275,53 @@ export class RecipeUpInsComponent implements OnChanges {
 
     console.log('[RecipeUpInsComponent] submit payload =>', payload);
     this.submit.emit(payload);
+  }
+
+  onCantidadChange(i: number): void {
+    const g = this.detallesFA.at(i) as FormGroup;
+
+    const cantidad = Number(g.get('cantidad')?.value ?? 0);
+    const insumo_id = Number(g.get('insumo_id')?.value ?? 0);
+    const unidad_receta = Number(g.get('unidad_id')?.value ?? 0);
+
+    if (!cantidad || !insumo_id || !unidad_receta) return;
+
+    console.log('Cantidad cambiada:', cantidad);
+
+    this.insumoService
+      .calcularPrecio({
+        insumo_id,
+        unidad_receta,
+        cantidad_receta: cantidad,
+        precio: 0,
+        unidad_id: 0,
+        cantidad: 0,
+      })
+      .subscribe((precio) => {
+        g.get('precio_actual')?.setValue(precio);
+      });
+  }
+
+  calcularPrecioFila(i: number): void {
+    const g = this.detallesFA.at(i) as FormGroup;
+
+    const insumo_id = Number(g.get('insumo_id')?.value ?? 0);
+    const unidad_receta = Number(g.get('unidad_id')?.value ?? 0);
+    const cantidad_receta = Number(g.get('cantidad')?.value ?? 0);
+
+    if (!insumo_id || !unidad_receta || !cantidad_receta) return;
+
+    this.insumoService
+      .calcularPrecio({
+        insumo_id: insumo_id,
+        unidad_receta: unidad_receta,
+        cantidad_receta: cantidad_receta,
+        precio: 0, // precio compra
+        unidad_id: unidad_receta,
+        cantidad: 1,
+      })
+      .subscribe((precioCalculado) => {
+        g.get('precio_actual')?.setValue(precioCalculado);
+      });
   }
 }
