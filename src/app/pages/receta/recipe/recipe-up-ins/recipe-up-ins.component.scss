@@ -64,18 +64,11 @@
 
 .detail-row {
   display: grid;
-  grid-template-columns: 2fr 1.3fr 1fr 1.2fr 0.9fr 0.4fr;
-  gap: 12px;
-  align-items: start;
-  padding: 10px 12px;
-}
-.detail-row {
-  display: grid;
   grid-template-columns: 2.2fr 1.4fr 1fr 1fr 1fr 48px;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
   background: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 8px;
   align-items: start;
 }
 
@@ -137,4 +130,13 @@
 
 :host ::ng-deep .p-component-overlay {
   z-index: 10990 !important;
+}
+
+.detail-row .form-field {
+  margin-bottom: 2px;
+}
+
+.detail-row .form-label {
+  font-size: 0.72rem;
+  margin-bottom: 2px;
 }

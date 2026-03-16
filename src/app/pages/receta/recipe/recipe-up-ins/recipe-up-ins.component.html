@@ -19,7 +19,7 @@
           <!-- TAB 1 -->
           <p-tabPanel header="General Information">
             <div class="row g-3 pt-2">
-              <div class="col-12 col-md-9">
+              <div class="col-12 col-md-12">
                 <div class="form-field">
                   <label for="nombre" class="form-label">Recipe Name *</label>
 
@@ -42,7 +42,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-2">
+              <div class="col-12 col-md-6">
                 <div class="form-field">
                   <label for="nombre" class="form-label">Serving *</label>
                   <p-inputNumber
@@ -62,6 +62,35 @@
                   *ngIf="
                     form.get('porciones')?.touched &&
                     form.get('porciones')?.invalid
+                  "
+                >
+                  Must be greater than 0
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6">
+                <div class="form-field">
+                  <label for="costo_preparacion" class="form-label">
+                    Labor cost *
+                  </label>
+
+                  <p-inputNumber
+                    inputId="costo_preparacion"
+                    formControlName="costo_preparacion"
+                    placeholder="Labor cost"
+                    class="w-100"
+                    [min]="1"
+                    [minFractionDigits]="0"
+                    [maxFractionDigits]="0"
+                    [useGrouping]="false"
+                  ></p-inputNumber>
+                </div>
+
+                <div
+                  class="field-error"
+                  *ngIf="
+                    form.get('costo_preparacion')?.touched &&
+                    form.get('costo_preparacion')?.invalid
                   "
                 >
                   Must be greater than 0
@@ -90,26 +119,26 @@
             >
               <div>
                 <h6 class="mb-0">Ingredients Details</h6>
-                <small class="text-muted">At least 1 item is required</small>
+                <!-- <small class="text-muted">At least 1 item is required</small> -->
               </div>
 
               <button
                 type="button"
-                class="btn btn-primary"
+                class="btn btn-primary btn-sm"
                 (click)="addDetalle()"
               >
                 Add item
               </button>
             </div>
 
-            <div class="detail-header">
+            <!-- <div class="detail-header">
               <div class="c1">Ingredient</div>
               <div class="c2">Unit</div>
               <div class="c3 text-end">Qty</div>
               <div class="c4 text-end">Unit Price</div>
               <div class="c5 text-end">Subtotal</div>
               <div class="c6"></div>
-            </div>
+            </div> -->
 
             <div class="ingredients-scroll">
               <div formArrayName="detalles" class="detail-rows">
@@ -165,6 +194,7 @@
                         appendTo="body"
                         [autoZIndex]="true"
                         [baseZIndex]="10000"
+                        (onChange)="onUnidadChange(i)"
                       ></p-dropdown>
                     </div>
 
@@ -252,27 +282,43 @@
             <div class="col-12">
               <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
                 <div class="total-box">
-                  <div class="label">Costo total</div>
+                  <div class="label">Subtotal</div>
                   <div class="value">{{ totalCosto | number: "1.2-4" }}</div>
                 </div>
 
                 <div class="total-box">
-                  <div class="label">% Venta</div>
+                  <div class="label">20 %</div>
                   <div class="value">
                     {{ vPorcenta_venta | number: "1.0-2" }}
                   </div>
                 </div>
 
                 <div class="total-box">
-                  <div class="label">Costo preparación</div>
+                  <div class="label">Labor cost</div>
                   <div class="value">
                     {{ vCosto_preparacion | number: "1.2-4" }}
                   </div>
                 </div>
 
                 <div class="total-box">
-                  <div class="label">Costo neto</div>
+                  <div class="label">Total cost</div>
                   <div class="value">{{ vCosto_neto | number: "1.2-4" }}</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="d-flex justify-content-end gap-2 mt-3 flex-wrap">
+                <div class="total-box">
+                  <div class="label">Serving</div>
+                  <div class="value">{{ vporciones | number: "1.2-4" }}</div>
+                </div>
+
+                <div class="total-box">
+                  <div class="label">Cost per serving</div>
+                  <div class="value">
+                    {{ vCosto_servicio | number: "1.2-4" }}
+                  </div>
                 </div>
               </div>
             </div>
