@@ -2,18 +2,9 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Purchase List">
-        <p-table
-          [value]="compras"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-          styleClass="p-datatable-sm"
-        >
+        <p-table [value]="compras" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
@@ -57,19 +48,13 @@
               </td>
 
               <td class="col-actions text-end">
-                <button
-                  class="btn btn-sm btn-secondary m-1"
-                  (click)="toggleRow(row.compra_id)"
-                >
+                <button class="btn btn-sm btn-secondary m-1" (click)="toggleRow(row.compra_id)">
                   Details
                 </button>
                 <!-- <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
             Edit
           </button> -->
-                <button
-                  class="btn btn-sm btn-danger m-1"
-                  (click)="onDelete(row)"
-                >
+                <button class="btn btn-sm btn-danger m-1" (click)="onDelete(row)">
                   Delete
                 </button>
               </td>

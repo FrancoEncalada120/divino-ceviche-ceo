@@ -19,38 +19,28 @@
   margin-bottom: 20px;
 }
 
-.card-stock {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+/* FILA COMPLETA */
+.row-bajo {
+  background-color: #fff1f0; /* rojo suave */
 }
 
-/* HEADER */
-.card-header {
-  padding: 10px;
+.row-ok {
+  background-color: #f6ffed; /* verde suave */
+}
+
+/* BADGES (más visual 🔥) */
+.badge {
+  padding: 4px 10px;
+  border-radius: 12px;
   font-weight: 600;
   color: white;
 }
 
-/* BODY */
-.card-body {
-  padding: 12px;
+.badge-bajo {
+  background-color: #ff4d4f;
 }
 
-/* STOCK BAJO */
-.stock-bajo .card-header {
-  background: #ff4d4f;
-}
-
-.stock-bajo .card-body {
-  background: white;
-}
-
-/* STOCK OK */
-.stock-ok .card-header {
-  background: #52c41a;
-}
-
-.stock-ok .card-body {
-  background: white;
+.badge-ok {
+  background-color: #52c41a;
 }

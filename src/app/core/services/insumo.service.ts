@@ -18,12 +18,15 @@ type ApiResponse<T> = {
 export class InsumoService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_insumos`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Insumo[]> {
+  getAll(params?: {
+    text?: string;
+  }): Observable<Insumo[]> {
+
     console.log('[InsumoService] GET', this.apiUrl);
 
-    return this.http.get<ApiResponse<Insumo[]>>(this.apiUrl).pipe(
+    return this.http.get<ApiResponse<Insumo[]>>(this.apiUrl, { params: params as any }).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];
