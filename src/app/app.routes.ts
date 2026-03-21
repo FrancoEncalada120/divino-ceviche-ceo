@@ -85,6 +85,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'settings/consersion',
+        loadComponent: () =>
+          import('./pages/receta/conversion/conversion-pri/conversion-pri.component').then(
+            (m) => m.ConversionPriComponent,
+          ),
+      },
+      {
         path: 'Recepy',
         loadComponent: () =>
           import('./pages/receta/recipe/recipe-pri/recipe-pri.component').then(

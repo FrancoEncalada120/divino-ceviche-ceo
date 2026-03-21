@@ -1,0 +1,159 @@
+<!-- Backdrop -->
+<div class="modal-backdrop-custom" (click)="onClose()"></div>
+
+<!-- Modal -->
+<div class="modal-custom" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <!-- Header -->
+    <div class="modal-header">
+      <div>
+        <h5 class="mb-1">
+          {{ mode === "create" ? "Add Conversion" : "Edit Conversion" }}
+        </h5>
+        <small class="text-muted">
+          Configure conversion between source and target units
+        </small>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="onClose()"
+      >
+        Close
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <!-- Insumo -->
+          <div class="col-12">
+            <label class="form-label">Insumo *</label>
+            <p-dropdown
+              formControlName="insumo_id"
+              [options]="insumosOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select an insumo"
+              [filter]="true"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+
+            <div
+              class="field-error"
+              *ngIf="submitted && f['insumo_id'].invalid"
+            >
+              Insumo is required.
+            </div>
+          </div>
+
+          <!-- Source unit -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Source Unit *</label>
+            <p-dropdown
+              formControlName="unidad_origen_id"
+              [options]="unidadesOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select source unit"
+              [filter]="true"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+
+            <div
+              class="field-error"
+              *ngIf="submitted && f['unidad_origen_id'].invalid"
+            >
+              Source unit is required.
+            </div>
+          </div>
+
+          <!-- Source quantity -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Source Quantity *</label>
+            <p-inputNumber
+              formControlName="cantidad_origen"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="4"
+              mode="decimal"
+              inputStyleClass="w-100"
+              styleClass="w-100"
+              placeholder="Enter source quantity"
+            ></p-inputNumber>
+
+            <div
+              class="field-error"
+              *ngIf="submitted && f['cantidad_origen'].invalid"
+            >
+              Source quantity must be greater than 0.
+            </div>
+          </div>
+
+          <!-- Target unit -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Target Unit *</label>
+            <p-dropdown
+              formControlName="unidad_destino_id"
+              [options]="unidadesOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select target unit"
+              [filter]="true"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+
+            <div
+              class="field-error"
+              *ngIf="submitted && f['unidad_destino_id'].invalid"
+            >
+              Target unit is required.
+            </div>
+          </div>
+
+          <!-- Target quantity -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Target Quantity *</label>
+            <p-inputNumber
+              formControlName="cantidad_destino"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="4"
+              mode="decimal"
+              inputStyleClass="w-100"
+              styleClass="w-100"
+              placeholder="Enter target quantity"
+            ></p-inputNumber>
+
+            <div
+              class="field-error"
+              *ngIf="submitted && f['cantidad_destino'].invalid"
+            >
+              Target quantity must be greater than 0.
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer mt-4">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="onClose()"
+          >
+            Cancel
+          </button>
+
+          <button type="submit" class="btn btn-primary">
+            {{ mode === "create" ? "Save Conversion" : "Update Conversion" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

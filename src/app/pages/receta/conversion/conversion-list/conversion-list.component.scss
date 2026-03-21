@@ -1,0 +1,20 @@
+.card {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.col-actions {
+  width: 180px;
+  white-space: nowrap;
+}
+
+:host ::ng-deep .p-tabview .p-tabview-panels {
+  padding: 1rem 0 0 0;
+}
+
+:host ::ng-deep .p-datatable-sm .p-datatable-tbody > tr > td,
+:host ::ng-deep .p-datatable-sm .p-datatable-thead > tr > th {
+  padding: 0.65rem 0.75rem;
+  vertical-align: middle;
+}

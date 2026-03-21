@@ -119,6 +119,12 @@ export class MenuComponent {
             icon: 'bi-person',
             route: 'settings/insumos',
           },
+          {
+            type: 'link',
+            label: 'Convertion',
+            icon: 'bi-person',
+            route: 'settings/consersion',
+          },
         ],
       },
     ];
