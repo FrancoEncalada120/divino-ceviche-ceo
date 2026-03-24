@@ -67,7 +67,7 @@
             <td>{{ item.stock - item.stock_ideal }}</td>
 
             <td>
-              <button class="btn btn-sm m-1">
+              <button class="btn btn-sm m-1" (click)="mostrarPopupKardex(item.insumo_id, item)">
                 <i class="pi pi-eye"></i>
               </button>
             </td>
@@ -95,5 +95,5 @@
 </div>
 
 
-<app-inventory-list *ngIf="showInventoryModal" (close)="closeModal()"
+<app-inventory-list *ngIf="showInventoryModal" (close)="closeModal()" [insumo]="insumoInventory"
   [inventoryList]="inventoryList"></app-inventory-list>
