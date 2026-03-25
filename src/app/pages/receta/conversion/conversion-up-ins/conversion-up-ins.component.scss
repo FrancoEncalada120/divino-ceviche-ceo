@@ -21,7 +21,7 @@
   background: #fff;
   border-radius: 16px;
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .modal-header {
@@ -59,4 +59,13 @@
 :host ::ng-deep .p-inputnumber,
 :host ::ng-deep .p-inputnumber-input {
   width: 100%;
+}
+
+:host ::ng-deep .p-dropdown-panel {
+  z-index: 3000 !important;
+}
+
+:host ::ng-deep .p-component-overlay,
+:host ::ng-deep .p-dropdown-panel {
+  z-index: 3000 !important;
 }

@@ -39,6 +39,8 @@
               placeholder="Select an insumo"
               [filter]="true"
               appendTo="body"
+              [autoZIndex]="true"
+              [baseZIndex]="10000"
               class="w-100"
             ></p-dropdown>
 
@@ -56,11 +58,13 @@
             <p-dropdown
               formControlName="unidad_origen_id"
               [options]="unidadesOptions"
+              placeholder="Select source unit"
               optionLabel="label"
               optionValue="value"
-              placeholder="Select source unit"
               [filter]="true"
               appendTo="body"
+              [autoZIndex]="true"
+              [baseZIndex]="10000"
               class="w-100"
             ></p-dropdown>
 
@@ -100,11 +104,13 @@
             <p-dropdown
               formControlName="unidad_destino_id"
               [options]="unidadesOptions"
+              placeholder="Select target unit"
               optionLabel="label"
               optionValue="value"
-              placeholder="Select target unit"
               [filter]="true"
               appendTo="body"
+              [autoZIndex]="true"
+              [baseZIndex]="10000"
               class="w-100"
             ></p-dropdown>
 

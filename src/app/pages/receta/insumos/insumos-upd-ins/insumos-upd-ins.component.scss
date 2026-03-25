@@ -1,0 +1,344 @@
+:host {
+  display: block;
+}
+
+/* Backdrop */
+.modal-backdrop-custom {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+}
+
+/* Contenedor del modal */
+.modal-custom {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Caja principal */
+.modal-card {
+  position: relative;
+  z-index: 1002;
+  width: min(920px, 100%);
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  overflow: visible;
+  border: 1px solid #e5e7eb;
+}
+
+/* Header */
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid #eef2f7;
+
+  h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  small {
+    display: block;
+    margin-top: 4px;
+    color: #64748b;
+    font-size: 0.88rem;
+  }
+}
+
+/* Body */
+.modal-body {
+  padding: 22px 24px 24px;
+  overflow: visible;
+}
+
+/* Footer opcional si luego lo usas */
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px 20px;
+  border-top: 1px solid #eef2f7;
+}
+
+/* Labels */
+.form-label {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Espaciado general */
+.row.g-3 {
+  --bs-gutter-y: 14px;
+  --bs-gutter-x: 14px;
+}
+
+/* Inputs normales */
+.form-control,
+.form-select,
+textarea.form-control {
+  border-radius: 10px;
+  border: 1px solid #dbe2ea;
+  min-height: 42px;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.93rem;
+  color: #0f172a;
+  background: #fff;
+  box-shadow: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease;
+
+  &:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: #94a3b8;
+  }
+}
+
+/* Botones */
+.btn {
+  border-radius: 10px;
+  font-weight: 600;
+  min-height: 40px;
+  padding: 0.55rem 1rem;
+}
+
+.btn-primary {
+  background: #2563eb;
+  border-color: #2563eb;
+
+  &:hover,
+  &:focus {
+    background: #1d4ed8;
+    border-color: #1d4ed8;
+  }
+}
+
+.btn-outline-secondary {
+  border-color: #cbd5e1;
+  color: #334155;
+
+  &:hover,
+  &:focus {
+    background: #f8fafc;
+    border-color: #94a3b8;
+    color: #0f172a;
+  }
+}
+
+/* Mensajes de error */
+.field-error,
+.invalid-feedback {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: #dc2626;
+}
+
+/* PrimeNG: dropdown */
+:host ::ng-deep .p-dropdown {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #dbe2ea;
+  display: flex;
+  align-items: center;
+  box-shadow: none;
+  background: #fff;
+}
+
+:host ::ng-deep .p-dropdown:not(.p-disabled):hover {
+  border-color: #94a3b8;
+}
+
+:host ::ng-deep .p-dropdown:not(.p-disabled).p-focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+:host ::ng-deep .p-dropdown-label {
+  padding: 0.68rem 0.85rem;
+  font-size: 0.93rem;
+  color: #0f172a;
+}
+
+:host ::ng-deep .p-dropdown-label.p-placeholder {
+  color: #94a3b8;
+}
+
+:host ::ng-deep .p-dropdown-trigger {
+  width: 2.5rem;
+  color: #64748b;
+}
+
+/* Panel desplegable del dropdown */
+:host ::ng-deep .p-dropdown-panel {
+  z-index: 99999 !important;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #dbe2ea;
+  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
+}
+
+:host ::ng-deep .p-dropdown-items {
+  padding: 6px 0;
+}
+
+:host ::ng-deep .p-dropdown-item {
+  padding: 10px 14px;
+  font-size: 0.92rem;
+  color: #0f172a;
+}
+
+:host ::ng-deep .p-dropdown-item:hover {
+  background: #f8fafc;
+}
+
+:host ::ng-deep .p-dropdown-item.p-highlight {
+  background: #eff6ff;
+  color: #1d4ed8;
+}
+
+/* Filtro del dropdown */
+:host ::ng-deep .p-dropdown-filter-container {
+  padding: 10px;
+  background: #fff;
+  border-bottom: 1px solid #eef2f7;
+}
+
+:host ::ng-deep .p-dropdown-filter {
+  width: 100%;
+  min-height: 38px;
+  border: 1px solid #dbe2ea;
+  border-radius: 9px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.9rem;
+  box-shadow: none;
+}
+
+:host ::ng-deep .p-dropdown-filter:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+/* PrimeNG: InputNumber */
+:host ::ng-deep .p-inputnumber {
+  width: 100%;
+}
+
+:host ::ng-deep .p-inputnumber-input {
+  width: 100%;
+  min-height: 42px;
+  border-radius: 10px;
+  border: 1px solid #dbe2ea;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.93rem;
+  color: #0f172a;
+  box-shadow: none;
+}
+
+:host ::ng-deep .p-inputnumber-input:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+/* Estados inválidos */
+.is-invalid,
+.ng-invalid.ng-touched,
+:host ::ng-deep .p-dropdown.ng-invalid.ng-touched,
+:host ::ng-deep .p-inputnumber.ng-invalid.ng-touched .p-inputnumber-input {
+  border-color: #dc2626 !important;
+}
+
+:host ::ng-deep .p-dropdown.ng-invalid.ng-touched {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+:host ::ng-deep .p-inputnumber.ng-invalid.ng-touched .p-inputnumber-input {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.08);
+}
+
+/* Asegura que overlays de PrimeNG no queden detrás */
+:host ::ng-deep .p-connected-overlay {
+  z-index: 99999 !important;
+}
+
+:host ::ng-deep .p-component-overlay {
+  z-index: 99998 !important;
+}
+
+/* Scroll bonito si el contenido crece */
+.modal-body::-webkit-scrollbar,
+.modal-custom::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb,
+.modal-custom::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.modal-body::-webkit-scrollbar-track,
+.modal-custom::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-custom {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .modal-card {
+    width: 100%;
+    max-height: 95vh;
+    border-radius: 14px;
+    margin-top: 12px;
+  }
+
+  .modal-header {
+    padding: 16px 16px 12px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    padding: 12px 16px 16px;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .d-flex.justify-content-end.gap-2.mt-4 {
+    flex-direction: column;
+  }
+}

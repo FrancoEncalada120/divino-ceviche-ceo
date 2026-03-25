@@ -1,1 +1,184 @@
-<p>insumos-upd-ins works!</p>
+<!-- Backdrop -->
+<div class="modal-backdrop-custom" (click)="onClose()"></div>
+
+<!-- Modal -->
+<div class="modal-custom" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <!-- Header -->
+    <div class="modal-header">
+      <div>
+        <h5 class="mb-1">
+          {{ mode === "create" ? "Add Supply" : "Edit Supply" }}
+        </h5>
+        <small class="text-muted"> Configure supply information </small>
+      </div>
+
+      <button
+        type="button"
+        class="btn btn-sm btn-outline-secondary"
+        (click)="onClose()"
+      >
+        Close
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal-body">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="row g-3">
+          <!-- Name -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Name *</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="nombre"
+              placeholder="Enter supply name"
+            />
+
+            <div class="field-error" *ngIf="submitted && f['nombre'].invalid">
+              Name is required.
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Description</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="descripcion"
+              placeholder="Enter description"
+            />
+          </div>
+
+          <!-- Group -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Group *</label>
+            <p-dropdown
+              formControlName="grupo"
+              [options]="gruposOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select group"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+
+            <div class="field-error" *ngIf="submitted && f['grupo'].invalid">
+              Group is required.
+            </div>
+          </div>
+
+          <!-- Supplier -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Supplier</label>
+            <p-dropdown
+              formControlName="proveedor_id"
+              [options]="proveedoresOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select supplier"
+              [filter]="true"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+          </div>
+
+          <!-- Unit -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Unit</label>
+            <p-dropdown
+              formControlName="unidad_id"
+              [options]="unidadesOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select unit"
+              [filter]="true"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+          </div>
+
+          <!-- Quantity -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Quantity</label>
+            <p-inputNumber
+              formControlName="cantidad"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="4"
+              mode="decimal"
+              inputStyleClass="w-100"
+              styleClass="w-100"
+              placeholder="Enter quantity"
+            ></p-inputNumber>
+          </div>
+
+          <!-- Stock ideal -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Ideal Stock</label>
+            <p-inputNumber
+              formControlName="stock_ideal"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="2"
+              mode="decimal"
+              inputStyleClass="w-100"
+              styleClass="w-100"
+              placeholder="Enter ideal stock"
+            ></p-inputNumber>
+          </div>
+
+          <!-- Stock -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Current Stock</label>
+            <p-inputNumber
+              formControlName="stock"
+              [min]="0"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="2"
+              mode="decimal"
+              inputStyleClass="w-100"
+              styleClass="w-100"
+              placeholder="Enter current stock"
+            ></p-inputNumber>
+          </div>
+
+          <!-- Status -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Status *</label>
+            <p-dropdown
+              formControlName="estado"
+              [options]="estadoOptions"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select status"
+              appendTo="body"
+              class="w-100"
+            ></p-dropdown>
+
+            <div class="field-error" *ngIf="submitted && f['estado'].invalid">
+              Status is required.
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="modal-footer mt-4">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="onClose()"
+          >
+            Cancel
+          </button>
+
+          <button type="submit" class="btn btn-primary">
+            {{ mode === "create" ? "Save Supply" : "Update Supply" }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
