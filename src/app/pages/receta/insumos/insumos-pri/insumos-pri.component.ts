@@ -2,11 +2,16 @@ import { Component } from '@angular/core';
 import { InsumosListaComponent } from '../insumos-lista/insumos-lista.component';
 import { NgIf } from '@angular/common';
 import { InsumoService } from '../../../../core/services/insumo.service';
-import { Insumo } from '../../../../core/models/insumo.model';
+import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
 import { InsumosUpdInsComponent } from '../insumos-upd-ins/insumos-upd-ins.component';
+import { ProveedorService } from '../../../../core/services/ProveedorService';
+import { forkJoin } from 'rxjs';
+import { Unidad } from '../../../../core/models/unidad.model';
+import { UnidadService } from '../../../../core/services/unidad.service';
 
 @Component({
   selector: 'app-insumos-pri',
+  standalone: true,
   imports: [NgIf, InsumosListaComponent, InsumosUpdInsComponent],
   templateUrl: './insumos-pri.component.html',
   styleUrl: './insumos-pri.component.scss',
@@ -20,6 +25,8 @@ export class InsumosPriComponent {
 
   constructor(
     private insumoService: InsumoService,
+    private proveedorService: ProveedorService,
+    private unidadService: UnidadService,
     //, private toast: ToastrService
   ) {}
 
@@ -29,20 +36,22 @@ export class InsumosPriComponent {
   }
 
   load(): void {
-    console.log('[Locations] load() start');
     this.loading = true;
 
-    this.insumoService.getAll().subscribe({
-      next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
-        this.insumo = data ?? [];
-        this.loading = false;
+    forkJoin({
+      insumos: this.insumoService.getAll(),
+    }).subscribe({
+      next: ({ insumos }) => {
+        this.insumo = insumos ?? [];
       },
       error: (err) => {
-        console.error('[Locations] GET error:', err);
+        console.error('[LOAD] error:', err);
         this.loading = false;
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {
+        this.loading = false;
+        console.log('[LOAD] complete');
+      },
     });
   }
 
@@ -55,6 +64,7 @@ export class InsumosPriComponent {
   openEdit(insumo: Insumo) {
     this.modalMode = 'edit';
     this.selectedInsunmos = insumo;
+
     this.showAddInsumoModal = true;
   }
   closeModal(): void {
@@ -63,6 +73,10 @@ export class InsumosPriComponent {
   }
 
   handleSubmit(payload: any): void {
+    console.log('[PARENT] modalMode:', this.modalMode);
+    console.log('[PARENT] payload recibido:', payload);
+    console.log('[PARENT] selectedInsunmos:', this.selectedInsunmos);
+
     if (this.modalMode === 'create') {
       this.insumoService.create(payload).subscribe({
         next: () => {
@@ -74,7 +88,15 @@ export class InsumosPriComponent {
         },
       });
     } else if (this.selectedInsunmos?.insumo_id) {
-      this.insumoService.update(this.selectedInsunmos).subscribe({
+      const insumoToUpdate: Insumo = {
+        ...this.selectedInsunmos,
+        ...payload,
+        insumo_id: this.selectedInsunmos.insumo_id,
+      };
+
+      console.log('[PARENT] insumoToUpdate:', insumoToUpdate);
+
+      this.insumoService.update(insumoToUpdate).subscribe({
         next: () => {
           this.closeModal();
           this.load();

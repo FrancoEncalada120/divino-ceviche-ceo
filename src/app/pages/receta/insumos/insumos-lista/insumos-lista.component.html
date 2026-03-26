@@ -14,7 +14,7 @@
       <th>Id</th>
       <th>Status</th>
       <th>Ingredient Name</th>
-      <th>Description</th>
+      <!-- <th>Description</th> -->
       <th>Group</th>
       <th>Supplier</th>
       <th>Unit</th>
@@ -46,9 +46,9 @@
       </td>
 
       <!-- Description -->
-      <td>
+      <!-- <td>
         {{ item.descripcion || "—" }}
-      </td>
+      </td> -->
 
       <!-- Group -->
       <td>
@@ -72,8 +72,8 @@
 
       <!-- Actions -->
       <td class="text-end">
-        <button class="btn btn-sm btn-info m-1" (click)="onEdit(item)">
-          View
+        <button class="btn btn-sm btn-warning m-1" (click)="onEdit(item)">
+          Edit
         </button>
         <!-- <button class="btn btn-sm btn-warning m-1">Edit</button>
         <button class="btn btn-sm btn-danger m-1">Delete</button> -->

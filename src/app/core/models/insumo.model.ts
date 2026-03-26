@@ -17,10 +17,19 @@ export interface Insumo {
   stock_ideal: number;
   stock: number;
 }
-
 export interface Proveedor {
-  id: number;
+  proveedor_id: number;
   nombre: string;
+  ruc?: string | null;
+  telefono?: string | null;
+  email?: string | null;
+  direccion?: string | null;
+  contacto?: string | null;
+  estado?: string | null;
+  created_at?: string | Date | null;
+  created_by?: number | null;
+  updated_at?: string | Date | null;
+  updated_by?: number | null;
 }
 
 export interface CalcularPrecioRequest {
