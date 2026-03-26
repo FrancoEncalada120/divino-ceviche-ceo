@@ -107,11 +107,12 @@
               formControlName="cantidad"
               [min]="0"
               [minFractionDigits]="0"
-              [maxFractionDigits]="4"
+              [maxFractionDigits]="2"
               mode="decimal"
+              [useGrouping]="false"
               inputStyleClass="w-100"
               styleClass="w-100"
-              placeholder="Enter quantity"
+              placeholder="Enter ideal stock"
             ></p-inputNumber>
           </div>
 
@@ -124,6 +125,7 @@
               [minFractionDigits]="0"
               [maxFractionDigits]="2"
               mode="decimal"
+              [useGrouping]="false"
               inputStyleClass="w-100"
               styleClass="w-100"
               placeholder="Enter ideal stock"
@@ -139,6 +141,7 @@
               [minFractionDigits]="0"
               [maxFractionDigits]="2"
               mode="decimal"
+              [useGrouping]="false"
               inputStyleClass="w-100"
               styleClass="w-100"
               placeholder="Enter current stock"

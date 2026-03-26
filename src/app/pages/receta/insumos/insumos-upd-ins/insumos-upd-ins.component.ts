@@ -7,7 +7,12 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { FormGroup, ReactiveFormsModule } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -52,11 +57,26 @@ export class InsumosUpdInsComponent implements OnChanges {
     { label: 'Inactive', value: 'I' },
   ];
 
+  constructor(private fb: FormBuilder) {
+    this.form = this.fb.group({
+      nombre: [null, Validators.required],
+      descripcion: [null],
+      grupo: [null, Validators.required],
+      proveedor_id: [null],
+      unidad_id: [null],
+      cantidad: [0],
+      stock_ideal: [0],
+      stock: [0],
+      estado: ['A', Validators.required],
+    });
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['insumo'] || changes['mode']) {
       this.loadForm();
     }
   }
+
   private loadForm(): void {
     if (this.mode === 'edit' && this.insumo) {
       this.form.patchValue({
