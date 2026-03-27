@@ -1,0 +1,125 @@
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+}
+
+.modal-container {
+  background: #ffffff;
+  width: 60%;
+  max-width: 95vw;
+  border-radius: 14px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 18px 22px;
+   border-bottom: 1px solid #d1fae5; /* verde muy suave */
+  background: #ecfdf5; /* fondo verde claro */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-body {
+  padding: 22px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.modal-text {
+  font-size: 14px;
+  color: #4b5563;
+  margin-bottom: 18px;
+}
+
+/* GRID */
+.recipes-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+/* CARD */
+.recipe-card {
+  border: 1px solid #ececec;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fafafa;
+}
+
+/* NAME */
+.recipe-name {
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+/* TABLES */
+.price-tables {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+/* NUEVO */
+.price-box.current {
+  flex: 2;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+/* ANTIGUO */
+.price-box.old {
+  max-width: 140px;
+  color: #9ca3af;
+  padding: 10px;
+  text-align: right;
+  align-items: flex-end;
+}
+
+/* ROWS */
+.row-item,
+.row-total {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.price-box.old .row-item,
+.price-box.old .row-total {
+  justify-content: flex-end;
+  /* 🔥 alinea todo a la derecha */
+}
+
+.row-total {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 6px;
+  font-weight: 600;
+}
+
+/* tachado */
+.price-box.old span {
+  text-decoration: line-through;
+}
+
+/* responsive */
+@media (max-width: 900px) {
+  .recipes-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 576px) {
+  .recipes-grid {
+    grid-template-columns: 1fr;
+  }
+}

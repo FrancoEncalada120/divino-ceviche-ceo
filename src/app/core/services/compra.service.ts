@@ -23,8 +23,7 @@ export class CompraService {
     fechaIni?: string;
     fechaFin?: string;
   }): Observable<Compra[]> {
-    console.log('[CompraService] GET', this.apiUrl);
-     console.log('[CompraService] GET - params', params);
+
     return this.http.get<ApiResponse<Compra[]>>(this.apiUrl, { params: params as any }).pipe(
       map((res) => {
         const arr = res?.data;
@@ -35,7 +34,6 @@ export class CompraService {
 
   getById(id: number): Observable<Compra | null> {
     const url = `${this.apiUrl}/${id}`;
-    console.log('[CompraService] GET', url);
 
     return this.http.get<ApiResponse<Compra>>(url).pipe(
       map((res) => {
@@ -46,8 +44,7 @@ export class CompraService {
   }
 
   create(compra: Partial<Compra>): Observable<Compra> {
-    console.log('[CompraService] POST', this.apiUrl);
-    console.log('[CompraService] data', compra);
+
 
     return this.http.post<ApiResponse<Compra>>(this.apiUrl, compra).pipe(
       map((res) => {
@@ -60,8 +57,7 @@ export class CompraService {
 
   update(compra: Compra): Observable<Compra> {
     const url = `${this.apiUrl}/${compra.compra_id}`;
-    console.log('[CompraService] PUT', url);
-    console.log('[CompraService] data', compra);
+
 
     return this.http.put<ApiResponse<Compra>>(url, compra).pipe(
       map((res) => {
@@ -83,8 +79,6 @@ export class CompraService {
     userId?: number,
   ): Observable<CompraFullResponse> {
     const url = `${this.apiUrl}/full`;
-    console.log('[CompraService] POST', url);
-    console.log('[CompraService] data', payload);
 
     const options = userId
       ? { headers: { 'x-user-id': String(userId) } }
@@ -106,8 +100,7 @@ export class CompraService {
     userId?: number,
   ): Observable<CompraFullResponse> {
     const url = `${this.apiUrl}/full`;
-    console.log('[CompraService] POST', url);
-    console.log('[CompraService] data', payload);
+
 
     const options = userId
       ? { headers: { 'x-user-id': String(userId) } }

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Location } from '../../../core/models/location.model';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { DashboardResponse } from '../../../core/models/dashboard.models';
@@ -16,9 +16,6 @@ import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe],
-  providers: [
-    DecimalPipe    // 👈 NECESARIO
-  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })

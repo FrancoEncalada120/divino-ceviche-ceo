@@ -7,10 +7,14 @@ export interface Receta {
   descripcion: string | null;
   estado: string;
   porciones: number;
-  porcenta_venta?: number;
-  costo_preparacion?: number;
-  costo_neto?: number;
-  costo_total?: number;
+  porcenta_venta: number;
+  costo_preparacion: number;
+  costo_neto: number;
+  costo_total: number;
+
+  porcentaje_venta_old: number;
+  costo_neto_old: number;
+  costo_total_old: number;
 
   detalles?: RecetaDetalle[];
 

@@ -94,7 +94,6 @@ export class PurchaseUpdInsComponent {
 
       },
       complete: () => {
-        console.log('[PurchasePriComponent] GET complete');
 
         if (this.mode === 'edit' && this.compras) {
 

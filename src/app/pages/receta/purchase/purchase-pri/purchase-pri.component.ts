@@ -8,10 +8,14 @@ import { CompraFullCreate } from '../../../../core/models/compra-full-create.mod
 import { CompraFullResponse } from '../../../../core/models/compra-full-response.model';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
+import { ButtonModule } from 'primeng/button';
+import { Receta } from '../../../../core/models/receta.model';
+import { PurchaseConfirmationComponent } from "../purchase-confirmation/purchase-confirmation.component";
 
 @Component({
   selector: 'app-purchase-pri',
-  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule],
+  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule, ButtonModule, PurchaseConfirmationComponent],
   templateUrl: './purchase-pri.component.html',
   styleUrl: './purchase-pri.component.scss'
 })
@@ -19,13 +23,20 @@ export class PurchasePriComponent {
 
   modalMode: 'create' | 'edit' = 'create';
   showAddLocationModal = false;
+  showConfirmanModal = false;
+  txtDetail: string = '';
+  txtSummary: string = '';
 
   compras: Compra[] = [];
+  recetas_impactadas: Receta[] = [];
+
   selectedItem: Compra | null = null;
   loading = false;
   dateRange: Date[] | null = null;
 
-  constructor(private service: CompraService
+  constructor(
+    private service: CompraService,
+    private messageService: MessageService,
   ) { }
 
   ngOnInit(): void {
@@ -36,8 +47,6 @@ export class PurchasePriComponent {
     yesterday.setDate(yesterday.getDate() - 1);
 
     this.dateRange = [new Date(yesterday), new Date(today)];
-
-    console.log('Init compras...', this.dateRange);
 
     this.load();
   }
@@ -50,15 +59,8 @@ export class PurchasePriComponent {
       return;
     }
 
-    console.log('Cargando compras...', this.dateRange);
-
-    // const startDate = this.dateRange[0].toISOString().split('T')[0];
-    // const endDate = this.dateRange[1].toISOString().split('T')[0];
-
     const startDate = this.formatDate(this.dateRange[0]);
     const endDate = this.formatDate(this.dateRange[1]);
-
-    console.log('Cargando compras con rango de fechas:', { startDate, endDate });
 
     this.service.getAll({
       fechaIni: startDate, // string
@@ -68,14 +70,12 @@ export class PurchasePriComponent {
         this.compras = data ?? [];
         this.loading = false;
 
-        console.log('[Compras] GET success:', this.compras);
-
       },
       error: (err) => {
         console.error('[Compras] GET error:', err);
         this.loading = false;
       },
-      complete: () => console.log('[PurchasePriComponent] GET complete'),
+      complete: () => { },
     });
 
 
@@ -90,6 +90,10 @@ export class PurchasePriComponent {
 
   closeModal() {
     this.showAddLocationModal = false;
+  }
+
+  closeModalConfirm() {
+    this.showConfirmanModal = false;
   }
 
   handleSubmit(compra: Compra) {
@@ -113,12 +117,16 @@ export class PurchasePriComponent {
     action$.subscribe({
       next: (savedLocation: CompraFullResponse) => {
 
-        console.log('[Compras] handleSubmit:', savedLocation);
-
         if (isCreate) {
           // ➕ CREATE → agregar al array
           this.compras.push(savedLocation.compra);
           this.load(); // recargar para mostrar la nueva compra
+
+          this.recetas_impactadas = savedLocation.receta_impactada;
+          this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
+          this.txtSummary = 'Purchase created successfully';
+          this.showConfirmanModal = true;
+
         } else {
           // ✏️ UPDATE → reemplazar en el array
           const index = this.compras.findIndex(
@@ -133,7 +141,16 @@ export class PurchasePriComponent {
         this.closeModal();
       },
       error: (err) => {
-        console.error('[Locations] save error:', err);
+
+        //console.error('[Locations] save error:', err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error?.message
+        });
+
+
       }
     });
 
@@ -155,12 +172,9 @@ export class PurchasePriComponent {
     this.selectedItem = goal;
     this.showAddLocationModal = false;
 
-
-
   }
 
   onLocationsChangeDate(event: any) {
-    console.log('Rango de fechas cambiado:', event);
     this.load();
   }
 

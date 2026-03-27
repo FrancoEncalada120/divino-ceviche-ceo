@@ -1,13 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { DecimalPipe } from '@angular/common';
+import { formatNumber } from '@angular/common';
 
 @Pipe({
   name: 'txtsigno',
-  standalone: true
+  standalone: true,
 })
 export class TxtsignoPipe implements PipeTransform {
 
-  constructor(private decimalPipe: DecimalPipe) {}
+  constructor() { }
 
   transform(value: any, signo: string): string {
     if (value === null || value === undefined) {
@@ -27,7 +27,8 @@ export class TxtsignoPipe implements PipeTransform {
       return '-';
     }
 
-    const formatted = this.decimalPipe.transform(numericValue, '1.2-2');
+    //const formatted = this.decimalPipe.transform(numericValue, '1.2-2');
+    const formatted = formatNumber(numericValue, 'en-US', '1.2-2');
 
     if (!formatted) {
       return '-';

@@ -1,0 +1,119 @@
+<div class="modal-backdrop" (click)="onClose()">
+  <div class="modal-container" (click)="$event.stopPropagation()">
+
+    <!-- HEADER -->
+    <div class="modal-header">
+      <h2>{{ txtSummary }}</h2>
+      <button class="close-btn" (click)="onClose()">✕</button>
+    </div>
+
+    <!-- BODY -->
+    <div class="modal-body">
+
+      <!-- Mensaje -->
+      <p class="modal-text">
+        {{ txtDetail }}
+      </p>
+
+      <!-- LISTA -->
+      <div class="recipes-grid" *ngIf="recetas_impactadas!.length > 0">
+
+        <div class="recipe-card" *ngFor="let item of recetas_impactadas">
+
+          <!-- Nombre -->
+          <div class="recipe-name">
+            {{ item.nombre }}
+          </div>
+
+          <!-- TABLAS -->
+          <div class="price-tables">
+
+            <!-- NUEVO -->
+            <div class="price-box current">
+
+              <div class="row-item">
+                <span>Subtotal</span>
+                <span>{{ item.costo_total | txtsigno:'$' }}</span>
+              </div>
+
+              <div class="row-item">
+                <span>20%</span>
+                <!-- 🔥 si luego calculas porcentaje real -->
+                <span>{{ item.porcenta_venta| txtsigno:'$' }}</span>
+              </div>
+
+              <div class="row-item">
+                <span>Labor</span>
+                <span>{{ item.costo_preparacion | txtsigno:'$' }}</span>
+              </div>
+
+              <div class="row-total">
+                <span>Total</span>
+                <span>
+                  {{
+                  (+item.costo_total + +item.costo_preparacion + +item.porcenta_venta)
+                  | txtsigno:'$'
+                  }}
+                </span>
+              </div>
+
+              <div class="row-item">
+                <span>Portion</span>
+                  <span>{{ item.porciones }}</span>
+              </div>
+
+              <div class="row-total">
+                <span>Total Portion</span>
+                <span>
+                  {{ item.costo_neto }}
+                </span>
+              </div>
+
+            </div>
+
+            <!-- ANTERIOR -->
+            <div class="price-box old">
+
+              <div class="row-item">
+                <span>{{ item.costo_total_old | txtsigno:'$' }}</span>
+              </div>
+
+              <div class="row-item">
+                <span>{{ item.porcentaje_venta_old | txtsigno:'$' }}</span>
+              </div>
+
+              <div class="row-item">
+                <span>{{ item.costo_preparacion | txtsigno:'$' }}</span>
+              </div>
+
+              <div class="row-total">
+                <span> {{
+                  (+item.costo_total_old + +item.costo_preparacion + +item.porcentaje_venta_old)
+                  | txtsigno:'$'
+                  }}</span>
+              </div>
+
+              <div class="row-item">
+                <span>{{ item.porciones }}</span>
+              </div>
+
+              <div class="row-total">
+                <span> {{ item.costo_neto_old }}</span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Estado vacío -->
+      <div *ngIf="!recetas_impactadas!.length" class="empty-state">
+        No impacted recipes found
+      </div>
+
+    </div>
+
+  </div>
+</div>
