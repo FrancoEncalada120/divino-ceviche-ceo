@@ -1,30 +1,36 @@
-<div class="container-fluid py-3 px-0" style="width: 100%;">
-
+<div class="container-fluid py-3 px-0" style="width: 100%">
   <div class="page">
     <h2 class="title">Low Stock Alert</h2>
-    <p class="subtitle">Items listed below have inventory levels lower than the recommended stock level and should be
-      replenished.</p>
+    <p class="subtitle">
+      Items listed below have inventory levels lower than the recommended stock
+      level and should be replenished.
+    </p>
 
     <div class="row g-3 mb-4 bg-white">
-
-      <div class="col-12 col-md-6  mb-3">
+      <div class="col-12 col-md-6 mb-3">
         <label class="filter-label d-block mb-1">
           <i class="pi pi-map-marker"></i>
         </label>
 
-        <input type="text" pInputText placeholder="Search items..." [(ngModel)]="searchText"
-          (ngModelChange)="onSearch($event)" class="w-100">
-
+        <input
+          type="text"
+          pInputText
+          placeholder="Search items..."
+          [(ngModel)]="searchText"
+          (ngModelChange)="onSearch($event)"
+          class="w-100"
+        />
       </div>
-
     </div>
 
-
     <div class="row">
-
-      <p-table [value]="insumos" styleClass="p-datatable-sm w-100" [paginator]="true" [rows]="10"
-        [rowsPerPageOptions]="[10, 20, 50]">
-
+      <p-table
+        [value]="insumos"
+        styleClass="p-datatable-sm w-100"
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 50]"
+      >
         <ng-template pTemplate="header">
           <tr>
             <th>#</th>
@@ -39,24 +45,33 @@
 
         <ng-template pTemplate="body" let-item>
           <tr [ngClass]="item.stock < item.stock_ideal ? 'row-bajo' : 'row-ok'">
-
             <td>
-              <i class="pi"
-                [ngClass]="item.stock < item.stock_ideal ? 'pi-times-circle text-danger' : 'pi-check-circle text-success'">
+              <i
+                class="pi"
+                [ngClass]="
+                  item.stock < item.stock_ideal
+                    ? 'pi-times-circle text-danger'
+                    : 'pi-check-circle text-success'
+                "
+              >
               </i>
             </td>
 
-            <td>{{ item.nombre }}</td>
+            <td>{{ item.nombre }} - {{ item.unidad?.unidad_id }}</td>
 
             <td>
-              {{item.cantidad}} x {{item.unidad?.abreviatura}}
-              {{item.proveedor?.nombre}}
+              {{ item.cantidad }} x {{ item.unidad?.abreviatura }}
+              {{ item.proveedor?.nombre }}
             </td>
 
             <td>
-
-              <span class="badge" [ngClass]="item.stock < item.stock_ideal ? 'badge-bajo' : 'badge-ok'">
-                {{ item.stock}}
+              <span
+                class="badge"
+                [ngClass]="
+                  item.stock < item.stock_ideal ? 'badge-bajo' : 'badge-ok'
+                "
+              >
+                {{ item.stock }}
               </span>
               <!-- <span class="badge" [ngClass]="item.stock < item.stock_ideal ? 'badge-bajo' : 'badge-ok'">
                 {{ item.stock * item.cantidad}} x {{item.unidad?.abreviatura}}
@@ -67,14 +82,14 @@
             <td>{{ item.stock - item.stock_ideal }}</td>
 
             <td>
-              <button class="btn btn-sm m-1" (click)="mostrarPopupKardex(item.insumo_id, item)">
+              <button
+                class="btn btn-sm m-1"
+                (click)="mostrarPopupKardex(item.insumo_id, item)"
+              >
                 <i class="pi pi-eye"></i>
               </button>
             </td>
-
           </tr>
-
-
         </ng-template>
 
         <!-- Empty -->
@@ -85,15 +100,14 @@
             </td>
           </tr>
         </ng-template>
-
       </p-table>
-
     </div>
-
-
   </div>
 </div>
 
-
-<app-inventory-list *ngIf="showInventoryModal" (close)="closeModal()" [insumo]="insumoInventory"
-  [inventoryList]="inventoryList"></app-inventory-list>
+<app-inventory-list
+  *ngIf="showInventoryModal"
+  (close)="closeModal()"
+  [insumo]="insumoInventory"
+  [inventoryList]="inventoryList"
+></app-inventory-list>

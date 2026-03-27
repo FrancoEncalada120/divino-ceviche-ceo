@@ -16,6 +16,7 @@ export interface Insumo {
   cantidad: number;
   stock_ideal: number;
   stock: number;
+  precio_final: number;
 }
 export interface Proveedor {
   proveedor_id: number;

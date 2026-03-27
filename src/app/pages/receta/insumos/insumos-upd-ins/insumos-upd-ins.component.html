@@ -5,21 +5,31 @@
 <div class="modal-custom" role="dialog" aria-modal="true">
   <div class="modal-card">
     <!-- Header -->
+    <!-- Header -->
     <div class="modal-header">
       <div>
         <h5 class="mb-1">
           {{ mode === "create" ? "Add Supply" : "Edit Supply" }}
         </h5>
-        <small class="text-muted"> Configure supply information </small>
+        <small class="text-muted">Configure supply information</small>
       </div>
 
-      <button
-        type="button"
-        class="btn btn-sm btn-outline-secondary"
-        (click)="onClose()"
-      >
-        Close
-      </button>
+      <div class="header-right">
+        <span *ngIf="mode === 'edit'" class="price-label">
+          Final Price:
+          <strong class="price-value">
+            {{ form.get("precio_final")?.value || 0 | number: "1.2-2" }}
+          </strong>
+        </span>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-outline-secondary"
+          (click)="onClose()"
+        >
+          Close
+        </button>
+      </div>
     </div>
 
     <!-- Body -->
@@ -117,7 +127,7 @@
           </div>
 
           <!-- Stock ideal -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="form-label">Ideal Stock</label>
             <p-inputNumber
               formControlName="stock_ideal"
@@ -133,7 +143,7 @@
           </div>
 
           <!-- Stock -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="form-label">Current Stock</label>
             <p-inputNumber
               formControlName="stock"
@@ -149,7 +159,7 @@
           </div>
 
           <!-- Status -->
-          <div class="col-12 col-md-6">
+          <div class="col-12 col-md-4">
             <label class="form-label">Status *</label>
             <p-dropdown
               formControlName="estado"
@@ -165,6 +175,8 @@
               Status is required.
             </div>
           </div>
+          <!-- Final Price Card -->
+          <!-- Final Price Summary (ONLY UPDATE) -->
         </div>
 
         <!-- Footer -->

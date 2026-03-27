@@ -100,6 +100,7 @@ export class InsumosUpdInsComponent implements OnChanges {
       stock_ideal: [0],
       stock: [0],
       estado: ['A', Validators.required],
+      precio_final: [0],
     });
   }
 
@@ -128,6 +129,7 @@ export class InsumosUpdInsComponent implements OnChanges {
         stock_ideal: Number(this.insumo.stock_ideal ?? 0),
         stock: Number(this.insumo.stock ?? 0),
         estado: this.insumo.estado ?? 'A',
+        precio_final: Number(this.insumo.precio_final ?? 0),
       });
     } else {
       this.form.reset({

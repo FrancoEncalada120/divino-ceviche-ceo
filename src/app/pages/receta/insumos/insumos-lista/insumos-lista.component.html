@@ -1,4 +1,14 @@
+<div class="mb-2 d-flex justify-content-end">
+  <input
+    type="text"
+    pInputText
+    placeholder="Search..."
+    (input)="onGlobalFilter($event)"
+    class="form-control w-25"
+  />
+</div>
 <p-table
+  #dt
   [value]="insumos"
   responsiveLayout="scroll"
   styleClass="p-datatable-sm"
@@ -7,6 +17,14 @@
   [rowsPerPageOptions]="[10, 20, 50]"
   [showCurrentPageReport]="true"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+  [globalFilterFields]="[
+    'insumo_id',
+    'nombre',
+    'grupo',
+    'proveedor.nombre',
+    'unidad.nombre',
+    'unidad.abreviatura',
+  ]"
 >
   <!-- Header -->
   <ng-template pTemplate="header">
