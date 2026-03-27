@@ -5,7 +5,7 @@ import { environment } from '../../../environments/environment';
 
 import { Compra } from '../models/compra.model';
 import { CompraFullCreate } from '../models/compra-full-create.model';
-import { CompraFullResponse } from '../models/compra-full-response.model';
+import { CompraFullResponse, DeleteCompraResponse } from '../models/compra-full-response.model';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -32,41 +32,41 @@ export class CompraService {
     );
   }
 
-  getById(id: number): Observable<Compra | null> {
-    const url = `${this.apiUrl}/${id}`;
+  // getById(id: number): Observable<Compra | null> {
+  //   const url = `${this.apiUrl}/${id}`;
 
-    return this.http.get<ApiResponse<Compra>>(url).pipe(
-      map((res) => {
-        if (!res?.success) return null;
-        return res.data ?? null;
-      }),
-    );
-  }
+  //   return this.http.get<ApiResponse<Compra>>(url).pipe(
+  //     map((res) => {
+  //       if (!res?.success) return null;
+  //       return res.data ?? null;
+  //     }),
+  //   );
+  // }
 
-  create(compra: Partial<Compra>): Observable<Compra> {
-
-
-    return this.http.post<ApiResponse<Compra>>(this.apiUrl, compra).pipe(
-      map((res) => {
-        if (!res.success)
-          throw new Error(res.message || 'Error creating compra');
-        return res.data;
-      }),
-    );
-  }
-
-  update(compra: Compra): Observable<Compra> {
-    const url = `${this.apiUrl}/${compra.compra_id}`;
+  // create(compra: Partial<Compra>): Observable<Compra> {
 
 
-    return this.http.put<ApiResponse<Compra>>(url, compra).pipe(
-      map((res) => {
-        if (!res.success)
-          throw new Error(res.message || 'Error updating compra');
-        return res.data;
-      }),
-    );
-  }
+  //   return this.http.post<ApiResponse<Compra>>(this.apiUrl, compra).pipe(
+  //     map((res) => {
+  //       if (!res.success)
+  //         throw new Error(res.message || 'Error creating compra');
+  //       return res.data;
+  //     }),
+  //   );
+  // }
+
+  // update(compra: Compra): Observable<Compra> {
+  //   const url = `${this.apiUrl}/${compra.compra_id}`;
+
+
+  //   return this.http.put<ApiResponse<Compra>>(url, compra).pipe(
+  //     map((res) => {
+  //       if (!res.success)
+  //         throw new Error(res.message || 'Error updating compra');
+  //       return res.data;
+  //     }),
+  //   );
+  // }
 
   /**
    * Crea compra + detalles en una sola llamada
@@ -95,26 +95,45 @@ export class CompraService {
       );
   }
 
-  updateFull(
-    payload: CompraFullCreate,
-    userId?: number,
-  ): Observable<CompraFullResponse> {
-    const url = `${this.apiUrl}/full`;
+  deleteCompra(
+    compraId: number,
+    userId?: number
+  ): Observable<DeleteCompraResponse> {
 
-
-    const options = userId
-      ? { headers: { 'x-user-id': String(userId) } }
-      : undefined;
+    const url = `${this.apiUrl}/${compraId}`;
 
     return this.http
-      .post<ApiResponse<CompraFullResponse>>(url, payload, options)
+      .delete<ApiResponse<DeleteCompraResponse>>(url)
       .pipe(
         map((res) => {
-          if (!res.success)
-            throw new Error(res.message || 'Error creating compra full');
+          if (!res.success) {
+            throw new Error(res.message || 'Error deleting compra');
+          }
           return res.data;
-        }),
+        })
       );
   }
+
+  // updateFull(
+  //   payload: CompraFullCreate,
+  //   userId?: number,
+  // ): Observable<CompraFullResponse> {
+  //   const url = `${this.apiUrl}/full`;
+
+
+  //   const options = userId
+  //     ? { headers: { 'x-user-id': String(userId) } }
+  //     : undefined;
+
+  //   return this.http
+  //     .post<ApiResponse<CompraFullResponse>>(url, payload, options)
+  //     .pipe(
+  //       map((res) => {
+  //         if (!res.success)
+  //           throw new Error(res.message || 'Error creating compra full');
+  //         return res.data;
+  //       }),
+  //     );s
+  // }
 
 }

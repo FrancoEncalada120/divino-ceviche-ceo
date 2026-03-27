@@ -8,3 +8,7 @@ export interface CompraFullResponse {
   total_compra: number;
   receta_impactada: Receta[]; // Nombres de recetas impactadas
 }
+
+export interface DeleteCompraResponse {
+  message: string;
+}

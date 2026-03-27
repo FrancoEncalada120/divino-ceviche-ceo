@@ -110,9 +110,7 @@ export class PurchasePriComponent {
       })) ?? []
     };
 
-    const action$ = isCreate
-      ? this.service.createFull(CompraFullCreate, compra.created_by ?? undefined)
-      : this.service.updateFull(CompraFullCreate);
+    const action$ = this.service.createFull(CompraFullCreate, compra.created_by ?? undefined)
 
     action$.subscribe({
       next: (savedLocation: CompraFullResponse) => {
@@ -127,15 +125,6 @@ export class PurchasePriComponent {
           this.txtSummary = 'Purchase created successfully';
           this.showConfirmanModal = true;
 
-        } else {
-          // ✏️ UPDATE → reemplazar en el array
-          const index = this.compras.findIndex(
-            l => l.compra_id === savedLocation.compra.compra_id
-          );
-
-          if (index !== -1) {
-            this.compras[index] = savedLocation.compra;
-          }
         }
 
         this.closeModal();
@@ -168,10 +157,45 @@ export class PurchasePriComponent {
     this.showAddLocationModal = true;
   }
 
-  delete(goal: Compra) {
-    this.selectedItem = goal;
+
+  delete(compra: Compra) {
+
+    this.selectedItem = compra;
     this.showAddLocationModal = false;
 
+    if (!compra?.compra_id) return;
+
+    const confirmDelete = confirm(
+      `¿Seguro que deseas eliminar la compra ${compra.compra_id}?`
+    );
+
+    if (!confirmDelete) return;
+
+    this.service.deleteCompra(compra.compra_id).subscribe({
+      next: () => {
+
+        // 🔥 eliminar del array local (UX rápida)
+        this.compras = this.compras.filter(
+          c => c.compra_id !== compra.compra_id
+        );
+
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Deleted',
+          detail: 'Compra eliminada correctamente',
+        });
+
+      },
+      error: (err) => {
+        console.error('[Compras] delete error:', err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.message || 'Error eliminando compra',
+        });
+      }
+    });
   }
 
   onLocationsChangeDate(event: any) {
