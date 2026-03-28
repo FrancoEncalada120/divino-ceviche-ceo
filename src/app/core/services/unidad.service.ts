@@ -17,7 +17,7 @@ export class UnidadService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Unidad[]> {
-    console.log('[UnidadService] GET', this.apiUrl);
+
 
     return this.http.get<ApiResponse<Unidad[]>>(this.apiUrl).pipe(
       map((res) => {
@@ -29,7 +29,7 @@ export class UnidadService {
 
   getById(id: number): Observable<Unidad | null> {
     const url = `${this.apiUrl}/${id}`;
-    console.log('[UnidadService] GET', url);
+
 
     return this.http.get<ApiResponse<Unidad>>(url).pipe(
       map((res) => {
@@ -70,7 +70,7 @@ export class UnidadService {
   getByGrupo(grupo: string): Observable<Unidad[]> {
     const url = `${this.apiUrl}/by-grupo?grupo=${grupo}`;
 
-    console.log('[UnidadService] GET', url);
+
 
     return this.http.get<ApiResponse<Unidad[]>>(url).pipe(
       map((res) => {

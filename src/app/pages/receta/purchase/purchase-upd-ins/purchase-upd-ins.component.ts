@@ -58,22 +58,21 @@ export class PurchaseUpdInsComponent {
 
     this.locationService.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.locations = data ?? [];
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => { },
     });
 
-    this.service.getAll().subscribe({
+    this.service.getInsumoAll().subscribe({
       next: (data) => {
-        this.cInsumo = data ?? [];
+        this.cInsumo = data.insumos ?? [];
 
-        this.cInsumo = data.map(i => ({
+        this.cInsumo = data.insumos.map(i => ({
           ...i,
-          nombreCompleto: `${i.nombre}(${Number(i.cantidad || 0).toFixed(0)}x${i.unidad.abreviatura}) - ${i.proveedor?.nombre || 'Sin proveedor'}`
+          nombreCompleto: `${i.insumo_id}-${i.nombre}(${Number(i.cantidad || 0).toFixed(0)}x${i.unidad.abreviatura}) - ${i.proveedor?.nombre || 'Sin proveedor'}`
         }));
 
       },
@@ -81,7 +80,7 @@ export class PurchaseUpdInsComponent {
         console.error('[cInsumo] GET error:', err);
 
       },
-      complete: () => console.log('[PurchasePriComponent] GET complete'),
+      complete: () => { }
     });
 
     this.sUnid.getAll().subscribe({
@@ -106,8 +105,6 @@ export class PurchaseUpdInsComponent {
             }
           });
 
-          console.log('Loaded compra for editing:', this.formData, this.items);
-
         }
 
       },
@@ -126,7 +123,6 @@ export class PurchaseUpdInsComponent {
   };
 
   onClose() {
-    console.log('Closing modal');
     this.close.emit();
   }
 
@@ -140,9 +136,8 @@ export class PurchaseUpdInsComponent {
       cantidad: item.cantidad,
       precio: item.precio,
       total: item.cantidad * item.precio,
+      grupo_id: item.grupo_id,
     }));
-
-    console.log('Submitting form with data:', this.formData);
 
     this.submit.emit(this.formData as Compra);
   }
@@ -161,7 +156,8 @@ export class PurchaseUpdInsComponent {
       insumo_id: 0,
       precio: 0,
       total: 0,
-      unidad_id: 0
+      unidad_id: 0,
+      grupo_id: 0,
     });
   }
 
@@ -186,8 +182,14 @@ export class PurchaseUpdInsComponent {
     const insumoSeleccionado = this.cInsumo.find(i => i.insumo_id === insumoId);
     if (insumoSeleccionado) {
 
-      row.unidad_id = insumoSeleccionado.unidad.unidad_id; // asignar unidad automáticamente
+      console.log('Insumo seleccionado:', insumoSeleccionado);
 
+      row.unidad_id = insumoSeleccionado.unidad.unidad_id; // asignar unidad automáticamente
+      if (insumoSeleccionado.grupo_detalle && insumoSeleccionado.grupo_detalle.length > 0) {
+        row.grupo_id = insumoSeleccionado.grupo_detalle[0].grupo_id;
+      } else {
+        row.grupo_id = 0; // o algún valor por defecto
+      }
       // row.unidadesFiltradas = this.cUnidad.filter(u =>
       //   u.grupo === insumoSeleccionado.grupo
       // );

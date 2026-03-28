@@ -33,7 +33,7 @@ export class RecipePriComponent {
     private recetaService: RecetaService,
     private insumosService: InsumoService,
     private unidadService: UnidadService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     console.log('[Recetas] ngOnInit');
@@ -61,16 +61,34 @@ export class RecipePriComponent {
   }
 
   loadInsumos(): void {
-    this.insumosService.getAll().subscribe({
+    this.insumosService.getInsumoAll({
+      bGrupo: 1,
+    }).subscribe({
       next: (data) => {
-        console.log('[Insumos] GET ok, items:', data?.length, data);
 
-        const arr = data ?? [];
+        const arr = data.insumos ?? [];
+        const arrGrupo = data.grupos ?? [];
+
         this.insumosOptions = arr.map((x: any) => ({
           label: x.nombre, // ajusta si tu campo se llama distinto
           value: Number(x.insumo_id),
           grupo: x.grupo,
         }));
+
+        this.insumosOptions.unshift(
+          ...arrGrupo.flatMap((g: any) =>
+            g.detalles.map((d: any) => ({
+              label: "Grupo: " + g.grupo_nombre,
+              value: d.insumo.insumo_id,
+              grupo: g.grupo_id,
+            }))
+          )
+        );
+
+        this.insumosOptions = this.insumosOptions.sort((a, b) =>
+          a.label.localeCompare(b.label)
+        );
+
       },
       error: (err) => console.error('[Insumos] GET error:', err),
       complete: () => console.log('[Insumos] GET complete'),

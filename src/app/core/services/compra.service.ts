@@ -84,6 +84,8 @@ export class CompraService {
       ? { headers: { 'x-user-id': String(userId) } }
       : undefined;
 
+    console.log('Creating compra full with payload:', payload, 'and userId:', userId);
+
     return this.http
       .post<ApiResponse<CompraFullResponse>>(url, payload, options)
       .pipe(

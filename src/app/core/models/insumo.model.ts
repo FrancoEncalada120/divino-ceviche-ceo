@@ -1,5 +1,6 @@
 import { User } from './user.models';
 import { Unidad } from './unidad.model';
+import { GrupoDetalle } from './grupos.model';
 
 export interface Insumo {
   insumo_id: number;
@@ -17,6 +18,7 @@ export interface Insumo {
   stock_ideal: number;
   stock: number;
   precio_final: number;
+  grupo_detalle: GrupoDetalle[];
 }
 export interface Proveedor {
   proveedor_id: number;

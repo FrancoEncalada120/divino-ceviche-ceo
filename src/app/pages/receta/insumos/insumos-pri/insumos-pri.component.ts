@@ -39,10 +39,10 @@ export class InsumosPriComponent {
     this.loading = true;
 
     forkJoin({
-      insumos: this.insumoService.getAll(),
+      insumos: this.insumoService.getInsumoAll(),
     }).subscribe({
       next: ({ insumos }) => {
-        this.insumo = insumos ?? [];
+        this.insumo = insumos.insumos ?? [];
       },
       error: (err) => {
         console.error('[LOAD] error:', err);

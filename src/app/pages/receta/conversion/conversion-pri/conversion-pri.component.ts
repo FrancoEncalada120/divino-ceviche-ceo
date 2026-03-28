@@ -32,7 +32,7 @@ export class ConversionPriComponent {
     private conversionService: RecConversionService,
     private insumosService: InsumoService,
     private unidadService: UnidadService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     console.log('[Conversion] ngOnInit');
@@ -61,15 +61,21 @@ export class ConversionPriComponent {
   }
 
   loadInsumos(): void {
-    this.insumosService.getAll().subscribe({
+    this.insumosService.getInsumoAll().subscribe({
       next: (data) => {
-        const arr = data ?? [];
+        const arr = data.insumos ?? [];
+
 
         this.insumosOptions = arr.map((x: any) => ({
           label: x.nombre,
           value: Number(x.insumo_id),
           grupo: x.grupo,
         }));
+
+
+
+        // Agregar las opciones Recetas
+
       },
       error: (err) => console.error('[Insumos] error:', err),
     });

@@ -50,14 +50,12 @@ export class StockListComponent implements OnInit {
     console.log('[Locations] load() start');
     console.log('Buscando:', this.searchText);
 
-    this.insumoService.getAll({
+    this.insumoService.getInsumoAll({
       text: this.searchText, // string
     }).subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
-        this.insumos = data ?? [];
 
-        this.insumos = (data ?? [])
+        this.insumos = (data.insumos ?? [])
           //.filter(i => i.stock < i.stock_ideal)
           .sort((a, b) => (b.stock_ideal - b.stock) - (a.stock_ideal - a.stock));
 

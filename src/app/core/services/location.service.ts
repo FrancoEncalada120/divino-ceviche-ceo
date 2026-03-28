@@ -18,7 +18,7 @@ export class LocationService {
   constructor(private http: HttpClient) { }
 
   getAll(): Observable<Location[]> {
-    console.log('[LocationService] GET', this.apiUrl);
+
 
     return this.http.get<ApiResponse<Location[]>>(this.apiUrl).pipe(
       map((res) => {

@@ -106,7 +106,8 @@ export class PurchasePriComponent {
         insumo_id: d.insumo_id,
         unidad_id: d.unidad_id,
         cantidad: d.cantidad,
-        precio: d.precio
+        precio: d.precio,
+        grupo_id: d.grupo_id,
       })) ?? []
     };
 

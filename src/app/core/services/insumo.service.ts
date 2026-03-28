@@ -7,6 +7,7 @@ import {
   CalcularPrecioResponse,
   Insumo,
 } from '../models/insumo.model';
+import { DataResponse, Grupo } from '../models/grupos.model';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -14,29 +15,34 @@ type ApiResponse<T> = {
   message?: string;
 };
 
+type ApiResponseAll<T> = {
+  success: boolean;
+  data: T;
+  message?: string;
+};
+
+
 @Injectable({ providedIn: 'root' })
 export class InsumoService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_insumos`;
 
   constructor(private http: HttpClient) { }
 
-  getAll(params?: {
+  getInsumoAll(params?: {
     text?: string;
-  }): Observable<Insumo[]> {
+    bGrupo?: Number;
+  }): Observable<DataResponse> {
 
-    console.log('[InsumoService] GET', this.apiUrl);
-
-    return this.http.get<ApiResponse<Insumo[]>>(this.apiUrl, { params: params as any }).pipe(
+    return this.http.get<ApiResponseAll<DataResponse>>(this.apiUrl, { params: params as any }).pipe(
       map((res) => {
         const arr = res?.data;
-        return Array.isArray(arr) ? arr : [];
+        return arr ?? { insumos: [], grupos: [] };
       }),
     );
   }
 
   getById(id: number): Observable<Insumo | null> {
     const url = `${this.apiUrl}/${id}`;
-    console.log('[InsumoService] GET', url);
 
     return this.http.get<ApiResponse<Insumo>>(url).pipe(
       map((res) => {

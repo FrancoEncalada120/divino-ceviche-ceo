@@ -73,12 +73,15 @@
 
         <ng-template pTemplate="body" let-row let-i="rowIndex">
           <tr>
-            <td>{{ i + 1 }}</td>
+            <td>{{ i + 1 }} </td>
             <td class="c1">
               <p-dropdown [options]="cInsumo" optionLabel="nombreCompleto" optionValue="insumo_id" [autoZIndex]="true"
                 [baseZIndex]="10000" [(ngModel)]="row.insumo_id" placeholder="Select Product" class="w-100"
                 styleClass="w-100" appendTo="body" [filter]="true" (onChange)="onInsumoChange($event.value, row)">
               </p-dropdown>
+
+
+
             </td>
             <td>
               <div class="d-flex gap-2 align-items-center">

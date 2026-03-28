@@ -14,6 +14,7 @@ export interface CompraDetalle {
 
   insumo?: Insumo;
   unidad?: Unidad;
+  grupo_id: number;
 
   created_at?: string | null;
   created_by?: User | null;
