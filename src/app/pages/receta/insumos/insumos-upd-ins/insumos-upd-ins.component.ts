@@ -16,10 +16,21 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
-import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
+import {
+  CreateInsumoDto,
+  Insumo,
+  Proveedor,
+  UpdateInsumoDto,
+} from '../../../../core/models/insumo.model';
 import { forkJoin } from 'rxjs';
 import { UnidadService } from '../../../../core/services/unidad.service';
 import { ProveedorService } from '../../../../core/services/ProveedorService';
+import { TabViewModule } from 'primeng/tabview';
+import { InventoryPriComponent } from '../../inventory/inventory-pri/inventory-pri.component';
+import { RecetaService } from '../../../../core/services/receta.service';
+import { Receta } from '../../../../core/models/receta.model';
+import { InsumosRecetaComponent } from '../insumos-receta/insumos-receta.component';
+import { InventoryService } from '../../../../core/services/inventory.service';
 
 type ModalMode = 'create' | 'edit';
 
@@ -32,6 +43,9 @@ type ModalMode = 'create' | 'edit';
     InputNumberModule,
     DropdownModule,
     ButtonModule,
+    TabViewModule,
+    InventoryPriComponent,
+    InsumosRecetaComponent,
   ],
   templateUrl: './insumos-upd-ins.component.html',
   styleUrl: './insumos-upd-ins.component.scss',
@@ -41,35 +55,22 @@ export class InsumosUpdInsComponent implements OnChanges {
   @Input() insumo: Insumo | null = null;
 
   @Output() close = new EventEmitter<void>();
-  @Output() submit = new EventEmitter<any>();
+  @Output() submit = new EventEmitter<CreateInsumoDto | UpdateInsumoDto>();
+
+  inventoryList: any[] = [];
+  insumos: Insumo[] = [];
+  insumoInventory: Insumo | null = null;
 
   proveedoresOptions: { label: string; value: number }[] = [];
-  unidadesOptions: { label: string; value: number }[] = [];
+  // unidadesOptions: { label: string; value: number }[] = [];
+  estacionesOptions: { label: string; value: number }[] = [
+    { label: 'Barra', value: 1 },
+    { label: 'Cocina', value: 2 },
+    { label: 'Almacén', value: 3 },
+  ];
+  allUnidadesOptions: any[] = [];
+  unidadesOptions: any[] = [];
 
-  load(): void {
-    forkJoin({
-      proveedores: this.proveedorService.getAll(),
-      unidades: this.unidadService.getAll(),
-    }).subscribe({
-      next: ({ proveedores, unidades }) => {
-        this.proveedoresOptions = (proveedores ?? []).map((p) => ({
-          label: p.nombre,
-          value: p.proveedor_id,
-        }));
-
-        this.unidadesOptions = (unidades ?? []).map((u) => ({
-          label: u.nombre,
-          value: u.unidad_id,
-        }));
-
-        // volver a cargar el form cuando ya existen las opciones
-        this.loadForm();
-      },
-      error: (err) => {
-        console.error('[LOAD] error:', err);
-      },
-    });
-  }
   form!: FormGroup;
   submitted = false;
 
@@ -89,24 +90,78 @@ export class InsumosUpdInsComponent implements OnChanges {
     private fb: FormBuilder,
     private proveedorService: ProveedorService,
     private unidadService: UnidadService,
+    private inventoryService: InventoryService,
   ) {
     this.form = this.fb.group({
       nombre: [null, Validators.required],
-      descripcion: [null],
+      descripcion: [null, Validators.required],
       grupo: [null, Validators.required],
       proveedor_id: [null],
+      estacion_id: [null, Validators.required],
       unidad_id: [null],
-      cantidad: [0],
-      stock_ideal: [0],
-      stock: [0],
-      estado: ['A', Validators.required],
-      precio_final: [0],
+      unidad_trabajo: [null],
+      cantidad: [null],
+      stock_ideal: [null],
     });
   }
 
   ngOnInit(): void {
     console.log('[Locations] ngOnInit');
     this.load();
+  }
+
+  load(): void {
+    forkJoin({
+      proveedores: this.proveedorService.getAll(),
+      unidades: this.unidadService.getAll(),
+      inventarios: this.inventoryService.getAll(
+        this.insumo?.insumo_id
+          ? { insumo_id: this.insumo.insumo_id }
+          : undefined,
+      ),
+    }).subscribe({
+      next: ({ proveedores, unidades, inventarios }) => {
+        this.proveedoresOptions = (proveedores ?? []).map((p) => ({
+          label: p.nombre,
+          value: p.proveedor_id,
+        }));
+
+        this.allUnidadesOptions = (unidades ?? []).map((u) => ({
+          label: u.nombre,
+          value: u.unidad_id,
+          grupo: u.grupo,
+        }));
+
+        this.inventoryList = [...(inventarios ?? [])];
+
+        this.unidadesOptions = [...this.allUnidadesOptions];
+
+        this.loadForm();
+        this.listenGrupoChanges();
+      },
+      error: (err) => {
+        console.error('[LOAD] error:', err);
+      },
+    });
+  }
+
+  listenGrupoChanges(): void {
+    this.form.get('grupo')?.valueChanges.subscribe((grupo) => {
+      console.log('[GRUPO] seleccionado:', grupo);
+
+      if (!grupo) {
+        this.unidadesOptions = [...this.allUnidadesOptions];
+      } else {
+        this.unidadesOptions = this.allUnidadesOptions.filter(
+          (u) => u.grupo === grupo,
+        );
+      }
+
+      // limpia unidad seleccionada al cambiar grupo
+      this.form.get('unidad_id')?.setValue(null);
+
+      console.log('[GRUPO] unidades filtradas:', this.unidadesOptions);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -125,11 +180,13 @@ export class InsumosUpdInsComponent implements OnChanges {
         grupo: this.insumo.grupo ?? null,
         proveedor_id: this.insumo.proveedor.proveedor_id ?? null,
         unidad_id: this.insumo.unidad.unidad_id ?? null,
+        unidad_trabajo: this.insumo.unidad_trabajo?.unidad_id ?? null,
         cantidad: Number(this.insumo.cantidad ?? 0),
         stock_ideal: Number(this.insumo.stock_ideal ?? 0),
         stock: Number(this.insumo.stock ?? 0),
         estado: this.insumo.estado ?? 'A',
         precio_final: Number(this.insumo.precio_final ?? 0),
+        estacion_id: this.insumo.estacion_id?.estacion_id ?? null,
       });
     } else {
       this.form.reset({
@@ -142,6 +199,7 @@ export class InsumosUpdInsComponent implements OnChanges {
         stock_ideal: 0,
         stock: 0,
         estado: 'A',
+        estacion_id: null,
       });
     }
 
@@ -159,15 +217,39 @@ export class InsumosUpdInsComponent implements OnChanges {
       return;
     }
 
-    const payload = {
-      ...this.form.getRawValue(),
-      cantidad: Number(this.form.value.cantidad ?? 0),
-      stock_ideal: Number(this.form.value.stock_ideal ?? 0),
-      stock: Number(this.form.value.stock ?? 0),
-    };
+    const raw = this.form.getRawValue();
 
-    console.log('[MODAL] submit payload:', payload);
-    console.log('[MODAL] insumo actual:', this.insumo);
+    if (this.mode === 'create') {
+      const payload: CreateInsumoDto = {
+        nombre: raw.nombre?.trim() ?? '',
+        descripcion: raw.descripcion?.trim() ?? '',
+        grupo: raw.grupo ?? null,
+        proveedor_id: raw.proveedor_id ? Number(raw.proveedor_id) : null,
+        estacion_id: raw.estacion_id ? Number(raw.estacion_id) : null,
+        unidad_id: raw.unidad_id ? Number(raw.unidad_id) : null,
+        unidad_trabajo: raw.unidad_trabajo ? Number(raw.unidad_trabajo) : null,
+        cantidad: raw.cantidad != null ? Number(raw.cantidad) : null,
+        stock_ideal: raw.stock_ideal != null ? Number(raw.stock_ideal) : null,
+        created_by: null,
+      };
+
+      this.submit.emit(payload);
+      return;
+    }
+
+    const payload: UpdateInsumoDto = {
+      nombre: raw.nombre?.trim() ?? '',
+      descripcion: raw.descripcion?.trim() ?? '',
+      grupo: raw.grupo ?? null,
+      proveedor_id: raw.proveedor_id ? Number(raw.proveedor_id) : null,
+      estacion_id: raw.estacion_id ? Number(raw.estacion_id) : null,
+      unidad_id: raw.unidad_id ? Number(raw.unidad_id) : null,
+      unidad_trabajo: raw.unidad_trabajo ? Number(raw.unidad_trabajo) : null,
+      cantidad: raw.cantidad != null ? Number(raw.cantidad) : null,
+      stock_ideal: raw.stock_ideal != null ? Number(raw.stock_ideal) : null,
+      estado: raw.estado ?? 'A',
+      updated_by: null,
+    };
 
     this.submit.emit(payload);
   }

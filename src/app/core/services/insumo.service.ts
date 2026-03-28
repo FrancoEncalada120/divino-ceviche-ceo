@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 import {
   CalcularPrecioRequest,
   CalcularPrecioResponse,
+  CreateInsumoDto,
   Insumo,
 } from '../models/insumo.model';
 import { DataResponse, Grupo } from '../models/grupos.model';
@@ -21,24 +22,24 @@ type ApiResponseAll<T> = {
   message?: string;
 };
 
-
 @Injectable({ providedIn: 'root' })
 export class InsumoService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_insumos`;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getInsumoAll(params?: {
     text?: string;
     bGrupo?: Number;
   }): Observable<DataResponse> {
-
-    return this.http.get<ApiResponseAll<DataResponse>>(this.apiUrl, { params: params as any }).pipe(
-      map((res) => {
-        const arr = res?.data;
-        return arr ?? { insumos: [], grupos: [] };
-      }),
-    );
+    return this.http
+      .get<ApiResponseAll<DataResponse>>(this.apiUrl, { params: params as any })
+      .pipe(
+        map((res) => {
+          const arr = res?.data;
+          return arr ?? { insumos: [], grupos: [] };
+        }),
+      );
   }
 
   getById(id: number): Observable<Insumo | null> {
@@ -52,17 +53,18 @@ export class InsumoService {
     );
   }
 
-  create(insumo: Partial<Insumo>): Observable<Insumo> {
+  create(payload: CreateInsumoDto): Observable<Insumo> {
     console.log('[InsumoService] POST', this.apiUrl);
-    console.log('[InsumoService] data', insumo);
+    console.log('[InsumoService] data', payload);
 
-    return this.http.post<ApiResponse<Insumo>>(this.apiUrl, insumo).pipe(
+    return this.http.post<ApiResponse<Insumo>>(this.apiUrl, payload).pipe(
       map((res) => {
         console.log('[InsumoService] res', res);
 
         if (!res.success) {
           throw new Error(res.message || 'Error creating insumo');
         }
+
         return res.data;
       }),
     );

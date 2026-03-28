@@ -36,7 +36,8 @@ export class ConversionUpInsComponent implements OnChanges {
   @Input() mode: ModalMode = 'create';
   @Input() conversion: RecConversion | null = null;
 
-  @Input() insumosOptions: { label: string; value: number; grupo?: string }[] = [];
+  @Input() insumosOptions: { label: string; value: number; grupo?: string }[] =
+    [];
   @Input() unidadesOptions: { label: string; value: number }[] = [];
 
   @Output() close = new EventEmitter<void>();

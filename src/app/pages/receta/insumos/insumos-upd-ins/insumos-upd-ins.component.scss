@@ -29,11 +29,16 @@
   z-index: 1002;
   width: min(920px, 100%);
   max-height: 90vh;
+  margin-top: 12px;
+  margin-bottom: 12px;
   background: #ffffff;
   border-radius: 18px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
   overflow: visible;
   border: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
 }
 
 /* Header */
@@ -66,15 +71,14 @@
   overflow: visible;
 }
 
-/* Footer opcional si luego lo usas */
 .modal-footer {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   padding: 16px 24px 20px;
   border-top: 1px solid #eef2f7;
+  flex-shrink: 0;
 }
-
 /* Labels */
 .form-label {
   display: inline-block;
@@ -341,4 +345,25 @@ textarea.form-control {
   .d-flex.justify-content-end.gap-2.mt-4 {
     flex-direction: column;
   }
+}
+
+.summary-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 1rem;
+  background: #f8fafc;
+  min-height: 100px;
+}
+
+.summary-label {
+  display: block;
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 0.35rem;
+}
+
+.summary-value {
+  display: block;
+  font-size: 1.25rem;
+  font-weight: 700;
 }

@@ -1,0 +1,65 @@
+<div class="recipes-wrapper">
+  <div *ngIf="loading" class="loading-box">
+    <p-progressSpinner
+      strokeWidth="4"
+      animationDuration=".8s"
+    ></p-progressSpinner>
+  </div>
+
+  <div *ngIf="!loading && errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="!loading && !errorMessage && !insumoId" class="empty-box">
+    Selecciona un insumo para ver sus recetas relacionadas.
+  </div>
+
+  <div
+    *ngIf="!loading && !errorMessage && insumoId && recetas.length === 0"
+    class="empty-box"
+  >
+    No se encontraron recetas para este insumo.
+  </div>
+
+  <div *ngIf="!loading && recetas.length > 0" class="recipes-grid">
+    <p-card
+      *ngFor="let receta of recetas; trackBy: trackByReceta"
+      class="recipe-card"
+    >
+      <div class="recipe-body">
+        <div class="recipe-header">
+          <div class="recipe-title">
+            {{ receta.nombre || "Receta #" + receta.receta_id }}
+          </div>
+
+          <div class="recipe-date" *ngIf="receta.created_at">
+            {{ receta.created_at | date: "dd/MM/yyyy" }}
+          </div>
+        </div>
+
+        <div class="simple-table" *ngIf="receta.detalles?.length">
+          <div class="table-head">
+            <div>Insumo</div>
+            <div>Cantidad</div>
+          </div>
+
+          <div class="table-body">
+            <div class="table-row" *ngFor="let d of receta.detalles">
+              <div class="col-name">
+                {{ d.insumo?.nombre || "Insumo" }}
+              </div>
+              <div class="col-qty">
+                {{ d.cantidad }}
+                {{ d.unidad?.abreviatura || d.unidad?.nombre || "" }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-details" *ngIf="!receta.detalles?.length">
+          Sin detalle de insumos
+        </div>
+      </div>
+    </p-card>
+  </div>
+</div>

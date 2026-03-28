@@ -92,4 +92,17 @@ export class RecetaService {
       }),
     );
   }
+
+  getByInsumoId(insumoId: number): Observable<Receta[]> {
+    return this.http
+      .get<ApiResponse<Receta[]>>(`${this.apiUrl}/insumo/${insumoId}`)
+      .pipe(
+        map((res) => {
+          if (!res.success) {
+            throw new Error(res.message || 'Error fetching recetas');
+          }
+          return res.data;
+        }),
+      );
+  }
 }

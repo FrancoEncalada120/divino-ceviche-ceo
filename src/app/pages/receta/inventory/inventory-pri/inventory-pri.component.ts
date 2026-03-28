@@ -1,33 +1,27 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { TableModule } from 'primeng/table';
-import { CommonModule } from '@angular/common';
 import { Inventario } from '../../../../core/models/inventory.model';
 import { Insumo } from '../../../../core/models/insumo.model';
-import { InventoryPriComponent } from '../inventory-pri/inventory-pri.component';
+import { CommonModule } from '@angular/common';
+import { TableModule } from 'primeng/table';
 
 @Component({
-  selector: 'app-inventory-list',
-  imports: [TableModule, CommonModule, InventoryPriComponent],
-  templateUrl: './inventory-list.component.html',
-  styleUrl: './inventory-list.component.scss',
+  selector: 'app-inventory-pri',
+  imports: [TableModule, CommonModule],
+  templateUrl: './inventory-pri.component.html',
+  styleUrl: './inventory-pri.component.scss',
 })
-export class InventoryListComponent {
+export class InventoryPriComponent {
   @Input()
   inventoryList: Inventario[] = [];
 
   @Input()
   insumo: Insumo | null = null;
-
   @Output() close = new EventEmitter<void>();
-
-  onClose() {
-    this.close.emit();
-  }
 
   getColorPrice(i: number): string {
     if (i == 0) return '';
 
-    console.log('Comparando precios para index:', i);
+    //console.log('Comparando precios para index:', i);
 
     let insumo1 = this.inventoryList[i];
     let insumo2 = this.inventoryList[i - 1];
@@ -41,7 +35,7 @@ export class InventoryListComponent {
   getIconClassPrice(i: number): string {
     if (i == 0) return 'text-green-500';
 
-    console.log('Comparando precios para index:', i);
+    // console.log('Comparando precios para index:', i);
 
     let insumo1 = this.inventoryList[i];
     let insumo2 = this.inventoryList[i - 1];

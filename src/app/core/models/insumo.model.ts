@@ -14,12 +14,48 @@ export interface Insumo {
   grupo: string;
   proveedor: Proveedor;
   unidad: Unidad;
+  unidad_trabajo?: Unidad;
   cantidad: number;
   stock_ideal: number;
   stock: number;
   precio_final: number;
   grupo_detalle: GrupoDetalle[];
+  estacion_id: Estacion;
 }
+
+export interface Estacion {
+  estacion_id: number;
+  estacion_nombre: string;
+  estacion_estado: string;
+}
+
+export interface CreateInsumoDto {
+  nombre: string;
+  descripcion: string;
+  grupo?: string | null;
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
+  unidad_id?: number | null;
+  unidad_trabajo?: number | null;
+  cantidad?: number | null;
+  stock_ideal?: number | null;
+  created_by?: number | null;
+}
+
+export interface UpdateInsumoDto {
+  nombre?: string;
+  descripcion?: string | null;
+  grupo?: string | null;
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
+  unidad_id?: number | null;
+  unidad_trabajo?: number | null;
+  cantidad?: number | null;
+  stock_ideal?: number | null;
+  estado?: 'A' | 'I';
+  updated_by?: number | null;
+}
+
 export interface Proveedor {
   proveedor_id: number;
   nombre: string;

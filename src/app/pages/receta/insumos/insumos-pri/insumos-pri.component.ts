@@ -37,12 +37,21 @@ export class InsumosPriComponent {
 
   load(): void {
     this.loading = true;
+    console.log('[LOAD] iniciando...');
 
-    forkJoin({
-      insumos: this.insumoService.getInsumoAll(),
-    }).subscribe({
-      next: ({ insumos }) => {
-        this.insumo = insumos.insumos ?? [];
+    this.insumoService.getInsumoAll().subscribe({
+      next: (data) => {
+        console.log('[LOAD] data:', data);
+        console.log('[LOAD] insumos:', data?.insumos);
+        console.log('[LOAD] es array?', Array.isArray(data?.insumos));
+        console.log(
+          '[LOAD] length:',
+          Array.isArray(data?.insumos) ? data.insumos.length : 'no es array',
+        );
+
+        this.insumo = Array.isArray(data?.insumos) ? data.insumos : [];
+
+        console.log('[LOAD] listado final:', this.insumo);
       },
       error: (err) => {
         console.error('[LOAD] error:', err);
