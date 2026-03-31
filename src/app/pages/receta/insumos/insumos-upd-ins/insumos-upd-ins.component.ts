@@ -19,7 +19,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import {
   CreateInsumoDto,
   Insumo,
-  Proveedor,
   UpdateInsumoDto,
 } from '../../../../core/models/insumo.model';
 import { forkJoin } from 'rxjs';
@@ -27,8 +26,6 @@ import { UnidadService } from '../../../../core/services/unidad.service';
 import { ProveedorService } from '../../../../core/services/ProveedorService';
 import { TabViewModule } from 'primeng/tabview';
 import { InventoryPriComponent } from '../../inventory/inventory-pri/inventory-pri.component';
-import { RecetaService } from '../../../../core/services/receta.service';
-import { Receta } from '../../../../core/models/receta.model';
 import { InsumosRecetaComponent } from '../insumos-receta/insumos-receta.component';
 import { InventoryService } from '../../../../core/services/inventory.service';
 

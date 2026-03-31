@@ -69,12 +69,6 @@ export class PurchaseUpdInsComponent {
     this.service.getInsumoAll().subscribe({
       next: (data) => {
         this.cInsumo = data.insumos ?? [];
-
-        this.cInsumo = data.insumos.map(i => ({
-          ...i,
-          nombreCompleto: `${i.insumo_id}-${i.nombre}(${Number(i.cantidad || 0).toFixed(0)}x${i.unidad.abreviatura}) - ${i.proveedor?.nombre || 'Sin proveedor'}`
-        }));
-
       },
       error: (err) => {
         console.error('[cInsumo] GET error:', err);

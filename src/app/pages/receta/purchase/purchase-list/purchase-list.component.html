@@ -2,7 +2,7 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Purchase List">
-        <p-table [value]="compras" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+        <p-table [value]="compraDetalle" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
           [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
           currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
           <!-- Header -->
@@ -11,7 +11,7 @@
               <th>Id</th>
               <th>Reference Id</th>
               <th>Date</th>
-              <th># items</th>
+              <th>items</th>
               <th>Total</th>
               <th>User</th>
               <th>Notes</th>
@@ -25,26 +25,26 @@
               <td class="col-date">{{ row.compra_id }}</td>
 
               <td>
-                {{ row.referencia_id || "---" }}
+                {{ row.compra.referencia_id || "---" }}
               </td>
 
               <td>
-                {{ row.fecha }}
+                {{ row.compra.fecha }}
               </td>
 
-              <td>{{ row.detalles.length }} items</td>
+              <td> {{ row.insumo.nombreCompleto }}  </td>
 
               <td>
                 {{ row.total | txtsigno: "$" }}
               </td>
 
               <td>
-                {{ row.created_user?.user_name }}
-                {{ row.created_user?.user_apellido }}
+                {{ row.compra.created_user?.user_name }}
+                {{ row.compra.created_user?.user_apellido }}
               </td>
 
               <td>
-                {{ row.detalle || "---" }}
+                {{ row.compra.detalle || "---" }}
               </td>
 
               <td class="col-actions text-end">

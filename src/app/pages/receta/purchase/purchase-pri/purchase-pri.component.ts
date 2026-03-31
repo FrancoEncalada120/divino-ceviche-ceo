@@ -12,10 +12,16 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Receta } from '../../../../core/models/receta.model';
 import { PurchaseConfirmationComponent } from "../purchase-confirmation/purchase-confirmation.component";
+import { ProveedorService } from '../../../../core/services/ProveedorService';
+import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
+import { DropdownModule } from 'primeng/dropdown';
+import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
+import { InsumoService } from '../../../../core/services/insumo.service';
 
 @Component({
   selector: 'app-purchase-pri',
-  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf, DatePickerModule, ButtonModule, PurchaseConfirmationComponent],
+  imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf,
+    DatePickerModule, ButtonModule, PurchaseConfirmationComponent, DropdownModule],
   templateUrl: './purchase-pri.component.html',
   styleUrl: './purchase-pri.component.scss'
 })
@@ -27,16 +33,23 @@ export class PurchasePriComponent {
   txtDetail: string = '';
   txtSummary: string = '';
 
-  compras: Compra[] = [];
+  compraDetalle: CompraDetalle[] = [];
+  proveedores: Proveedor[] = [];
+  insumos: Insumo[] = [];
   recetas_impactadas: Receta[] = [];
 
   selectedItem: Compra | null = null;
   loading = false;
   dateRange: Date[] | null = null;
 
+  selectedProveedor: number = 0;
+  selectedInsumos: number = 0;
+
   constructor(
     private service: CompraService,
     private messageService: MessageService,
+    private proveedorService: ProveedorService,
+    private insumoService: InsumoService
   ) { }
 
   ngOnInit(): void {
@@ -48,10 +61,10 @@ export class PurchasePriComponent {
 
     this.dateRange = [new Date(yesterday), new Date(today)];
 
-    this.load();
+    this.load(true);
   }
 
-  load(): void {
+  load(bIncial: boolean): void {
 
     this.loading = true;
 
@@ -62,17 +75,58 @@ export class PurchasePriComponent {
     const startDate = this.formatDate(this.dateRange[0]);
     const endDate = this.formatDate(this.dateRange[1]);
 
-    this.service.getAll({
+    if (bIncial) {
+      this.proveedorService.getAll().subscribe({
+        next: (data) => {
+          this.proveedores = data;
+        },
+        error: (err) => {
+          console.error('Error loading proveedores:', err);
+        }
+      });
+
+
+
+      this.proveedorService.getAll().subscribe({
+        next: (data) => {
+          this.proveedores = data;
+        },
+        error: (err) => {
+          console.error('Error loading proveedores:', err);
+        }
+      });
+
+      this.insumoService.getInsumoAll().subscribe({
+        next: (data) => {
+
+          this.insumos = Array.isArray(data?.insumos) ? data.insumos : [];
+
+        },
+        error: (err) => {
+          console.error('[LOAD] error:', err);
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+          console.log('[LOAD] complete');
+        },
+      });
+
+    }
+
+    this.service.getComprasAll({
       fechaIni: startDate, // string
       fechaFin: endDate, // string
+      proveedorId: this.selectedProveedor, // number | null
+      insumoId: this.selectedInsumos, // number | null
     }).subscribe({
       next: (data) => {
-        this.compras = data ?? [];
+        this.compraDetalle = data ?? [];
         this.loading = false;
 
       },
       error: (err) => {
-        console.error('[Compras] GET error:', err);
+        console.error('[compraDetalle] GET error:', err);
         this.loading = false;
       },
       complete: () => { },
@@ -118,8 +172,8 @@ export class PurchasePriComponent {
 
         if (isCreate) {
           // ➕ CREATE → agregar al array
-          this.compras.push(savedLocation.compra);
-          this.load(); // recargar para mostrar la nueva compra
+          //this.compras.push(savedLocation.compra);
+          this.load(false); // recargar para mostrar la nueva compra
 
           this.recetas_impactadas = savedLocation.receta_impactada;
           this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
@@ -176,7 +230,7 @@ export class PurchasePriComponent {
       next: () => {
 
         // 🔥 eliminar del array local (UX rápida)
-        this.compras = this.compras.filter(
+        this.compraDetalle = this.compraDetalle.filter(
           c => c.compra_id !== compra.compra_id
         );
 
@@ -185,6 +239,8 @@ export class PurchasePriComponent {
           summary: 'Deleted',
           detail: 'Compra eliminada correctamente',
         });
+
+        this.load(false); // recargar para actualizar la lista
 
       },
       error: (err) => {
@@ -200,7 +256,7 @@ export class PurchasePriComponent {
   }
 
   onLocationsChangeDate(event: any) {
-    this.load();
+    this.load(false);
   }
 
 }

@@ -4,6 +4,7 @@ import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
 import { Compra } from '../../../../core/models/compra.model';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
+import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
 
 @Component({
   selector: 'app-purchase-list',
@@ -17,7 +18,7 @@ import { TabViewModule } from 'primeng/tabview';
 export class PurchaseListComponent {
 
   @Input()
-  compras: Compra[] = [];
+  compraDetalle: CompraDetalle[] = [];
 
   @Output() edit = new EventEmitter<Compra>();
   @Output() delete = new EventEmitter<Compra>();

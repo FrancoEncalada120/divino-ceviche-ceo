@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { Compra } from '../models/compra.model';
 import { CompraFullCreate } from '../models/compra-full-create.model';
 import { CompraFullResponse, DeleteCompraResponse } from '../models/compra-full-response.model';
+import { CompraDetalle } from '../models/compra-detalle.model';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -19,12 +20,14 @@ export class CompraService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(params?: {
+  getComprasAll(params?: {
     fechaIni?: string;
     fechaFin?: string;
-  }): Observable<Compra[]> {
+    proveedorId?: number;
+    insumoId?: number;
+  }): Observable<CompraDetalle[]> {
 
-    return this.http.get<ApiResponse<Compra[]>>(this.apiUrl, { params: params as any }).pipe(
+    return this.http.get<ApiResponse<CompraDetalle[]>>(this.apiUrl, { params: params as any }).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];

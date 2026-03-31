@@ -21,6 +21,7 @@ export interface Insumo {
   precio_final: number;
   grupo_detalle: GrupoDetalle[];
   estacion_id: Estacion;
+  nombreCompleto: string; // Campo adicional para mostrar el nombre completo en la UI
 }
 
 export interface Estacion {
