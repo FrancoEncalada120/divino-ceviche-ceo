@@ -29,6 +29,8 @@ import { RecetaFullCreate } from '../../../../core/models/receta-full-create.mod
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { TabViewModule } from 'primeng/tabview';
 import { MessageService } from 'primeng/api';
+import { UploadService } from '../../../../core/services/upload.service';
+import { FileUploadModule } from 'primeng/fileupload';
 type ModalMode = 'create' | 'edit';
 type UnidadOption = { label: string; value: number };
 type InsumoOption = { label: string; value: number; grupo?: string };
@@ -47,6 +49,7 @@ type InsumoOption = { label: string; value: number; grupo?: string };
     ButtonModule,
     DividerModule,
     TabViewModule,
+    FileUploadModule,
   ],
   templateUrl: './recipe-up-ins.component.html',
   styleUrl: './recipe-up-ins.component.scss',
@@ -70,7 +73,7 @@ export class RecipeUpInsComponent implements OnChanges {
   unidadesOptionsByRow: UnidadOption[][] = [];
   saving = false;
 
-  // ✅ IMPORTANTE: se crea en constructor
+  previewUrl: string | ArrayBuffer | null = null;
   form!: FormGroup;
 
   constructor(
@@ -78,6 +81,7 @@ export class RecipeUpInsComponent implements OnChanges {
     private unidadService: UnidadService,
     private insumoService: InsumoService,
     private messageService: MessageService,
+    private uploadService: UploadService,
   ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
@@ -94,9 +98,49 @@ export class RecipeUpInsComponent implements OnChanges {
       costo_preparacion: new FormControl<number | null>(1, {
         validators: [Validators.required, Validators.min(1)],
       }),
+      imagen_url: new FormControl<string | null>(null),
     });
     // arranca con 1 detalle por defecto
     this.addDetalle();
+  }
+
+  onFileSelect(event: any): void {
+    const file = event.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.previewUrl = reader.result as string;
+    };
+    reader.readAsDataURL(file);
+
+    this.uploadService.uploadRecipeImage(file).subscribe({
+      next: (resp) => {
+        if (!resp?.success || !resp?.url) {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Upload error',
+            detail: 'Image could not be uploaded',
+          });
+          return;
+        }
+
+        // Esta es la ruta real que guardarás en DB
+        this.form.patchValue({
+          imagen_url: resp.url,
+        });
+
+        console.log('Ruta guardada:', resp.url);
+      },
+      error: (err) => {
+        console.error('Error upload:', err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Server error',
+          detail: 'Could not upload image',
+        });
+      },
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -191,6 +235,7 @@ export class RecipeUpInsComponent implements OnChanges {
       descripcion: this.receta.descripcion ?? '',
       estado: (this.receta.estado ?? 'A') as 'A' | 'I',
       created_by: this.receta.created_by ?? '1',
+      imagen_url: this.receta.imagen_url ?? null,
     });
 
     const detalles = Array.isArray(this.receta.detalles)
@@ -263,6 +308,7 @@ export class RecipeUpInsComponent implements OnChanges {
         costo_neto: Number(this.vCosto_neto ?? 0),
         costo_total: Number(this.vCosto_total ?? 0),
         porciones: Number(this.form.get('porciones')?.value ?? 1),
+        imagen_url: v.imagen_url ?? null,
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),

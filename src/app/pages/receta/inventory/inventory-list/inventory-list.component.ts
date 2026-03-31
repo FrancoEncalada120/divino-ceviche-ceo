@@ -27,7 +27,7 @@ export class InventoryListComponent {
   getColorPrice(i: number): string {
     if (i == 0) return '';
 
-    console.log('Comparando precios para index:', i);
+    // console.log('Comparando precios para index:', i);
 
     let insumo1 = this.inventoryList[i];
     let insumo2 = this.inventoryList[i - 1];
@@ -41,7 +41,7 @@ export class InventoryListComponent {
   getIconClassPrice(i: number): string {
     if (i == 0) return 'text-green-500';
 
-    console.log('Comparando precios para index:', i);
+    // console.log('Comparando precios para index:', i);
 
     let insumo1 = this.inventoryList[i];
     let insumo2 = this.inventoryList[i - 1];

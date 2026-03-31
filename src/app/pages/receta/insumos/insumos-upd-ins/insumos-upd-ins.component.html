@@ -6,7 +6,7 @@
   <div class="modal-card">
     <div class="modal-header">
       <div>
-        <h5 class="mb-1">
+        <h5>
           {{ mode === "create" ? "Add Supply" : "Edit Supply" }}
         </h5>
         <small class="text-muted">Configure supply information</small>
@@ -28,7 +28,7 @@
         <p-tabView>
           <!-- PESTAÑA: DATOS GENERALES -->
           <p-tabPanel header="Datos generales">
-            <div class="row g-3">
+            <div class="row g-2">
               <!-- Name -->
               <div class="col-12 col-md-4">
                 <label class="form-label">Name *</label>
@@ -133,7 +133,7 @@
                 ></p-dropdown>
               </div>
 
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label class="form-label">Quantity</label>
                 <p-inputNumber
                   formControlName="cantidad"
@@ -149,7 +149,7 @@
               </div>
 
               <!-- Ideal Stock -->
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <label class="form-label">Ideal Stock</label>
                 <p-inputNumber
                   formControlName="stock_ideal"
@@ -162,6 +162,26 @@
                   styleClass="w-100"
                   placeholder="Enter ideal stock"
                 ></p-inputNumber>
+              </div>
+
+              <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
+                <label class="form-label">Status *</label>
+                <p-dropdown
+                  formControlName="estado"
+                  [options]="estadoOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select status"
+                  appendTo="body"
+                  class="w-100"
+                ></p-dropdown>
+
+                <div
+                  class="field-error"
+                  *ngIf="submitted && f['estado'].invalid"
+                >
+                  Status is required.
+                </div>
               </div>
 
               <!-- Description -->
@@ -182,25 +202,6 @@
               </div>
 
               <!-- Status solo edit -->
-              <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
-                <label class="form-label">Status *</label>
-                <p-dropdown
-                  formControlName="estado"
-                  [options]="estadoOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Select status"
-                  appendTo="body"
-                  class="w-100"
-                ></p-dropdown>
-
-                <div
-                  class="field-error"
-                  *ngIf="submitted && f['estado'].invalid"
-                >
-                  Status is required.
-                </div>
-              </div>
             </div>
           </p-tabPanel>
 
@@ -241,16 +242,16 @@
           </p-tabPanel>
         </p-tabView>
 
-        <div class="modal-footer mt-4">
+        <div class="modal-footer" style="margin-top: -20px">
           <button
             type="button"
-            class="btn btn-outline-secondary"
+            class="btn btn-outline-secondary btn-sm"
             (click)="onClose()"
           >
             Cancel
           </button>
 
-          <button type="submit" class="btn btn-primary">
+          <button type="submit" class="btn btn-primary btn-sm">
             {{ mode === "create" ? "Save Supply" : "Update Supply" }}
           </button>
         </div>

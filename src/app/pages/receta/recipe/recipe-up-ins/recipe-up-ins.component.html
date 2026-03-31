@@ -97,16 +97,53 @@
                 </div>
               </div>
 
-              <div class="col-12">
+              <div class="col-12 col-md-8">
                 <div class="form-field">
+                  <label for="descripcion" class="form-label">
+                    Description
+                  </label>
+
                   <textarea
                     pInputTextarea
                     id="descripcion"
                     rows="7"
                     formControlName="descripcion"
-                    placeholder="Descripcion"
+                    placeholder="Description"
                     class="w-100"
+                    autoResize="true"
                   ></textarea>
+                </div>
+
+                <div
+                  class="field-error"
+                  *ngIf="
+                    form.get('descripcion')?.touched &&
+                    form.get('descripcion')?.invalid
+                  "
+                >
+                  Description is required
+                </div>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <div class="form-field">
+                  <label for="imagen" class="form-label"> Image </label>
+
+                  <p-fileUpload
+                    mode="basic"
+                    name="imagen"
+                    accept="image/*"
+                    chooseLabel="Upload"
+                    (onSelect)="onFileSelect($event)"
+                    class="w-100"
+                  ></p-fileUpload>
+
+                  <img
+                    *ngIf="previewUrl"
+                    [src]="previewUrl"
+                    alt="Preview"
+                    class="img-preview mt-2 w-100"
+                  />
                 </div>
               </div>
             </div>

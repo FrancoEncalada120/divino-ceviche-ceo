@@ -7,6 +7,7 @@ export interface RecetaFullCreate {
     costo_neto?: number;
     costo_total?: number;
     porciones: number;
+    imagen_url?: string | null;
   };
   detalles: {
     insumo_id: number;
