@@ -61,7 +61,7 @@ export class RecipeUpInsComponent implements OnChanges {
   @Input() unidadesOptions: UnidadOption[] = [];
 
   @Output() close = new EventEmitter<void>();
-  @Output() submit = new EventEmitter<RecetaFullCreate>();
+  @Output() save = new EventEmitter<RecetaFullCreate>();
 
   vCosto_total: number = 0;
   vPorcenta_venta: number = 0;
@@ -69,6 +69,8 @@ export class RecipeUpInsComponent implements OnChanges {
   vCosto_neto: number = 0;
   vporciones: number = 0;
   vCosto_servicio: number = 0;
+
+  uploadingImage = false;
 
   unidadesOptionsByRow: UnidadOption[][] = [];
   saving = false;
@@ -108,6 +110,8 @@ export class RecipeUpInsComponent implements OnChanges {
     const file = event.files?.[0];
     if (!file) return;
 
+    this.uploadingImage = true;
+
     const reader = new FileReader();
     reader.onload = () => {
       this.previewUrl = reader.result as string;
@@ -116,7 +120,8 @@ export class RecipeUpInsComponent implements OnChanges {
 
     this.uploadService.uploadRecipeImage(file).subscribe({
       next: (resp) => {
-        if (!resp?.success || !resp?.url) {
+        if (!resp?.success || !resp?.path) {
+          this.uploadingImage = false;
           this.messageService.add({
             severity: 'error',
             summary: 'Upload error',
@@ -125,15 +130,20 @@ export class RecipeUpInsComponent implements OnChanges {
           return;
         }
 
-        // Esta es la ruta real que guardarás en DB
         this.form.patchValue({
-          imagen_url: resp.url,
+          imagen_url: resp.path,
         });
 
-        console.log('Ruta guardada:', resp.url);
+        console.log(
+          'Ruta guardada en form =>',
+          this.form.get('imagen_url')?.value,
+        );
+
+        this.uploadingImage = false;
       },
       error: (err) => {
         console.error('Error upload:', err);
+        this.uploadingImage = false;
         this.messageService.add({
           severity: 'error',
           summary: 'Server error',
@@ -227,7 +237,6 @@ export class RecipeUpInsComponent implements OnChanges {
   loadForEdit(): void {
     if (!this.receta) return;
 
-    // limpiar detalles
     while (this.detallesFA.length) this.detallesFA.removeAt(0);
 
     this.form.patchValue({
@@ -238,9 +247,16 @@ export class RecipeUpInsComponent implements OnChanges {
       imagen_url: this.receta.imagen_url ?? null,
     });
 
+    if (this.receta.imagen_url) {
+      this.previewUrl = `http://localhost:3001${this.receta.imagen_url}`;
+    } else {
+      this.previewUrl = null;
+    }
+
     const detalles = Array.isArray(this.receta.detalles)
       ? this.receta.detalles
       : [];
+
     if (detalles.length) {
       detalles.forEach((d: any) =>
         this.detallesFA.push(this.buildDetalleRow(d)),
@@ -321,7 +337,7 @@ export class RecipeUpInsComponent implements OnChanges {
     if (!payload.detalles.length) return;
 
     console.log('[RecipeUpInsComponent] submit payload =>', payload);
-    this.submit.emit(payload);
+    this.save.emit(payload);
   }
 
   onCantidadChange(i: number): void {

@@ -9,6 +9,7 @@ import { ConfirmDialog } from 'primeng/confirmdialog';
 import { NgIf } from '@angular/common';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { UnidadService } from '../../../../core/services/unidad.service';
+import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
 
 type ModalMode = 'create' | 'edit';
 @Component({
@@ -33,7 +34,7 @@ export class RecipePriComponent {
     private recetaService: RecetaService,
     private insumosService: InsumoService,
     private unidadService: UnidadService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     console.log('[Recetas] ngOnInit');
@@ -61,38 +62,38 @@ export class RecipePriComponent {
   }
 
   loadInsumos(): void {
-    this.insumosService.getInsumoAll({
-      bGrupo: 1,
-    }).subscribe({
-      next: (data) => {
+    this.insumosService
+      .getInsumoAll({
+        bGrupo: 1,
+      })
+      .subscribe({
+        next: (data) => {
+          const arr = data.insumos ?? [];
+          const arrGrupo = data.grupos ?? [];
 
-        const arr = data.insumos ?? [];
-        const arrGrupo = data.grupos ?? [];
+          this.insumosOptions = arr.map((x: any) => ({
+            label: x.nombre, // ajusta si tu campo se llama distinto
+            value: Number(x.insumo_id),
+            grupo: x.grupo,
+          }));
 
-        this.insumosOptions = arr.map((x: any) => ({
-          label: x.nombre, // ajusta si tu campo se llama distinto
-          value: Number(x.insumo_id),
-          grupo: x.grupo,
-        }));
+          this.insumosOptions.unshift(
+            ...arrGrupo.flatMap((g: any) =>
+              g.detalles.map((d: any) => ({
+                label: 'Grupo: ' + g.grupo_nombre,
+                value: d.insumo.insumo_id,
+                grupo: g.grupo_id,
+              })),
+            ),
+          );
 
-        this.insumosOptions.unshift(
-          ...arrGrupo.flatMap((g: any) =>
-            g.detalles.map((d: any) => ({
-              label: "Grupo: " + g.grupo_nombre,
-              value: d.insumo.insumo_id,
-              grupo: g.grupo_id,
-            }))
-          )
-        );
-
-        this.insumosOptions = this.insumosOptions.sort((a, b) =>
-          a.label.localeCompare(b.label)
-        );
-
-      },
-      error: (err) => console.error('[Insumos] GET error:', err),
-      complete: () => console.log('[Insumos] GET complete'),
-    });
+          this.insumosOptions = this.insumosOptions.sort((a, b) =>
+            a.label.localeCompare(b.label),
+          );
+        },
+        error: (err) => console.error('[Insumos] GET error:', err),
+        complete: () => console.log('[Insumos] GET complete'),
+      });
   }
 
   loadUnidades(): void {
@@ -128,18 +129,16 @@ export class RecipePriComponent {
     this.selectedReceta = null;
   }
 
-  // Lo conectaremos cuando tengas el modal receta-up-ins
-  handleSubmit(payload: any): void {
-    console.log('[Recetas] payload recibido', payload);
+  handleSubmit(payload: RecetaFullCreate): void {
+    console.log('[PADRE] payload recibido =>', payload);
 
     this.recetaService.createFull(payload).subscribe({
       next: () => {
-        console.log('[Recetas] receta creada');
         this.closeModal();
         this.load();
       },
       error: (err) => {
-        console.error('[Recetas] error', err);
+        console.error('[Recetas] error =>', err);
       },
     });
   }

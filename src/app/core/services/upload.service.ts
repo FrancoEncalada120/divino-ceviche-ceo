@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface UploadResponse {
   success: boolean;
-  url: string;
+  path: string; // solo ruta relativa
   message?: string;
 }
 
