@@ -44,3 +44,21 @@
 .badge-ok {
   background-color: #52c41a;
 }
+
+
+.cart-dropdown {
+  position: absolute;
+  right: 0;
+  top: 40px;
+  width: 300px;
+  background: white;
+  border-radius: 8px;
+  z-index: 1000;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}

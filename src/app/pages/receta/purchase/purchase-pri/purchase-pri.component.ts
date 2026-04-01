@@ -17,11 +17,13 @@ import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
 import { DropdownModule } from 'primeng/dropdown';
 import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { forkJoin, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-purchase-pri',
   imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf,
-    DatePickerModule, ButtonModule, PurchaseConfirmationComponent, DropdownModule],
+    DatePickerModule, ButtonModule, PurchaseConfirmationComponent, DropdownModule, MultiSelectModule],
   templateUrl: './purchase-pri.component.html',
   styleUrl: './purchase-pri.component.scss'
 })
@@ -42,8 +44,8 @@ export class PurchasePriComponent {
   loading = false;
   dateRange: Date[] | null = null;
 
-  selectedProveedor: number = 0;
-  selectedInsumos: number = 0;
+  selectedProveedor!: Proveedor[];
+  selectedInsumos!: Insumo[];
 
   constructor(
     private service: CompraService,
@@ -57,7 +59,7 @@ export class PurchasePriComponent {
     // 📅 Inicializar con AYER
     const today = new Date();
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
+    yesterday.setDate(yesterday.getDate() - 30);
 
     this.dateRange = [new Date(yesterday), new Date(today)];
 
@@ -75,63 +77,56 @@ export class PurchasePriComponent {
     const startDate = this.formatDate(this.dateRange[0]);
     const endDate = this.formatDate(this.dateRange[1]);
 
-    if (bIncial) {
-      this.proveedorService.getAll().subscribe({
-        next: (data) => {
-          this.proveedores = data;
-        },
-        error: (err) => {
-          console.error('Error loading proveedores:', err);
+
+
+    this.loading = true;
+
+    forkJoin({
+      proveedores: this.proveedorService.getAll(),
+      insumosResp: this.insumoService.getInsumoAll()
+    }).pipe(
+
+      // 🔥 aquí encadenas la segunda llamada
+      switchMap(({ proveedores, insumosResp }) => {
+
+        // ✅ proveedores
+        if (bIncial) {
+          this.proveedores = proveedores;
+          this.selectedProveedor = this.proveedores;
         }
-      });
 
-
-
-      this.proveedorService.getAll().subscribe({
-        next: (data) => {
-          this.proveedores = data;
-        },
-        error: (err) => {
-          console.error('Error loading proveedores:', err);
+        // ✅ insumos
+        if (bIncial) {
+          this.insumos = insumosResp.insumos;
+          this.selectedInsumos = this.insumos;
         }
-      });
 
-      this.insumoService.getInsumoAll().subscribe({
-        next: (data) => {
+        // 🔥 construir parámetros
+        const insumos = this.selectedInsumos.map((c) => c.insumo_id).join(',');
+        const provedores = this.selectedProveedor.map((c) => c.proveedor_id).join(',');
 
-          this.insumos = Array.isArray(data?.insumos) ? data.insumos : [];
+        // 🚀 segunda llamada (retornas observable)
+        return this.service.getComprasAll({
+          fechaIni: startDate,
+          fechaFin: endDate,
+          proveedorId: provedores,
+          insumoId: insumos,
+        });
+      })
 
-        },
-        error: (err) => {
-          console.error('[LOAD] error:', err);
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-          console.log('[LOAD] complete');
-        },
-      });
+    ).subscribe({
 
-    }
-
-    this.service.getComprasAll({
-      fechaIni: startDate, // string
-      fechaFin: endDate, // string
-      proveedorId: this.selectedProveedor, // number | null
-      insumoId: this.selectedInsumos, // number | null
-    }).subscribe({
       next: (data) => {
         this.compraDetalle = data ?? [];
         this.loading = false;
-
       },
+
       error: (err) => {
-        console.error('[compraDetalle] GET error:', err);
+        console.error('Error loading data:', err);
         this.loading = false;
-      },
-      complete: () => { },
-    });
+      }
 
+    });
 
   }
 
@@ -206,13 +201,6 @@ export class PurchasePriComponent {
     this.showAddLocationModal = true;
   }
 
-  openEdit(compra: Compra) {
-    this.modalMode = 'edit';
-    this.selectedItem = compra;
-    this.showAddLocationModal = true;
-  }
-
-
   delete(compra: Compra) {
 
     this.selectedItem = compra;
@@ -257,6 +245,47 @@ export class PurchasePriComponent {
 
   onLocationsChangeDate(event: any) {
     this.load(false);
+  }
+
+  get selectedProveedorNames(): string {
+
+    if (!this.selectedProveedor?.length) {
+      return 'None';
+    }
+
+    if (this.selectedProveedor.length === this.proveedores.length) {
+      return 'All Suppliers';
+    }
+
+    return this.selectedProveedor.map((c) => c.nombre).join(', ');
+  }
+
+  get selectedInsumosNames(): string {
+
+    if (!this.selectedInsumos?.length) {
+      return 'None';
+    }
+
+    if (this.selectedInsumos.length === this.insumos.length) {
+      return 'All Supplies';
+    }
+
+    return this.selectedInsumos.map((c) => c.nombre).join(', ');
+  }
+
+  get formattedDateRange(): string {
+    if (
+      !this.dateRange ||
+      this.dateRange.length !== 2 ||
+      !this.dateRange[0] ||
+      !this.dateRange[1]
+    ) {
+      return 'No date selected';
+    }
+
+    const format = (d: Date) => d.toISOString().split('T')[0];
+
+    return `${format(this.dateRange[0])} - ${format(this.dateRange[1])}`;
   }
 
 }

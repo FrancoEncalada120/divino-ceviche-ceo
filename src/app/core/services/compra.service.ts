@@ -23,8 +23,8 @@ export class CompraService {
   getComprasAll(params?: {
     fechaIni?: string;
     fechaFin?: string;
-    proveedorId?: number;
-    insumoId?: number;
+    proveedorId?: string;
+    insumoId?: string;
   }): Observable<CompraDetalle[]> {
 
     return this.http.get<ApiResponse<CompraDetalle[]>>(this.apiUrl, { params: params as any }).pipe(
@@ -83,14 +83,8 @@ export class CompraService {
   ): Observable<CompraFullResponse> {
     const url = `${this.apiUrl}/full`;
 
-    const options = userId
-      ? { headers: { 'x-user-id': String(userId) } }
-      : undefined;
-
-    console.log('Creating compra full with payload:', payload, 'and userId:', userId);
-
     return this.http
-      .post<ApiResponse<CompraFullResponse>>(url, payload, options)
+      .post<ApiResponse<CompraFullResponse>>(url, payload)
       .pipe(
         map((res) => {
           if (!res.success)

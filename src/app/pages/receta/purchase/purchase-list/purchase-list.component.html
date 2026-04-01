@@ -32,7 +32,7 @@
                 {{ row.compra.fecha }}
               </td>
 
-              <td> {{ row.insumo.nombreCompleto }}  </td>
+              <td> {{ row.insumo.nombreCompleto }} </td>
 
               <td>
                 {{ row.total | txtsigno: "$" }}
@@ -48,10 +48,10 @@
               </td>
 
               <td class="col-actions text-end">
-                <button class="btn btn-sm btn-secondary m-1" (click)="toggleRow(row.compra_id)">
+                <!--  <button class="btn btn-sm btn-secondary m-1" (click)="toggleRow(row.compra_id)">
                   Details
                 </button>
-                <!-- <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
+           <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
             Edit
           </button> -->
                 <button class="btn btn-sm btn-danger m-1" (click)="onDelete(row)">
@@ -59,31 +59,7 @@
                 </button>
               </td>
             </tr>
-            <!-- FILA DETALLE -->
-            <tr *ngIf="expandedRow === row.compra_id">
-              <td colspan="8" class="bg-light p-3">
-                <table class="table table-sm mb-0">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Quantity</th>
-                      <th>Unit</th>
-                      <th>Price</th>
-                      <th>Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let det of row.detalles">
-                      <td>{{ det.insumo?.nombre }}</td>
-                      <td>{{ det.cantidad }}</td>
-                      <td>{{ det.unidad?.abreviatura }}</td>
-                      <td>{{ det.precio }}</td>
-                      <td>{{ det.total }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
+
           </ng-template>
 
           <!-- Empty -->

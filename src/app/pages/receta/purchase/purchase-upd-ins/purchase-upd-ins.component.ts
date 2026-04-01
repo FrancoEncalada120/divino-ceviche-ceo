@@ -34,7 +34,7 @@ export class PurchaseUpdInsComponent {
   @Output() submit = new EventEmitter<Compra>();
 
   @Input() mode: 'create' | 'edit' = 'create';
-  @Input() compras: Compra | null = null;
+  @Input() detalle: CompraDetalle[] = [];
 
   cInsumo: Insumo[] = [];
   cUnidad: Unidad[] = [];
@@ -51,6 +51,28 @@ export class PurchaseUpdInsComponent {
 
     this.load();
     this.user = this.userService.getUser();
+
+    if (this.detalle && this.detalle.length > 0) {
+
+      for (const item of this.detalle) {
+
+        this.items.push({
+          detalle_id: 0,
+          compra_id: 0,
+          cantidad: item.cantidad,
+          insumo_id: item.insumo_id,
+          precio: 0,
+          total: 0,
+          unidad_id: item.unidad_id,
+          grupo_id: item.grupo_id,
+        });
+
+
+      }
+
+
+    } else
+      this.addRow();
 
   }
 
@@ -88,19 +110,6 @@ export class PurchaseUpdInsComponent {
       },
       complete: () => {
 
-        if (this.mode === 'edit' && this.compras) {
-
-          this.formData = { ...this.compras };
-          this.items = this.compras.detalles ? [...this.compras.detalles] : [];
-
-          this.items.forEach(row => {
-            if (row.insumo_id) {
-              this.onInsumoChange(row.insumo_id, row);
-            }
-          });
-
-        }
-
       },
     });
 
@@ -132,6 +141,10 @@ export class PurchaseUpdInsComponent {
       total: item.cantidad * item.precio,
       grupo_id: item.grupo_id,
     }));
+
+    this.formData.created_by = this.user?.user_id;
+
+    console.log('Form data to submit:', this.formData);
 
     this.submit.emit(this.formData as Compra);
   }

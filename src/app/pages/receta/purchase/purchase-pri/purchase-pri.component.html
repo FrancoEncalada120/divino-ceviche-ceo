@@ -13,6 +13,7 @@
     </div>
   </div>
 
+
   <div class="row g-3 mb-4 bg-white pb-1">
 
     <!-- Date range -->
@@ -33,9 +34,10 @@
         <i class="pi pi-calendar"></i> Supply
       </label>
 
-      <p-dropdown [options]="insumos" optionLabel="nombreCompleto" optionValue="insumo_id" [filter]="true"
-        [(ngModel)]="selectedInsumos" [showClear]="true" placeholder="Select Supply" appendTo="body"
-        class="w-100" (ngModelChange)="onLocationsChangeDate($event)" ></p-dropdown>
+      <p-multiSelect [options]="insumos" [(ngModel)]="selectedInsumos" optionLabel="nombreCompleto"
+        placeholder="Select Supply" display="chip" class="w-100" (onChange)="onLocationsChangeDate($event)">
+      </p-multiSelect>
+
 
     </div>
 
@@ -44,20 +46,46 @@
         <i class="pi pi-calendar"></i> Supplier
       </label>
 
-      <p-dropdown [options]="proveedores" optionLabel="nombre" optionValue="proveedor_id" [filter]="true"
-        [(ngModel)]="selectedProveedor" [showClear]="true" placeholder="Select Supplier" appendTo="body"
-        class="w-100" (ngModelChange)="onLocationsChangeDate($event)" ></p-dropdown>
+      <p-multiSelect [options]="proveedores" [(ngModel)]="selectedProveedor" optionLabel="nombre"
+        placeholder="Select Supplier" display="chip" class="w-100" (onChange)="onLocationsChangeDate($event)">
+      </p-multiSelect>
 
     </div>
 
   </div>
 
+  <div class="mb-4">
+    <div class="text-muted small">
+
+      <div class="small">
+        {{ formattedDateRange }}
+      </div>
+
+      <div>
+        <ng-container *ngIf="selectedInsumos.length; else noneSelected">
+          {{ selectedInsumosNames }}
+        </ng-container>
+        <ng-template #noneSelected>
+          None
+        </ng-template>
+      </div>
+
+      <ng-container *ngIf="selectedProveedor.length; else noneSelected1">
+        {{ selectedProveedorNames }}
+      </ng-container>
+      <ng-template #noneSelected1>
+        None
+      </ng-template>
+
+
+    </div>
+  </div>
+
 
   <app-purchase-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModal()"
-    (submit)="handleSubmit($event)" [compras]="selectedItem"></app-purchase-upd-ins>
+    (submit)="handleSubmit($event)"></app-purchase-upd-ins>
 
-
-  <app-purchase-list (edit)="openEdit($event)" (delete)="delete($event)"
+  <app-purchase-list (delete)="delete($event)"
     [compraDetalle]="compraDetalle"></app-purchase-list>
 
   <app-purchase-confirmation *ngIf="showConfirmanModal" [recetas_impactadas]="recetas_impactadas"

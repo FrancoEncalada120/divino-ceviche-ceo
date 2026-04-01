@@ -43,7 +43,6 @@ export class DashboardComponent implements OnInit {
     this.loadLocations();
 
     this.locationChange$.pipe(debounceTime(1000)).subscribe(() => {
-      console.log('Locations changed, reloading dashboard...');
       this.load();
     });
   }
@@ -135,15 +134,10 @@ export class DashboardComponent implements OnInit {
   private locationChange$ = new Subject<void>();
 
   onLocationsChange() {
-    console.log(
-      'Locations or date range changed, scheduling dashboard reload...'
-    );
-
     this.locationChange$.next();
   }
 
   onLocationsChangeDate(event: any) {
-    console.log('Rango de fechas cambiado:', event);
     this.load();
   }
 }
