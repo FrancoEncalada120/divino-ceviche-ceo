@@ -19,7 +19,7 @@ import { CompraFullCreate } from '../../../../core/models/compra-full-create.mod
 import { CompraFullResponse } from '../../../../core/models/compra-full-response.model';
 import { CompraService } from '../../../../core/services/compra.service';
 import { MessageService } from 'primeng/api';
-import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
+import { CartService } from '../../../../core/services/cart.service';
 
 @Component({
   selector: 'app-stock-list',
@@ -39,7 +39,9 @@ export class StockListComponent implements OnInit {
     private insumoService: InsumoService,
     private inventoryService: InventoryService,
     private service: CompraService,
-    private messageService: MessageService) {
+    private messageService: MessageService,
+    private cartService: CartService
+  ) {
   }
 
   ngOnInit(): void {
@@ -113,50 +115,6 @@ export class StockListComponent implements OnInit {
 
   }
 
-  // -------------
-
-  cart: CompraDetalle[] = [];
-
-  addToCart(item: any) {
-
-    const cant = item.stock - item.stock_ideal;
-
-    this.cart.push({
-      ...item,
-      cantidad: cant > 0 ? cant : cant * -1 // 🔥 solo agrega si hay stock disponibl e
-    });
-  }
-
-  isInCart(item: any): boolean {
-    return this.cart.some(i => i.insumo_id === item.insumo_id);
-  }
-
-  getQty(item: any): number {
-    const found = this.cart.find(i => i.insumo_id === item.insumo_id);
-    return found?.cantidad || 0;
-  }
-
-  increaseQty(item: any) {
-    const found = this.cart.find(i => i.insumo_id === item.insumo_id);
-    if (found) {
-      found.cantidad++;
-    }
-  }
-
-  decreaseQty(item: any) {
-    const index = this.cart.findIndex(i => i.insumo_id === item.insumo_id);
-
-    if (index !== -1) {
-      this.cart[index].cantidad--;
-
-      if (this.cart[index].cantidad <= 0) {
-        this.cart.splice(index, 1); // 🔥 lo quita del carrito
-      }
-    }
-  }
-
-  // ================================================================
-
   showAddLocationModal = false;
   showConfirmanModal = false;
   modalMode: 'create' | 'edit' = 'create';
@@ -194,7 +152,7 @@ export class StockListComponent implements OnInit {
         }
 
         this.closeModalAdd();
-        this.cart = [];
+        this.cartService.clearCart();
         this.load();
 
       },
@@ -225,6 +183,32 @@ export class StockListComponent implements OnInit {
 
   closeModalConfirm() {
     this.showConfirmanModal = false;
+  }
+
+
+  addToCart(item: any) {
+
+    this.cartService.addToCart(item);
+  }
+
+  isInCart(item: any): boolean {
+    return this.cartService.isInCart(item);
+  }
+
+  getQty(item: any): number {
+    return this.cartService.getQty(item);
+  }
+
+  increaseQty(item: any) {
+    this.cartService.increaseQty(item);
+  }
+
+  decreaseQty(item: any) {
+    this.cartService.decreaseQty(item);
+  }
+
+  get cart() {
+    return this.cartService.getCart();
   }
 
 }

@@ -1,7 +1,13 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
+
     <p-tabView>
       <p-tabPanel header="Purchase List">
+
+        <div class="card-body d-flex justify-content-end">
+          <button pButton type="button" label="Export to Excel" icon="pi pi-file-excel" (click)="exportToExcel()"></button>
+        </div>
+
         <p-table [value]="compraDetalle" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
           [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
           currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
@@ -12,6 +18,8 @@
               <th>Reference Id</th>
               <th>Date</th>
               <th>items</th>
+              <th>Quantity</th>
+              <th>Price</th>
               <th>Total</th>
               <th>User</th>
               <th>Notes</th>
@@ -34,6 +42,12 @@
 
               <td> {{ row.insumo.nombreCompleto }} </td>
 
+              <td>
+                {{ row.cantidad }}
+              </td>
+              <td>
+                {{ row.precio | txtsigno: "$" }}
+              </td>
               <td>
                 {{ row.total | txtsigno: "$" }}
               </td>
@@ -73,5 +87,8 @@
         </p-table>
       </p-tabPanel>
     </p-tabView>
+
+
   </div>
+
 </div>

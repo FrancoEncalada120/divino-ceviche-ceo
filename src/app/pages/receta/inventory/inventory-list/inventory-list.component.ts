@@ -90,4 +90,5 @@ export class InventoryListComponent {
         return desc || '-';
     }
   }
+
 }

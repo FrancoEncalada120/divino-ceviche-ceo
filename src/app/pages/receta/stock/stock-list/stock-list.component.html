@@ -120,9 +120,7 @@
 <app-inventory-list *ngIf="showInventoryModal" (close)="closeModal()" [insumo]="insumoInventory"
   [inventoryList]="inventoryList"></app-inventory-list>
 
-
-
-<app-purchase-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModalAdd()" [detalle]="cart"
+<app-purchase-upd-ins *ngIf="showAddLocationModal" (close)="closeModalAdd()"
   (submit)="handleSubmit($event)"></app-purchase-upd-ins>
 
 <app-purchase-confirmation *ngIf="showConfirmanModal" [recetas_impactadas]="recetas_impactadas" [txtDetail]="txtDetail"

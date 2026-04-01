@@ -2,7 +2,7 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h2>{{ mode === 'edit' ? 'Update Goal' : 'Add New Purchase' }}</h2>
+      <h2>{{ 'Add New Purchase' }}</h2>
       <button class="close-btn" (click)="onClose()">✕</button>
     </div>
 
@@ -97,13 +97,15 @@
             </td>
             <td>
               <p-inputNumber [(ngModel)]="row.precio" [showButtons]="true" mode="decimal" [minFractionDigits]="2"
-                [maxFractionDigits]="2" [min]="1" [inputStyle]="{ width: '7rem' }" (onInput)="calcularTotal(row)">
+                [maxFractionDigits]="2" [min]="0.01" [inputStyle]="{ width: '7rem' }" (onInput)="calcularTotal(row)">
               </p-inputNumber>
             </td>
             <td>
               <p-inputNumber [(ngModel)]="row.total" [showButtons]="true" mode="decimal" [minFractionDigits]="2"
                 [maxFractionDigits]="2" [disabled]="true" [min]="1" [inputStyle]="{ width: '7rem' }">
               </p-inputNumber>
+
+
             </td>
             <td>
               <button pButton icon="pi pi-trash" class="p-button-danger p-button-sm" (click)="removeRow(i)">
@@ -135,7 +137,7 @@
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
       <button class="btn btn-primary" (click)="onSubmit()">
-        {{ mode === 'edit' ? 'Save Changes' : 'Create' }}
+        {{ 'Create' }}
       </button>
     </div>
 

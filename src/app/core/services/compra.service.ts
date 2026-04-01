@@ -23,9 +23,11 @@ export class CompraService {
   getComprasAll(params?: {
     fechaIni?: string;
     fechaFin?: string;
-    proveedorId?: string;
-    insumoId?: string;
+    lstProveedor?: string;
+    lstInsumo?: string;
   }): Observable<CompraDetalle[]> {
+
+    console.log('Fetching compras with params:', params);
 
     return this.http.get<ApiResponse<CompraDetalle[]>>(this.apiUrl, { params: params as any }).pipe(
       map((res) => {

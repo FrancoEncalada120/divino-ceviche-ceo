@@ -3,10 +3,12 @@ import { Inventario } from '../../../../core/models/inventory.model';
 import { Insumo } from '../../../../core/models/insumo.model';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
+import * as XLSX from 'xlsx';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-inventory-pri',
-  imports: [TableModule, CommonModule],
+  imports: [TableModule, CommonModule, ButtonModule],
   templateUrl: './inventory-pri.component.html',
   styleUrl: './inventory-pri.component.scss',
 })
@@ -84,4 +86,27 @@ export class InventoryPriComponent {
         return desc || '-';
     }
   }
+
+
+  exportToExcel() {
+
+    if (!this.inventoryList || this.inventoryList.length === 0) return;
+
+    // Mapear data a columnas planas en inglés
+    const data = this.inventoryList.map((i, idx) => ({
+      'Date': i.inventario_fecha,
+      'Insumo': `${this.insumo?.nombre} ${this.insumo?.cantidad || 0} x ${this.insumo?.unidad?.abreviatura || ''}`,
+      'Cantidad': i.cantidad,
+      'Price': i.precio,
+      'Total': i.total,
+      'Stock': i.stock,
+      'Descripción': this.getDesc(i.inventario_desc!, i.compra_id.toString())
+    }));
+
+    const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Inventory List");
+    XLSX.writeFile(wb, "inventory-list.xlsx");
+  }
+
 }

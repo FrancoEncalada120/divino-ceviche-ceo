@@ -18,7 +18,9 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { MultiSelectModule } from 'primeng/multiselect';
-import { forkJoin, switchMap } from 'rxjs';
+import { forkJoin, Subject, switchMap } from 'rxjs';
+import { CartService } from '../../../../core/services/cart.service';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-purchase-pri',
@@ -51,7 +53,8 @@ export class PurchasePriComponent {
     private service: CompraService,
     private messageService: MessageService,
     private proveedorService: ProveedorService,
-    private insumoService: InsumoService
+    private insumoService: InsumoService,
+    private cartService: CartService
   ) { }
 
   ngOnInit(): void {
@@ -64,6 +67,11 @@ export class PurchasePriComponent {
     this.dateRange = [new Date(yesterday), new Date(today)];
 
     this.load(true);
+
+    this.SupplyChange$.pipe(debounceTime(2000)).subscribe(() => {
+      this.load(false);
+    });
+
   }
 
   load(bIncial: boolean): void {
@@ -77,8 +85,6 @@ export class PurchasePriComponent {
     const startDate = this.formatDate(this.dateRange[0]);
     const endDate = this.formatDate(this.dateRange[1]);
 
-
-
     this.loading = true;
 
     forkJoin({
@@ -89,28 +95,31 @@ export class PurchasePriComponent {
       // 🔥 aquí encadenas la segunda llamada
       switchMap(({ proveedores, insumosResp }) => {
 
-        // ✅ proveedores
         if (bIncial) {
+          // ✅ proveedores
           this.proveedores = proveedores;
           this.selectedProveedor = this.proveedores;
-        }
 
-        // ✅ insumos
-        if (bIncial) {
+          // ✅ insumos
           this.insumos = insumosResp.insumos;
           this.selectedInsumos = this.insumos;
         }
 
         // 🔥 construir parámetros
-        const insumos = this.selectedInsumos.map((c) => c.insumo_id).join(',');
-        const provedores = this.selectedProveedor.map((c) => c.proveedor_id).join(',');
+        let insumos = "";
+        if (this.selectedInsumos.length != this.insumos.length)
+          insumos = this.selectedInsumos.map((c) => c.insumo_id).join(',');
+
+        let provedores = "";
+        if (this.selectedProveedor.length != this.proveedores.length)
+          provedores = this.selectedProveedor.map((c) => c.proveedor_id).join(',');
 
         // 🚀 segunda llamada (retornas observable)
         return this.service.getComprasAll({
           fechaIni: startDate,
           fechaFin: endDate,
-          proveedorId: provedores,
-          insumoId: insumos,
+          lstProveedor: provedores,
+          lstInsumo: insumos,
         });
       })
 
@@ -177,6 +186,8 @@ export class PurchasePriComponent {
 
         }
 
+        this.cartService.clearCart();
+
         this.closeModal();
       },
       error: (err) => {
@@ -241,6 +252,12 @@ export class PurchasePriComponent {
         });
       }
     });
+  }
+
+  private SupplyChange$ = new Subject<void>();
+
+  onSupplyChange(event: any) {
+    this.SupplyChange$.next();
   }
 
   onLocationsChangeDate(event: any) {

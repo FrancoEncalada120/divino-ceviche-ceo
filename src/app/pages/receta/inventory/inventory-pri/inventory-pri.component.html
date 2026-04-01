@@ -1,11 +1,12 @@
 <div class="modal-body">
-  <p-table
-    [value]="inventoryList"
-    styleClass="p-datatable-sm w-100"
-    [paginator]="true"
-    [rows]="10"
-    [rowsPerPageOptions]="[10, 20, 50]"
-  >
+
+  <div class="card-body d-flex justify-content-center">
+    <button pButton type="button" label="Export to Excel" icon="pi pi-file-excel" (click)="exportToExcel()"></button>
+  </div>
+
+
+  <p-table [value]="inventoryList" styleClass="p-datatable-sm w-100" [paginator]="true" [rows]="10"
+    [rowsPerPageOptions]="[10, 20, 50]">
     <!-- HEADER -->
     <ng-template pTemplate="header">
       <tr>

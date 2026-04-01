@@ -35,9 +35,8 @@
       </label>
 
       <p-multiSelect [options]="insumos" [(ngModel)]="selectedInsumos" optionLabel="nombreCompleto"
-        placeholder="Select Supply" display="chip" class="w-100" (onChange)="onLocationsChangeDate($event)">
+        placeholder="Select Supply" display="chip" class="w-100" (onChange)="onSupplyChange($event)">
       </p-multiSelect>
-
 
     </div>
 
@@ -47,7 +46,7 @@
       </label>
 
       <p-multiSelect [options]="proveedores" [(ngModel)]="selectedProveedor" optionLabel="nombre"
-        placeholder="Select Supplier" display="chip" class="w-100" (onChange)="onLocationsChangeDate($event)">
+        placeholder="Select Supplier" display="chip" class="w-100" (onChange)="onSupplyChange($event)">
       </p-multiSelect>
 
     </div>
@@ -82,7 +81,7 @@
   </div>
 
 
-  <app-purchase-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModal()"
+  <app-purchase-upd-ins *ngIf="showAddLocationModal" (close)="closeModal()"
     (submit)="handleSubmit($event)"></app-purchase-upd-ins>
 
   <app-purchase-list (delete)="delete($event)"

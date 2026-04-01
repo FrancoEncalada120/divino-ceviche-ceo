@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -18,13 +18,14 @@ import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.models';
+import { CartService } from '../../../../core/services/cart.service';
 
 
 @Component({
   selector: 'app-purchase-upd-ins',
   imports: [CommonModule, ReactiveFormsModule, FormsModule,
     DatePickerModule, TableModule, ButtonModule, InputNumberModule,
-    DropdownModule],
+    DropdownModule, NgIf],
   templateUrl: './purchase-upd-ins.component.html',
   styleUrl: './purchase-upd-ins.component.scss'
 })
@@ -32,9 +33,6 @@ export class PurchaseUpdInsComponent {
 
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<Compra>();
-
-  @Input() mode: 'create' | 'edit' = 'create';
-  @Input() detalle: CompraDetalle[] = [];
 
   cInsumo: Insumo[] = [];
   cUnidad: Unidad[] = [];
@@ -45,16 +43,18 @@ export class PurchaseUpdInsComponent {
   constructor(private service: InsumoService,
     private locationService: LocationService,
     private sUnid: UnidadService,
-    private userService: UserService) { }
+    private userService: UserService,
+    private cartService: CartService
+  ) { }
 
   ngOnInit(): void {
 
     this.load();
     this.user = this.userService.getUser();
 
-    if (this.detalle && this.detalle.length > 0) {
+    if (this.cartService.getCart() && this.cartService.getCart().length > 0) {
 
-      for (const item of this.detalle) {
+      for (const item of this.cartService.getCart()) {
 
         this.items.push({
           detalle_id: 0,
@@ -130,6 +130,12 @@ export class PurchaseUpdInsComponent {
   }
 
   onSubmit() {
+
+    const invalidRow = this.items.find(r => !r.cantidad || r.cantidad <= 0 || !r.precio || r.precio <= 0);
+    if (invalidRow) {
+      alert('Please ensure all items have a valid quantity and price greater than zero.');
+      return; // ❌ no deja grabar
+    }
 
     this.formData.detalles = this.items.map(item => ({
       detalle_id: 0,
