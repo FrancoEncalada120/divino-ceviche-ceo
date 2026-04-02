@@ -21,7 +21,7 @@ import { RecConversion } from '../../../../core/models/conversion.model';
 
 type ModalMode = 'create' | 'edit';
 @Component({
-  selector: 'app-conversion-up-ins',
+  selector: 'app-group-up-ins',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -29,10 +29,10 @@ type ModalMode = 'create' | 'edit';
     DropdownModule,
     ButtonModule,
   ],
-  templateUrl: './conversion-up-ins.component.html',
-  styleUrl: './conversion-up-ins.component.scss',
+  templateUrl: './group-up-ins.component.html',
+  styleUrl: './group-up-ins.component.scss',
 })
-export class ConversionUpInsComponent implements OnChanges {
+export class GroupUpInsComponent implements OnChanges {
   @Input() mode: ModalMode = 'create';
   @Input() conversion: RecConversion | null = null;
 

@@ -5,12 +5,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { RecConversion } from '../../../../core/models/conversion.model';
 
 @Component({
-  selector: 'app-conversion-list',
+  selector: 'app-group-list',
   imports: [CommonModule, TableModule, TabViewModule],
-  templateUrl: './conversion-list.component.html',
-  styleUrl: './conversion-list.component.scss',
+  templateUrl: './group-list.component.html',
+  styleUrl: './group-list.component.scss',
 })
-export class ConversionListComponent {
+export class GroupsListComponent {
   @Input() conversiones: RecConversion[] = [];
 
   @Output() edit = new EventEmitter<RecConversion>();

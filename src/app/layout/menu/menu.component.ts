@@ -121,9 +121,9 @@ export class MenuComponent {
           },
           {
             type: 'link',
-            label: 'Convertion',
+            label: 'Groups',
             icon: 'bi-person',
-            route: 'settings/consersion',
+            route: 'settings/groups',
           },
         ],
       },

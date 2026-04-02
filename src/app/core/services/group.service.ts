@@ -15,8 +15,8 @@ type ApiResponse<T> = {
 };
 
 @Injectable({ providedIn: 'root' })
-export class RecConversionService {
-  private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_conversion`;
+export class RecGroupService {
+  private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_grupos`;
 
   constructor(private http: HttpClient) {}
 

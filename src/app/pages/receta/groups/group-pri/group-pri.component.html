@@ -16,15 +16,15 @@
     <div class="col-12">
       <div *ngIf="loading" class="text-muted py-3">Loading...</div>
 
-      <app-conversion-list
+      <app-group-list
         (edit)="openEdit($event)"
         [conversiones]="conversiones"
-      ></app-conversion-list>
+      ></app-group-list>
     </div>
   </div>
 </div>
 
-<app-conversion-up-ins
+<app-group-up-ins
   *ngIf="showModal"
   [mode]="modalMode"
   [conversion]="selectedConversion"
@@ -32,4 +32,4 @@
   (submit)="handleSubmit($event)"
   [insumosOptions]="insumosOptions"
   [unidadesOptions]="unidadesOptions"
-></app-conversion-up-ins>
+></app-group-up-ins>

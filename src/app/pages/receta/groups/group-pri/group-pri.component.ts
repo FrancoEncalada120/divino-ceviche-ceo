@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { RecConversion } from '../../../../core/models/conversion.model';
-import { RecConversionService } from '../../../../core/services/conversion.service';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { UnidadService } from '../../../../core/services/unidad.service';
-import { ConversionUpInsComponent } from '../conversion-up-ins/conversion-up-ins.component';
-import { ConversionListComponent } from '../conversion-list/conversion-list.component';
 import { NgIf } from '@angular/common';
+import { GroupsListComponent } from '../group-list/group-list.component';
+import { GroupUpInsComponent } from '../group-up-ins/group-up-ins.component';
+import { RecGroupService } from '../../../../core/services/group.service';
 
 type ModalMode = 'create' | 'edit';
 
 @Component({
-  selector: 'app-conversion-pri',
-  imports: [NgIf, ConversionListComponent, ConversionUpInsComponent],
-  templateUrl: './conversion-pri.component.html',
-  styleUrl: './conversion-pri.component.scss',
+  selector: 'app-group-pri',
+  imports: [NgIf, GroupsListComponent, GroupUpInsComponent],
+  templateUrl: './group-pri.component.html',
+  styleUrl: './group-pri.component.scss',
 })
-export class ConversionPriComponent {
+export class GroupPriComponent {
   loading = false;
 
   showModal = false;
@@ -29,7 +29,7 @@ export class ConversionPriComponent {
   unidadesOptions: { label: string; value: number }[] = [];
 
   constructor(
-    private conversionService: RecConversionService,
+    private conversionService: RecGroupService,
     private insumosService: InsumoService,
     private unidadService: UnidadService,
   ) { }

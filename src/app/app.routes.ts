@@ -85,10 +85,10 @@ export const routes: Routes = [
           ),
       },
       {
-        path: 'settings/consersion',
+        path: 'settings/groups',
         loadComponent: () =>
-          import('./pages/receta/conversion/conversion-pri/conversion-pri.component').then(
-            (m) => m.ConversionPriComponent,
+          import('./pages/receta/groups/group-pri/group-pri.component').then(
+            (m) => m.GroupPriComponent,
           ),
       },
       {
