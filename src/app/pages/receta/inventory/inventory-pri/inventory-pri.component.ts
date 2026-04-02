@@ -56,6 +56,8 @@ export class InventoryPriComponent {
         return 'text-red-500';
       case '3':
         return 'text-green-500';
+      case '4':
+        return 'text-red-500';
       default:
         return 'text-gray-500';
     }
@@ -69,6 +71,8 @@ export class InventoryPriComponent {
         return `pi pi-arrow-down ${this.getColor(desc)}`;
       case '3':
         return `pi pi-arrow-up ${this.getColor(desc)}`;
+      case '4':
+        return `pi pi-arrow-down ${this.getColor(desc)}`;
       default:
         return `pi pi-minus ${this.getColor(desc)}`;
     }
@@ -82,6 +86,8 @@ export class InventoryPriComponent {
         return '(-) Actualización del insumo';
       case '3':
         return 'ID de Compra: ' + compra_id;
+        case '4':
+        return 'Compra eliminada';
       default:
         return desc || '-';
     }
