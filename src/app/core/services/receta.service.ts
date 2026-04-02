@@ -105,4 +105,23 @@ export class RecetaService {
         }),
       );
   }
+
+  updateFull(id: number, payload: RecetaFullCreate): Observable<any> {
+    const url = `${this.apiUrl}/full/${id}`;
+
+    console.log('[RecetaService] PUT', url);
+    console.log('[RecetaService] data', payload);
+
+    return this.http.put<ApiResponse<any>>(url, payload).pipe(
+      map((res) => {
+        console.log('[RecetaService] res', res);
+
+        if (!res.success) {
+          throw new Error(res.message || 'Error updating receta full');
+        }
+
+        return res.data;
+      }),
+    );
+  }
 }

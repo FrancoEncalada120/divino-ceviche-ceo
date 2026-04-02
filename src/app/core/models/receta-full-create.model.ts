@@ -9,6 +9,7 @@ export interface RecetaFullCreate {
     porciones: number;
     imagen_url?: string | null;
     es_insumo: boolean;
+    unidad_receta: number;
   };
   detalles: {
     insumo_id: number;

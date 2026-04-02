@@ -42,7 +42,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-3">
                 <div class="form-field">
                   <label for="nombre" class="form-label">Serving *</label>
                   <p-inputNumber
@@ -68,7 +68,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-3">
                 <div class="form-field">
                   <label for="costo_preparacion" class="form-label">
                     Labor cost *
@@ -96,7 +96,23 @@
                   Must be greater than 0
                 </div>
               </div>
-              <div class="col-12 col-md-4s">
+              <div class="col-12 col-md-3">
+                <label class="form-label">Final United*</label>
+                <p-dropdown
+                  formControlName="unidad_receta"
+                  [options]="unidadesOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select unit"
+                  [filter]="true"
+                  appendTo="body"
+                  class="w-100"
+                  [autoZIndex]="true"
+                  [baseZIndex]="10000"
+                ></p-dropdown>
+              </div>
+
+              <div class="col-12 col-md-3">
                 <label for="es_insumo" class="block mb-2 font-medium">
                   ¿Es insumo?
                 </label>
@@ -127,7 +143,7 @@
                   <textarea
                     pInputTextarea
                     id="descripcion"
-                    rows="7"
+                    rows="6"
                     formControlName="descripcion"
                     placeholder="Description"
                     class="w-100"
@@ -150,6 +166,13 @@
                 <div class="form-field">
                   <label for="imagen" class="form-label"> Image </label>
 
+                  <img
+                    *ngIf="previewUrl"
+                    [src]="previewUrl"
+                    alt="Preview"
+                    class="img-preview mt-2 w-100"
+                  />
+
                   <p-fileUpload
                     mode="basic"
                     name="imagen"
@@ -159,13 +182,6 @@
                     (onSelect)="onFileSelect($event)"
                     class="w-100"
                   ></p-fileUpload>
-
-                  <img
-                    *ngIf="previewUrl"
-                    [src]="previewUrl"
-                    alt="Preview"
-                    class="img-preview mt-2 w-100"
-                  />
                 </div>
               </div>
             </div>

@@ -148,3 +148,9 @@
   border: 1px solid #ddd;
   border-radius: 8px;
 }
+
+.img-preview {
+  height: 140px; // 👈 ajusta hasta que calce con el textarea
+  object-fit: cover; // 👈 evita deformación
+  border-radius: 6px;
+}

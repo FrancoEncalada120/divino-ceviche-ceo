@@ -133,12 +133,28 @@ export class RecipePriComponent {
   handleSubmit(payload: RecetaFullCreate): void {
     console.log('[PADRE] payload recibido =>', payload);
 
-    this.recetaService.createFull(payload).subscribe({
+    console.log('mode:', this.modalMode);
+    console.log('selectedReceta:', this.selectedReceta);
+
+    const isEdit = this.modalMode === 'edit' && this.selectedReceta?.receta_id;
+
+    let request$;
+
+    if (this.modalMode === 'edit' && this.selectedReceta) {
+      request$ = this.recetaService.updateFull(
+        this.selectedReceta.receta_id,
+        payload,
+      );
+    } else {
+      request$ = this.recetaService.createFull(payload);
+    }
+
+    request$.subscribe({
       next: (res) => {
         if (payload.receta.es_insumo) {
           const insumoPayload: CreateInsumoDto = {
             nombre: payload.receta.nombre,
-            descripcion: payload.receta.descripcion ?? '',
+            descripcion: payload.receta.descripcion ?? payload.receta.nombre,
             proveedor_id: 24,
             estacion_id: 1,
             unidad_id: 7,

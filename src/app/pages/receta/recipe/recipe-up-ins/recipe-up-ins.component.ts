@@ -104,9 +104,14 @@ export class RecipeUpInsComponent implements OnChanges {
       }),
       imagen_url: new FormControl<string | null>(null),
       es_insumo: [false],
+      unidad_receta: [null, Validators.required],
     });
     // arranca con 1 detalle por defecto
     this.addDetalle();
+  }
+
+  ngOnInit() {
+    console.log('unidadesOptions =>', this.unidadesOptions);
   }
 
   onFileSelect(event: any): void {
@@ -241,6 +246,7 @@ export class RecipeUpInsComponent implements OnChanges {
     if (!this.receta) return;
 
     while (this.detallesFA.length) this.detallesFA.removeAt(0);
+    this.unidadesOptionsByRow = [];
 
     this.form.patchValue({
       nombre: this.receta.nombre ?? '',
@@ -248,7 +254,8 @@ export class RecipeUpInsComponent implements OnChanges {
       estado: (this.receta.estado ?? 'A') as 'A' | 'I',
       created_by: this.receta.created_by ?? '1',
       imagen_url: this.receta.imagen_url ?? null,
-      es_insumo: this.receta.es_insumo ?? null,
+      es_insumo: this.receta.es_insumo ?? false,
+      unidad_receta: Number(this.receta.unidad_receta ?? null),
     });
 
     if (this.receta.imagen_url) {
@@ -262,9 +269,10 @@ export class RecipeUpInsComponent implements OnChanges {
       : [];
 
     if (detalles.length) {
-      detalles.forEach((d: any) =>
-        this.detallesFA.push(this.buildDetalleRow(d)),
-      );
+      detalles.forEach((d: any, i: number) => {
+        this.detallesFA.push(this.buildDetalleRow(d));
+        this.unidadesOptionsByRow[i] = [...this.unidadesOptions];
+      });
     } else {
       this.addDetalle();
     }
@@ -329,7 +337,8 @@ export class RecipeUpInsComponent implements OnChanges {
         costo_total: Number(this.vCosto_total ?? 0),
         porciones: Number(this.form.get('porciones')?.value ?? 1),
         imagen_url: v.imagen_url ?? null,
-        es_insumo: v.es_insumo,
+        es_insumo: !!v.es_insumo,
+        unidad_receta: Number(v.unidad_receta ?? 0),
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),
@@ -341,7 +350,9 @@ export class RecipeUpInsComponent implements OnChanges {
 
     if (!payload.detalles.length) return;
 
+    console.log('[RecipeUpInsComponent] mode =>', this.mode);
     console.log('[RecipeUpInsComponent] submit payload =>', payload);
+
     this.save.emit(payload);
   }
 
