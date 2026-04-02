@@ -22,4 +22,6 @@ export interface Receta {
   created_by?: User | null;
   updated_at?: string | null;
   updated_by?: User | null;
+  es_insumo: boolean;
+  imagen_url?: string | null;
 }

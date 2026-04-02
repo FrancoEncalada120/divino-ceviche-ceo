@@ -8,6 +8,7 @@ export interface RecetaFullCreate {
     costo_total?: number;
     porciones: number;
     imagen_url?: string | null;
+    es_insumo: boolean;
   };
   detalles: {
     insumo_id: number;
