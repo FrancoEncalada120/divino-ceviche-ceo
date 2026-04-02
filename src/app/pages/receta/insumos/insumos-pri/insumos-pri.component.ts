@@ -25,8 +25,7 @@ export class InsumosPriComponent {
 
   constructor(
     private insumoService: InsumoService,
-    private proveedorService: ProveedorService,
-    private unidadService: UnidadService,
+
     //, private toast: ToastrService
   ) {}
 

@@ -24,13 +24,14 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
 import { UnidadService } from '../../../../core/services/unidad.service';
-import { RecetaService } from '../../../../core/services/receta.service';
 import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { TabViewModule } from 'primeng/tabview';
 import { MessageService } from 'primeng/api';
 import { UploadService } from '../../../../core/services/upload.service';
 import { FileUploadModule } from 'primeng/fileupload';
+
+import { CheckboxModule } from 'primeng/checkbox';
 type ModalMode = 'create' | 'edit';
 type UnidadOption = { label: string; value: number };
 type InsumoOption = { label: string; value: number; grupo?: string };
@@ -50,6 +51,7 @@ type InsumoOption = { label: string; value: number; grupo?: string };
     DividerModule,
     TabViewModule,
     FileUploadModule,
+    CheckboxModule,
   ],
   templateUrl: './recipe-up-ins.component.html',
   styleUrl: './recipe-up-ins.component.scss',
@@ -101,6 +103,7 @@ export class RecipeUpInsComponent implements OnChanges {
         validators: [Validators.required, Validators.min(1)],
       }),
       imagen_url: new FormControl<string | null>(null),
+      es_insumo: [false],
     });
     // arranca con 1 detalle por defecto
     this.addDetalle();
@@ -245,6 +248,7 @@ export class RecipeUpInsComponent implements OnChanges {
       estado: (this.receta.estado ?? 'A') as 'A' | 'I',
       created_by: this.receta.created_by ?? '1',
       imagen_url: this.receta.imagen_url ?? null,
+      es_insumo: this.receta.es_insumo ?? null,
     });
 
     if (this.receta.imagen_url) {
@@ -325,6 +329,7 @@ export class RecipeUpInsComponent implements OnChanges {
         costo_total: Number(this.vCosto_total ?? 0),
         porciones: Number(this.form.get('porciones')?.value ?? 1),
         imagen_url: v.imagen_url ?? null,
+        es_insumo: v.es_insumo,
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),

@@ -42,7 +42,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <div class="form-field">
                   <label for="nombre" class="form-label">Serving *</label>
                   <p-inputNumber
@@ -68,7 +68,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-4">
                 <div class="form-field">
                   <label for="costo_preparacion" class="form-label">
                     Labor cost *
@@ -94,6 +94,27 @@
                   "
                 >
                   Must be greater than 0
+                </div>
+              </div>
+              <div class="col-12 col-md-4s">
+                <label for="es_insumo" class="block mb-2 font-medium">
+                  ¿Es insumo?
+                </label>
+
+                <div class="flex align-items-center gap-2">
+                  <p-checkbox
+                    formControlName="es_insumo"
+                    inputId="es_insumo"
+                    binary="true"
+                  ></p-checkbox>
+
+                  <label for="es_insumo" class="mb-0">
+                    {{
+                      form.get("es_insumo")?.value
+                        ? "Esta receta se usará como insumo"
+                        : ""
+                    }}
+                  </label>
                 </div>
               </div>
 

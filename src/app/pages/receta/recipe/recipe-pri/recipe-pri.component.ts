@@ -10,6 +10,7 @@ import { NgIf } from '@angular/common';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { UnidadService } from '../../../../core/services/unidad.service';
 import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
+import { CreateInsumoDto } from '../../../../core/models/insumo.model';
 
 type ModalMode = 'create' | 'edit';
 @Component({
@@ -133,10 +134,34 @@ export class RecipePriComponent {
     console.log('[PADRE] payload recibido =>', payload);
 
     this.recetaService.createFull(payload).subscribe({
-      next: () => {
+      next: (res) => {
+        if (payload.receta.es_insumo) {
+          const insumoPayload: CreateInsumoDto = {
+            nombre: payload.receta.nombre,
+            descripcion: payload.receta.descripcion ?? '',
+            proveedor_id: 24,
+            estacion_id: 1,
+            unidad_id: 7,
+            unidad_trabajo: 7,
+            cantidad: 1,
+            stock_ideal: 0,
+            created_by: 1,
+          };
+
+          this.insumosService.create(insumoPayload).subscribe({
+            next: () => {
+              console.log('[INSUMO] creado automáticamente');
+            },
+            error: (err) => {
+              console.error('[INSUMO] error =>', err);
+            },
+          });
+        }
+
         this.closeModal();
         this.load();
       },
+
       error: (err) => {
         console.error('[Recetas] error =>', err);
       },
