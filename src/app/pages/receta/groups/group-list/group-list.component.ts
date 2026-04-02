@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { RecConversion } from '../../../../core/models/conversion.model';
+import { Grupo } from '../../../../core/models/grupos.model';
 
 @Component({
   selector: 'app-group-list',
@@ -11,16 +11,16 @@ import { RecConversion } from '../../../../core/models/conversion.model';
   styleUrl: './group-list.component.scss',
 })
 export class GroupsListComponent {
-  @Input() conversiones: RecConversion[] = [];
+  @Input() conversiones: Grupo[] = [];
 
-  @Output() edit = new EventEmitter<RecConversion>();
-  @Output() remove = new EventEmitter<RecConversion>();
+  @Output() edit = new EventEmitter<Grupo>();
+  @Output() remove = new EventEmitter<Grupo>();
 
-  onEdit(conversion: RecConversion): void {
+  onEdit(conversion: Grupo): void {
     this.edit.emit(conversion);
   }
 
-  onDelete(conversion: RecConversion): void {
+  onDelete(conversion: Grupo): void {
     this.remove.emit(conversion);
   }
 

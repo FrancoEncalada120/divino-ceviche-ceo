@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-
-import { Compra } from '../models/compra.model';
 import { CompraFullCreate } from '../models/compra-full-create.model';
 import { CompraFullResponse, DeleteCompraResponse } from '../models/compra-full-response.model';
 import { CompraDetalle } from '../models/compra-detalle.model';
@@ -36,42 +34,6 @@ export class CompraService {
       }),
     );
   }
-
-  // getById(id: number): Observable<Compra | null> {
-  //   const url = `${this.apiUrl}/${id}`;
-
-  //   return this.http.get<ApiResponse<Compra>>(url).pipe(
-  //     map((res) => {
-  //       if (!res?.success) return null;
-  //       return res.data ?? null;
-  //     }),
-  //   );
-  // }
-
-  // create(compra: Partial<Compra>): Observable<Compra> {
-
-
-  //   return this.http.post<ApiResponse<Compra>>(this.apiUrl, compra).pipe(
-  //     map((res) => {
-  //       if (!res.success)
-  //         throw new Error(res.message || 'Error creating compra');
-  //       return res.data;
-  //     }),
-  //   );
-  // }
-
-  // update(compra: Compra): Observable<Compra> {
-  //   const url = `${this.apiUrl}/${compra.compra_id}`;
-
-
-  //   return this.http.put<ApiResponse<Compra>>(url, compra).pipe(
-  //     map((res) => {
-  //       if (!res.success)
-  //         throw new Error(res.message || 'Error updating compra');
-  //       return res.data;
-  //     }),
-  //   );
-  // }
 
   /**
    * Crea compra + detalles en una sola llamada

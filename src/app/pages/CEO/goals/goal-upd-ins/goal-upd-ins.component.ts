@@ -6,7 +6,6 @@ import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
 import { DecimalOnlyDirective } from "../../../../core/directives/decimal-only.directive";
 
-
 @Component({
   selector: 'app-goal-upd-ins',
   imports: [CommonModule, FormsModule, DecimalOnlyDirective],
@@ -75,6 +74,8 @@ export class GoalUpdInsComponent implements OnInit {
   onSubmit() {
     this.submit.emit(this.formData);
   }
+
+
 
   // ===========================================
 

@@ -24,5 +24,10 @@ export interface GrupoDetalle {
   grupo_default: number;
   grupo_ultima_comrpa: number;
 
-  insumo: Insumo;
+  insumo: Insumo | null;
+}
+
+
+export interface grupoCreateRequest {
+  Grupo: Grupo;
 }

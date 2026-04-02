@@ -9,32 +9,33 @@ import {
 
 import { InputNumberModule } from 'primeng/inputnumber';
 import { DropdownModule } from 'primeng/dropdown';
+import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { RecConversion } from '../../../../core/models/conversion.model';
+import { FormsModule } from '@angular/forms';
+import { Grupo, GrupoDetalle } from '../../../../core/models/grupos.model';
+import { Insumo } from '../../../../core/models/insumo.model';
+import { InsumoService } from '../../../../core/services/insumo.service';
+import { UserService } from '../../../../core/services/user.service';
+import { User } from '../../../../core/models/user.models';
 
 type ModalMode = 'create' | 'edit';
 @Component({
   selector: 'app-group-up-ins',
   imports: [
     CommonModule,
-    ReactiveFormsModule,
+    FormsModule,
     InputNumberModule,
     DropdownModule,
     ButtonModule,
+    TableModule
   ],
   templateUrl: './group-up-ins.component.html',
   styleUrl: './group-up-ins.component.scss',
 })
 export class GroupUpInsComponent implements OnChanges {
   @Input() mode: ModalMode = 'create';
-  @Input() conversion: RecConversion | null = null;
+  @Input() conversion: Grupo | null = null;
 
   @Input() insumosOptions: { label: string; value: number; grupo?: string }[] =
     [];
@@ -43,18 +44,41 @@ export class GroupUpInsComponent implements OnChanges {
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<any>();
 
-  form: FormGroup;
+  user: User | null = null;
+
+  formData: Partial<Grupo> = {
+    grupo_id: 0,
+    grupo_nombre: '',
+    created_at: '',
+    created_by: 0,
+    detalles: []
+  };
 
   submitted = false;
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      insumo_id: [null, Validators.required],
-      unidad_origen_id: [null, Validators.required],
-      cantidad_origen: [null, [Validators.required, Validators.min(0.0001)]],
-      unidad_destino_id: [null, Validators.required],
-      cantidad_destino: [null, [Validators.required, Validators.min(0.0001)]],
+  constructor(
+    private service: InsumoService,
+    private userService: UserService,
+  ) {
+
+  }
+
+  ngOnInit(): void {
+
+    this.user = this.userService.getUser();
+
+    this.service.getInsumoAll().subscribe({
+      next: (data) => {
+        this.cInsumo = data.insumos ?? [];
+      },
+      error: (err) => {
+        console.error('[cInsumo] GET error:', err);
+
+      },
+      complete: () => { }
     });
+
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -64,22 +88,27 @@ export class GroupUpInsComponent implements OnChanges {
   }
 
   private loadForm(): void {
+
     if (this.mode === 'edit' && this.conversion) {
-      this.form.patchValue({
-        insumo_id: this.conversion.insumo_id ?? null,
-        unidad_origen_id: this.conversion.unidad_origen_id ?? null,
-        cantidad_origen: Number(this.conversion.cantidad_origen ?? 0),
-        unidad_destino_id: this.conversion.unidad_destino_id ?? null,
-        cantidad_destino: Number(this.conversion.cantidad_destino ?? 0),
-      });
+      // Copia defensiva (muy importante)
+      this.formData = { ...this.conversion };
+
+      for (const item of this.conversion.detalles) {
+
+        this.items.push({
+          grupo_default: item.grupo_default,
+          grupo_id: item.grupo_id,
+          grupo_ultima_comrpa: item.grupo_ultima_comrpa,
+          insumo_id: item.insumo_id,
+          insumo: item.insumo
+        });
+
+
+      }
+
+
     } else {
-      this.form.reset({
-        insumo_id: null,
-        unidad_origen_id: null,
-        cantidad_origen: null,
-        unidad_destino_id: null,
-        cantidad_destino: null,
-      });
+      this.addRow();
     }
 
     this.submitted = false;
@@ -92,21 +121,54 @@ export class GroupUpInsComponent implements OnChanges {
   onSubmit(): void {
     this.submitted = true;
 
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
+
+    this.formData.detalles = this.items.map(item => ({
+      grupo_default: item.grupo_default,
+      grupo_id: item.grupo_id,
+      grupo_ultima_comrpa: item.grupo_ultima_comrpa,
+      insumo_id: item.insumo_id,
+      insumo: item.insumo
+    }));
+
+    this.formData.created_by = this.user?.user_id;
+
+    this.submit.emit(this.formData as Grupo);
+  }
+
+  cInsumo: Insumo[] = [];
+  items: GrupoDetalle[] = [];
+
+  addRow() {
+
+    this.items.push({
+      grupo_default: 0,
+      grupo_id: 0,
+      grupo_ultima_comrpa: 0,
+      insumo_id: 0,
+      insumo: null
+    });
+  }
+
+  removeRow(index: number) {
+    this.items.splice(index, 1);
+  }
+
+  onInsumoChange(insumoId: number, row: any) {
+
+    // Verificar si ya existe ese insumo en otra fila
+    const existe = this.items.some(item =>
+      item.insumo_id === insumoId && item !== row
+    );
+
+    if (existe) {
+      alert('Este insumo ya fue agregado.');
+      row.insumo_id = null;
       return;
     }
 
-    const payload = {
-      ...this.form.getRawValue(),
-      cantidad_origen: Number(this.form.value.cantidad_origen),
-      cantidad_destino: Number(this.form.value.cantidad_destino),
-    };
-
-    this.submit.emit(payload);
   }
 
-  get f() {
-    return this.form.controls;
-  }
+  // get f() {
+  //   return this.form.controls;
+  // }
 }

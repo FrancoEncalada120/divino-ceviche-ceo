@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import {
-  RecConversion,
-  RecConversionCreateRequest,
-  RecConversionUpdateRequest,
-} from '../models/conversion.model';
+import { Grupo, grupoCreateRequest } from '../models/grupos.model';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -18,12 +14,12 @@ type ApiResponse<T> = {
 export class RecGroupService {
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/rec_grupos`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  getAll(): Observable<RecConversion[]> {
-    console.log('[RecConversionService] GET', this.apiUrl);
+  getGrupoAll(): Observable<Grupo[]> {
 
-    return this.http.get<ApiResponse<RecConversion[]>>(this.apiUrl).pipe(
+
+    return this.http.get<ApiResponse<Grupo[]>>(this.apiUrl).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];
@@ -31,23 +27,11 @@ export class RecGroupService {
     );
   }
 
-  getById(id: number): Observable<RecConversion | null> {
-    const url = `${this.apiUrl}/${id}`;
-    console.log('[RecConversionService] GET', url);
-
-    return this.http.get<ApiResponse<RecConversion>>(url).pipe(
-      map((res) => {
-        if (!res?.success) return null;
-        return res.data ?? null;
-      }),
-    );
-  }
-
-  create(data: RecConversionCreateRequest): Observable<RecConversion> {
+  create(data: grupoCreateRequest): Observable<Grupo> {
     console.log('[RecConversionService] POST', this.apiUrl);
     console.log('[RecConversionService] data', data);
 
-    return this.http.post<ApiResponse<RecConversion>>(this.apiUrl, data).pipe(
+    return this.http.post<ApiResponse<Grupo>>(this.apiUrl, data).pipe(
       map((res) => {
         console.log('[RecConversionService] res', res);
 
@@ -62,13 +46,13 @@ export class RecGroupService {
 
   update(
     id: number,
-    data: RecConversionUpdateRequest,
-  ): Observable<RecConversion> {
+    data: grupoCreateRequest,
+  ): Observable<Grupo> {
     const url = `${this.apiUrl}/${id}`;
     console.log('[RecConversionService] PUT', url);
     console.log('[RecConversionService] data', data);
 
-    return this.http.put<ApiResponse<RecConversion>>(url, data).pipe(
+    return this.http.put<ApiResponse<Grupo>>(url, data).pipe(
       map((res) => {
         if (!res.success) {
           throw new Error(res.message || 'Error updating conversion');

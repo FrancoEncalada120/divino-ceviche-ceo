@@ -84,8 +84,7 @@
   <app-purchase-upd-ins *ngIf="showAddLocationModal" (close)="closeModal()"
     (submit)="handleSubmit($event)"></app-purchase-upd-ins>
 
-  <app-purchase-list (delete)="delete($event)"
-    [compraDetalle]="compraDetalle"></app-purchase-list>
+  <app-purchase-list (delete)="delete($event)" [compraDetalle]="compraDetalle"></app-purchase-list>
 
   <app-purchase-confirmation *ngIf="showConfirmanModal" [recetas_impactadas]="recetas_impactadas"
     [txtDetail]="txtDetail" [txtSummary]="txtSummary" (close)="closeModalConfirm()"></app-purchase-confirmation>

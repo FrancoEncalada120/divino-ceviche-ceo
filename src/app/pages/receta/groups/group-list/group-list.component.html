@@ -1,29 +1,15 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <p-tabPanel header="Conversion List">
-        <p-table
-          [value]="conversiones"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-          styleClass="p-datatable-sm"
-        >
+      <p-tabPanel header="Groups List">
+        <p-table [value]="conversiones" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords}" styleClass="p-datatable-sm">
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
               <th>ID</th>
-              <th>Insumo</th>
-              <th>Source Unit</th>
-              <th class="text-end">Source Quantity</th>
-              <th>Target Unit</th>
-              <th class="text-end">Target Quantity</th>
-              <th>Status</th>
+              <th>Group Name</th>
               <th class="col-actions"></th>
             </tr>
           </ng-template>
@@ -31,65 +17,18 @@
           <!-- Body -->
           <ng-template pTemplate="body" let-row>
             <tr>
-              <td>{{ row.id }}</td>
+              <td>{{ row.grupo_id }}</td>
 
               <td>
-                {{ row.insumo?.nombre || row.insumo_id }}
-              </td>
-
-              <td>
-                {{
-                  row.unidad_origen?.nombre
-                    ? row.unidad_origen.nombre +
-                      " (" +
-                      row.unidad_origen.abreviatura +
-                      ")"
-                    : row.unidad_origen_id
-                }}
-              </td>
-
-              <td class="text-end">
-                {{ Number(row.cantidad_origen) | number: "1.2-4" }}
-              </td>
-
-              <td>
-                {{
-                  row.unidad_destino?.nombre
-                    ? row.unidad_destino.nombre +
-                      " (" +
-                      row.unidad_destino.abreviatura +
-                      ")"
-                    : row.unidad_destino_id
-                }}
-              </td>
-
-              <td class="text-end">
-                {{ Number(row.cantidad_destino) | number: "1.2-4" }}
-              </td>
-
-              <td>
-                <span
-                  class="badge"
-                  [ngClass]="
-                    row.insumo?.estado === 'A' ? 'bg-success' : 'bg-secondary'
-                  "
-                >
-                  {{ row.insumo?.estado === "A" ? "Active" : "Inactive" }}
-                </span>
+                {{ row.grupo_nombre }}
               </td>
 
               <td class="col-actions text-end">
-                <button
-                  class="btn btn-sm btn-warning m-1"
-                  (click)="onEdit(row)"
-                >
+                <button class="btn btn-sm btn-warning m-1" (click)="onEdit(row)">
                   Edit
                 </button>
 
-                <button
-                  class="btn btn-sm btn-danger m-1"
-                  (click)="onDelete(row)"
-                >
+                <button class="btn btn-sm btn-danger m-1" (click)="onDelete(row)">
                   Delete
                 </button>
               </td>
