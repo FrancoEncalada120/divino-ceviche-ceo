@@ -133,53 +133,66 @@ export class RecipePriComponent {
   handleSubmit(payload: RecetaFullCreate): void {
     console.log('[PADRE] payload recibido =>', payload);
 
-    console.log('mode:', this.modalMode);
-    console.log('selectedReceta:', this.selectedReceta);
+    const isEdit =
+      this.modalMode === 'edit' && !!this.selectedReceta?.receta_id;
 
-    const isEdit = this.modalMode === 'edit' && this.selectedReceta?.receta_id;
-
-    let request$;
-
-    if (this.modalMode === 'edit' && this.selectedReceta) {
-      request$ = this.recetaService.updateFull(
-        this.selectedReceta.receta_id,
-        payload,
-      );
-    } else {
-      request$ = this.recetaService.createFull(payload);
-    }
+    const request$ = isEdit
+      ? this.recetaService.updateFull(this.selectedReceta!.receta_id, payload)
+      : this.recetaService.createFull(payload);
 
     request$.subscribe({
       next: (res) => {
-        if (payload.receta.es_insumo) {
+        console.log('[RECETA] respuesta completa =>', res);
+        console.log('[RECETA] receta =>', res?.receta);
+        console.log('[RECETA] receta.receta_id =>', res?.receta?.receta_id);
+
+        const recetaId = isEdit
+          ? this.selectedReceta!.receta_id
+          : res?.receta?.receta_id;
+
+        console.log('[RECETA] recetaId final =>', recetaId);
+        console.log('[RECETA] es_insumo =>', payload.receta.es_insumo);
+
+        if (payload.receta.es_insumo && recetaId) {
           const insumoPayload: CreateInsumoDto = {
             nombre: payload.receta.nombre,
             descripcion: payload.receta.descripcion ?? payload.receta.nombre,
             proveedor_id: 24,
             estacion_id: 1,
-            unidad_id: 7,
-            unidad_trabajo: 7,
-            cantidad: 1,
+            unidad_id: payload.receta.unidad_receta,
+            unidad_trabajo: payload.receta.unidad_receta,
+            cantidad: payload.receta.cantidad_receta,
             stock_ideal: 0,
             created_by: 1,
+            id_receta: recetaId,
           };
 
+          console.log('[INSUMO] payload enviado =>', insumoPayload);
+
           this.insumosService.create(insumoPayload).subscribe({
-            next: () => {
-              console.log('[INSUMO] creado automáticamente');
+            next: (insumoRes) => {
+              console.log('[INSUMO] creado automáticamente =>', insumoRes);
+              this.closeModal();
+              this.load();
             },
             error: (err) => {
               console.error('[INSUMO] error =>', err);
+              console.error('[INSUMO] error.error =>', err?.error);
+              console.error('[INSUMO] error.message =>', err?.error?.message);
+              this.closeModal();
+              this.load();
             },
           });
+
+          return;
         }
 
+        console.warn('[INSUMO] No se creó porque recetaId vino vacío');
         this.closeModal();
         this.load();
       },
-
       error: (err) => {
-        console.error('[Recetas] error =>', err);
+        console.error('[RECETAS] error =>', err);
       },
     });
   }

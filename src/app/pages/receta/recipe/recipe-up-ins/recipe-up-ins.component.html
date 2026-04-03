@@ -134,32 +134,21 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-8">
-                <div class="form-field">
-                  <label for="descripcion" class="form-label">
-                    Description
-                  </label>
+              <div class="col-12 col-md-3">
+                <label for="cantidad_receta" class="form-label">
+                  Cantidad Receta*
+                </label>
 
-                  <textarea
-                    pInputTextarea
-                    id="descripcion"
-                    rows="6"
-                    formControlName="descripcion"
-                    placeholder="Description"
-                    class="w-100"
-                    autoResize="true"
-                  ></textarea>
-                </div>
-
-                <div
-                  class="field-error"
-                  *ngIf="
-                    form.get('descripcion')?.touched &&
-                    form.get('descripcion')?.invalid
-                  "
-                >
-                  Description is required
-                </div>
+                <p-inputNumber
+                  inputId="cantidad_receta"
+                  formControlName="cantidad_receta"
+                  [min]="0"
+                  [minFractionDigits]="2"
+                  [maxFractionDigits]="4"
+                  [useGrouping]="false"
+                  placeholder="Ej: 1.0000"
+                  class="w-100"
+                ></p-inputNumber>
               </div>
 
               <div class="col-12 col-md-4">
@@ -182,6 +171,34 @@
                     (onSelect)="onFileSelect($event)"
                     class="w-100"
                   ></p-fileUpload>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <div class="form-field">
+                  <label for="descripcion" class="form-label">
+                    Description
+                  </label>
+
+                  <textarea
+                    pInputTextarea
+                    id="descripcion"
+                    rows="2"
+                    formControlName="descripcion"
+                    placeholder="Description"
+                    class="w-100"
+                    autoResize="true"
+                  ></textarea>
+                </div>
+
+                <div
+                  class="field-error"
+                  *ngIf="
+                    form.get('descripcion')?.touched &&
+                    form.get('descripcion')?.invalid
+                  "
+                >
+                  Description is required
                 </div>
               </div>
             </div>

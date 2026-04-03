@@ -25,4 +25,6 @@ export interface Receta {
   es_insumo: boolean;
   imagen_url?: string | null;
   unidad_receta: number;
+  //id_insumo: number;
+  cantidad_receta: number;
 }

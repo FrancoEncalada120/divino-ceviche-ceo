@@ -10,6 +10,8 @@ export interface RecetaFullCreate {
     imagen_url?: string | null;
     es_insumo: boolean;
     unidad_receta: number;
+    //id_insumo: number;
+    cantidad_receta: number;
   };
   detalles: {
     insumo_id: number;

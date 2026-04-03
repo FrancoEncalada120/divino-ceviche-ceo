@@ -105,6 +105,7 @@ export class RecipeUpInsComponent implements OnChanges {
       imagen_url: new FormControl<string | null>(null),
       es_insumo: [false],
       unidad_receta: [null, Validators.required],
+      cantidad_receta: [null, Validators.required],
     });
     // arranca con 1 detalle por defecto
     this.addDetalle();
@@ -256,6 +257,7 @@ export class RecipeUpInsComponent implements OnChanges {
       imagen_url: this.receta.imagen_url ?? null,
       es_insumo: this.receta.es_insumo ?? false,
       unidad_receta: Number(this.receta.unidad_receta ?? null),
+      cantidad_receta: this.receta.cantidad_receta ?? 0,
     });
 
     if (this.receta.imagen_url) {
@@ -339,6 +341,8 @@ export class RecipeUpInsComponent implements OnChanges {
         imagen_url: v.imagen_url ?? null,
         es_insumo: !!v.es_insumo,
         unidad_receta: Number(v.unidad_receta ?? 0),
+        //  id_insumo: : Number(v.id_insumo ?? 0),
+        cantidad_receta: Number(v.cantidad_receta ?? 0),
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),
