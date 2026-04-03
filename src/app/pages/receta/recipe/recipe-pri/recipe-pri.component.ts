@@ -11,11 +11,17 @@ import { InsumoService } from '../../../../core/services/insumo.service';
 import { UnidadService } from '../../../../core/services/unidad.service';
 import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
 import { CreateInsumoDto } from '../../../../core/models/insumo.model';
+import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
 
 type ModalMode = 'create' | 'edit';
 @Component({
   selector: 'app-recipe-pri',
-  imports: [NgIf, RecipeListComponent, RecipeUpInsComponent],
+  imports: [
+    NgIf,
+    RecipeListComponent,
+    RecipeUpInsComponent,
+    PurchaseConfirmationComponent,
+  ],
   templateUrl: './recipe-pri.component.html',
   styleUrl: './recipe-pri.component.scss',
 })
@@ -30,6 +36,10 @@ export class RecipePriComponent {
   recetas: Receta[] = [];
   insumosOptions: { label: string; value: number; grupo: string }[] = [];
   unidadesOptions: { label: string; value: number }[] = [];
+  showConfirmanModal = false;
+  txtDetail: string = '';
+  txtSummary: string = '';
+  recetas_impactadas: Receta[] = [];
 
   constructor(
     private recetaService: RecetaService,
@@ -73,7 +83,7 @@ export class RecipePriComponent {
           const arrGrupo = data.grupos ?? [];
 
           this.insumosOptions = arr.map((x: any) => ({
-            label: x.nombre, // ajusta si tu campo se llama distinto
+            label: x.nombreCompleto,
             value: Number(x.insumo_id),
             grupo: x.grupo,
           }));
@@ -143,17 +153,20 @@ export class RecipePriComponent {
     request$.subscribe({
       next: (res) => {
         console.log('[RECETA] respuesta completa =>', res);
-        console.log('[RECETA] receta =>', res?.receta);
-        console.log('[RECETA] receta.receta_id =>', res?.receta?.receta_id);
 
         const recetaId = isEdit
           ? this.selectedReceta!.receta_id
           : res?.receta?.receta_id;
 
-        console.log('[RECETA] recetaId final =>', recetaId);
-        console.log('[RECETA] es_insumo =>', payload.receta.es_insumo);
-
         if (payload.receta.es_insumo && recetaId) {
+          const cantidad = isEdit
+            ? this.selectedReceta!.cantidad_receta
+            : res?.receta?.cantidad_receta;
+
+          const precio_final = isEdit
+            ? this.selectedReceta!.costo_neto
+            : res?.receta?.costo_neto;
+
           const insumoPayload: CreateInsumoDto = {
             nombre: payload.receta.nombre,
             descripcion: payload.receta.descripcion ?? payload.receta.nombre,
@@ -161,10 +174,12 @@ export class RecipePriComponent {
             estacion_id: 1,
             unidad_id: payload.receta.unidad_receta,
             unidad_trabajo: payload.receta.unidad_receta,
-            cantidad: payload.receta.cantidad_receta,
-            stock_ideal: 0,
+            cantidad: cantidad,
+            stock_ideal: cantidad,
             created_by: 1,
             id_receta: recetaId,
+            stock: cantidad,
+            precio_final: precio_final,
           };
 
           console.log('[INSUMO] payload enviado =>', insumoPayload);
@@ -187,13 +202,22 @@ export class RecipePriComponent {
           return;
         }
 
-        console.warn('[INSUMO] No se creó porque recetaId vino vacío');
+        this.recetas_impactadas = res.receta_impactada;
+        this.txtDetail = `The purchase has been successfully created with code ${recetaId}. The following recipes have been impacted:`;
+        this.txtSummary = 'Purchase created successfully';
+        this.showConfirmanModal = true;
+
         this.closeModal();
+
         this.load();
       },
       error: (err) => {
         console.error('[RECETAS] error =>', err);
       },
     });
+  }
+
+  closeModalConfirm() {
+    this.showConfirmanModal = false;
   }
 }

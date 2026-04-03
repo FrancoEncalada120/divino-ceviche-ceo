@@ -43,6 +43,8 @@ export interface CreateInsumoDto {
   stock_ideal?: number | null;
   created_by?: number | null;
   id_receta?: number | null;
+  precio_final?: number | null;
+  stock?: number | null;
 }
 
 export interface UpdateInsumoDto {

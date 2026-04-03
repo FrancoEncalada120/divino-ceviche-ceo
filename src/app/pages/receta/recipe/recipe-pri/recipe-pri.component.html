@@ -33,3 +33,11 @@
   [insumosOptions]="insumosOptions"
   [unidadesOptions]="unidadesOptions"
 ></app-recipe-up-ins>
+
+<app-purchase-confirmation
+  *ngIf="showConfirmanModal"
+  [recetas_impactadas]="recetas_impactadas"
+  [txtDetail]="txtDetail"
+  [txtSummary]="txtSummary"
+  (close)="closeModalConfirm()"
+></app-purchase-confirmation>

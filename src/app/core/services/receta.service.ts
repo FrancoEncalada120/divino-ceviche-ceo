@@ -78,13 +78,9 @@ export class RecetaService {
    */
   createFull(payload: RecetaFullCreate): Observable<any> {
     const url = `${this.apiUrl}/full`;
-    console.log('[RecetaService] POST', url);
-    console.log('[RecetaService] data', payload);
 
     return this.http.post<ApiResponse<any>>(url, payload).pipe(
       map((res) => {
-        console.log('[RecetaService] res', res);
-
         if (!res.success) {
           throw new Error(res.message || 'Error creating receta full');
         }
