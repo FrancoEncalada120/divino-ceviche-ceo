@@ -13,35 +13,65 @@
 
   <!-- Menu -->
   <nav class="menu">
-    <ng-container *ngFor="let item of items">
+    <ng-container *ngFor="let item of items;  let i = index">
       <!-- Section label -->
-      <div *ngIf="item.type === 'section'" class="menu-section">
+      <!-- <div *ngIf="item.type === 'section'" class="menu-section">
         {{ item.label }}
-      </div>
+      </div> -->
 
-      <!-- Link item -->
-      <a *ngIf="item.type === 'link'" class="menu-link" [routerLink]="item.route" routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }">
-        <i class="bi menu-ic" [ngClass]="item.icon"></i>
-        <span class="menu-text">{{ item.label }}</span>
-        <i class="bi bi-chevron-right ms-auto arrow"></i>
+      <!-- SECTION -->
+  <div
+    *ngIf="item.type === 'section'"
+    class="menu-section"
+    (click)="setActiveSection(i)"
+    [class.active]="activeSectionIndex === i"
+  >
+    {{ item.label }}
+    <i class="bi ms-auto"
+       [ngClass]="activeSectionIndex === i ? 'bi-chevron-down' : 'bi-chevron-right'">
+    </i>
+  </div>
+
+
+ <!-- CONTENT -->
+  <ng-container *ngIf="isItemVisible(i)">
+
+    <!-- LINK -->
+    <a *ngIf="item.type === 'link'"
+       class="menu-link"
+       [routerLink]="item.route"
+       routerLinkActive="active"
+       [routerLinkActiveOptions]="{ exact: true }">
+      <i class="bi menu-ic" [ngClass]="item.icon"></i>
+      <span class="menu-text">{{ item.label }}</span>
+      <i class="bi bi-chevron-right ms-auto arrow"></i>
+    </a>
+
+    <!-- GROUP -->
+    <button *ngIf="item.type === 'group'"
+      type="button"
+      class="menu-link menu-group"
+      (click)="toggleGroup(item)"
+      [class.active]="item.isOpen">
+      <i class="bi menu-ic" [ngClass]="item.icon"></i>
+      <span class="menu-text">{{ item.label }}</span>
+      <i class="bi bi-chevron-down ms-auto chevron" [class.open]="item.isOpen"></i>
+    </button>
+
+    <!-- CHILDREN -->
+    <div *ngIf="item.type === 'group' && item.isOpen" class="menu-children">
+      <a *ngFor="let child of item.children"
+         class="menu-child"
+         [routerLink]="child.route"
+         routerLinkActive="active">
+        <i class="bi menu-ic child-ic" [ngClass]="child.icon"></i>
+        <span>{{ child.label }}</span>
       </a>
+    </div>
 
-      <!-- Group item -->
-      <button *ngIf="item.type === 'group'" type="button" class="menu-link menu-group" (click)="toggleGroup(item)"
-        [class.active]="item.isOpen">
-        <i class="bi menu-ic" [ngClass]="item.icon"></i>
-        <span class="menu-text">{{ item.label }}</span>
-        <i class="bi bi-chevron-down ms-auto chevron" [class.open]="item.isOpen"></i>
-      </button>
+  </ng-container>
 
-      <!-- Group children -->
-      <div *ngIf="item.type === 'group' && item.isOpen" class="menu-children">
-        <a *ngFor="let child of item.children" class="menu-child" [routerLink]="child.route" routerLinkActive="active">
-          <i class="bi menu-ic child-ic" [ngClass]="child.icon"></i>
-          <span>{{ child.label }}</span>
-        </a>
-      </div>
+
     </ng-container>
 
     <div class="menu-divider"></div>

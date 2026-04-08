@@ -80,13 +80,13 @@ export class MenuComponent {
         children: [
           ...(this.userRole === 2
             ? [
-                {
-                  type: 'link',
-                  label: 'Profile',
-                  icon: 'bi-person',
-                  route: 'settings/Profile',
-                } satisfies MenuLinkItem,
-              ]
+              {
+                type: 'link',
+                label: 'Profile',
+                icon: 'bi-person',
+                route: 'settings/Profile',
+              } satisfies MenuLinkItem,
+            ]
             : []),
           {
             type: 'link',
@@ -104,9 +104,9 @@ export class MenuComponent {
       },
 
       { type: 'section', label: 'RECIPES' },
-      { type: 'link', label: 'Purchase', icon: 'bi-grid', route: 'Purchase' },
-      { type: 'link', label: 'Recepy', icon: 'bi-grid', route: 'Recepy' },
-      { type: 'link', label: 'Stock', icon: 'bi-grid', route: 'Stock' },
+      { type: 'link', label: 'Purchase', icon: 'bi-cart-check', route: 'Purchase' },
+      { type: 'link', label: 'Recepy', icon: 'bi-journal-text', route: 'Recepy' },
+      { type: 'link', label: 'Stock', icon: 'bi-box-seam', route: 'Stock' },
       {
         type: 'group',
         label: 'Settings',
@@ -127,6 +127,9 @@ export class MenuComponent {
           },
         ],
       },
+      { type: 'section', label: 'CASH FLOW' },
+      { type: 'link', label: 'Cash Flow', icon: 'bi-cash-stack', route: 'Cashflow' },
+
     ];
   }
 
@@ -185,4 +188,23 @@ export class MenuComponent {
     // o solo un log/refresh
     console.log('Password changed');
   }
+
+  activeSectionIndex = 0;
+  setActiveSection(index: number) {
+    this.activeSectionIndex = index;
+  }
+
+  isItemVisible(index: number): boolean {
+    let currentSectionIndex = -1;
+
+    for (let i = 0; i <= index; i++) {
+      if (this.items[i].type === 'section') {
+        currentSectionIndex = i;
+      }
+    }
+
+    return currentSectionIndex === this.activeSectionIndex;
+
+  }
+
 }

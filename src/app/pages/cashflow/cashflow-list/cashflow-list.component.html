@@ -1,0 +1,64 @@
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+
+    <p-tabView>
+      <p-tabPanel header="Purchase List">
+
+
+        <p-table [value]="movimientos" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <!-- Header -->
+          <ng-template pTemplate="header">
+            <tr>
+
+               <th>Fecha</th>
+               <th>Día	</th>
+               <th>Saldo Inicial	</th>
+               <th>ventas neta linga 	</th>
+               <th>depositos a banco	</th>
+               <th>Payroll+TIPS	</th>
+               <th>Renta	</th>
+               <th>Impuestos (8%)	</th>
+               <th>otros pagos automaticos</th>
+               <th>pagos programados 	</th>
+               <th>Saldo Final</th>
+            </tr>
+          </ng-template>
+
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+
+ <td>Fecha</td>
+               <td>Día	</td>
+               <td>Saldo Inicial	</td>
+               <td>ventas neta linga 	</td>
+               <td>depositos a banco	</td>
+               <td>Payroll+TIPS	</td>
+               <td>Renta	</td>
+               <td>Impuestos (8%)	</td>
+               <td>otros pagos automaticos</td>
+               <td>pagos programados 	</td>
+               <td>Saldo Final</td>
+
+            </tr>
+
+          </ng-template>
+
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="11" class="text-center text-muted py-4">
+                No records found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
+
+
+  </div>
+
+</div>
