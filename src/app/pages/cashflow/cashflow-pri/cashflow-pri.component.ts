@@ -1,8 +1,9 @@
-import { Component, EventEmitter, Output } from '@angular/core';
-import { movimiento } from '../../../core/models/movimiento.model';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { MovimientoAgrupado } from '../../../core/models/cash-movimiento.model';
 import { DatePickerModule } from 'primeng/datepicker';
 import { FormsModule } from '@angular/forms';
 import { CashflowListComponent } from "../cashflow-list/cashflow-list.component";
+import { cashMovimientoService } from '../../../core/services/cashmovimiento.service';
 
 @Component({
   selector: 'app-cashflow-pri',
@@ -10,14 +11,36 @@ import { CashflowListComponent } from "../cashflow-list/cashflow-list.component"
   templateUrl: './cashflow-pri.component.html',
   styleUrl: './cashflow-pri.component.scss'
 })
-export class CashflowPriComponent {
+export class CashflowPriComponent implements OnInit {
 
   modalMode: 'create' | 'edit' = 'create';
   showAddLocationModal = false;
-  selectedItem: movimiento | null = null;
+  selectedItem: MovimientoAgrupado | null = null;
 
   dateRange: Date[] | null = null;
-  movimientos: movimiento[] = [];
+  movimientos: MovimientoAgrupado[] = [];
+
+  constructor(
+    private service: cashMovimientoService,
+  ) { }
+
+  ngOnInit(): void {
+
+    this.service.getAll().subscribe({
+      next: (data) => {
+
+        this.movimientos = data ?? [];
+
+      },
+      error: (err) => {
+
+
+      },
+      complete: () => { },
+    });
+
+
+  }
 
   openCreate() {
     this.modalMode = 'create';

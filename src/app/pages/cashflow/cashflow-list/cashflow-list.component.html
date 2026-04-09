@@ -11,18 +11,17 @@
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
-
-               <th>Fecha</th>
-               <th>Día	</th>
-               <th>Saldo Inicial	</th>
-               <th>ventas neta linga 	</th>
-               <th>depositos a banco	</th>
-               <th>Payroll+TIPS	</th>
-               <th>Renta	</th>
-               <th>Impuestos (8%)	</th>
-               <th>otros pagos automaticos</th>
-               <th>pagos programados 	</th>
-               <th>Saldo Final</th>
+              <th [width]="col1" title="Transaction Date">Date</th>
+              <th [width]="col2" title="Opening Balance">Opening Bal.</th>
+              <th [width]="col3" title="Net Sales (Linga)">Net Sales</th>
+              <th [width]="col4" title="Bank Deposits">Deposits</th>
+              <th [width]="col5" title="Payroll and Tips">Payroll + Tips</th>
+              <th [width]="col6" title="Rent Payment">Rent</th>
+              <th [width]="col7" title="Taxes (8 Percent)">Taxes (8%)</th>
+              <th [width]="col8" title="Other Automatic Payments">Auto Payments</th>
+              <th [width]="col9" title="Scheduled Payments">Scheduled</th>
+              <th [width]="col10" title="Closing Balance">Closing Bal.</th>
+              <th>Details</th>
             </tr>
           </ng-template>
 
@@ -30,18 +29,142 @@
           <ng-template pTemplate="body" let-row>
             <tr>
 
- <td>Fecha</td>
-               <td>Día	</td>
-               <td>Saldo Inicial	</td>
-               <td>ventas neta linga 	</td>
-               <td>depositos a banco	</td>
-               <td>Payroll+TIPS	</td>
-               <td>Renta	</td>
-               <td>Impuestos (8%)	</td>
-               <td>otros pagos automaticos</td>
-               <td>pagos programados 	</td>
-               <td>Saldo Final</td>
+              <td>
+                {{row.fecha}}</td>
+              <td>
 
+                <span [ngClass]="getColorPrice(row.conceptos, 1)">
+                  {{mostrarImporte(row.conceptos, 1) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 1)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 2)">
+                  {{mostrarImporte(row.conceptos, 2) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 2)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 3)">
+                  {{mostrarImporte(row.conceptos, 3) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 3)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 4)">
+                  {{mostrarImporte(row.conceptos, 4) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 4)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 5)">
+                  {{mostrarImporte(row.conceptos, 5) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 5)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 6)">
+                  {{mostrarImporte(row.conceptos, 6) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 6)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 7)">
+                  {{mostrarImporte(row.conceptos, 7) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 7)" class="ms-2"> </i>
+
+              </td>
+              <td>
+
+                <span [ngClass]="getColorPrice(row.conceptos, 8)">
+                  {{mostrarImporte(row.conceptos, 8) }}
+                </span>
+                <i [ngClass]="getIconClassPrice(row.conceptos, 8)" class="ms-2"> </i>
+
+              </td>
+              <td> {{SaldoFinal(row.conceptos) }}</td>
+              <td>
+                <button (click)="toggleRow(row)">
+                  <i [class]="row.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
+                </button>
+              </td>
+            </tr>
+
+            <tr *ngIf="row.expanded">
+              <td colspan="10">
+
+                <table>
+                  <tr>
+                    <th [width]="col1">Location</th>
+                    <th [width]="col2">Opening Bal.</th>
+                    <th [width]="col3">Net Sales</th>
+                    <th [width]="col4">Deposits</th>
+                    <th [width]="col5">Payroll + Tips</th>
+                    <th [width]="col6">Rent</th>
+                    <th [width]="col7">Taxes (8%)</th>
+                    <th [width]="col8">Auto Payments</th>
+                    <th [width]="col9">Scheduled</th>
+                    <th [width]="col10">Closing Bal.</th>
+                  </tr>
+
+                  <!-- 🔥 DETALLE POR LOCATION -->
+                  <tr *ngFor="let loc of row.detalle">
+
+                    <td>{{ loc.location_name }}</td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 1) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 2) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 3) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 4) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 5) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 6) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 7) }}
+                    </td>
+
+                    <td>
+                      {{ mostrarImporte(loc.conceptos, 8) }}
+                    </td>
+
+                    <td>
+                      {{ SaldoFinal(loc.conceptos) }}
+                    </td>
+
+                  </tr>
+                </table>
+
+              </td>
             </tr>
 
           </ng-template>
