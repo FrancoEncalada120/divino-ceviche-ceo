@@ -9,3 +9,15 @@
 .text-gray-500 {
   color: #6b7280;
 }
+
+.icon-small {
+  font-size: 0.5rem; /* prueba 0.7 - 0.9 */
+}
+
+::ng-deep .detail-row {
+  background-color: #f4f6f9 !important; // gris suave
+}
+
+::ng-deep .p-treetable .p-treetable-tbody > tr.detail-row:hover {
+  background-color: #e8edf5 !important;
+}

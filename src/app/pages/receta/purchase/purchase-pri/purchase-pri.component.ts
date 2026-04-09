@@ -62,7 +62,7 @@ export class PurchasePriComponent {
     // 📅 Inicializar con AYER
     const today = new Date();
     const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 30);
+    yesterday.setDate(yesterday.getDate() - 7);
 
     this.dateRange = [new Date(yesterday), new Date(today)];
 

@@ -1,186 +1,120 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
 
-    <p-tabView>
-      <p-tabPanel header="Purchase List">
+    <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
 
+      <!-- HEADER -->
+      <ng-template pTemplate="header">
+        <tr>
+          <th style="width: 15%;"  >Date / Location</th>
+          <th class="text-end">Opening Bal.</th>
+          <th class="text-end">Net Sales</th>
+          <th class="text-end">Deposits</th>
+          <th class="text-end">Payroll + Tips</th>
+          <th class="text-end">Rent</th>
+          <th class="text-end">Taxes (8%)</th>
+          <th class="text-end">Auto Payments</th>
+          <th class="text-end">Scheduled</th>
+          <th class="text-end">Closing Bal.</th>
+        </tr>
+      </ng-template>
 
-        <p-table [value]="movimientos" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
-          <!-- Header -->
-          <ng-template pTemplate="header">
-            <tr>
-              <th [width]="col1" title="Transaction Date">Date</th>
-              <th [width]="col2" title="Opening Balance">Opening Bal.</th>
-              <th [width]="col3" title="Net Sales (Linga)">Net Sales</th>
-              <th [width]="col4" title="Bank Deposits">Deposits</th>
-              <th [width]="col5" title="Payroll and Tips">Payroll + Tips</th>
-              <th [width]="col6" title="Rent Payment">Rent</th>
-              <th [width]="col7" title="Taxes (8 Percent)">Taxes (8%)</th>
-              <th [width]="col8" title="Other Automatic Payments">Auto Payments</th>
-              <th [width]="col9" title="Scheduled Payments">Scheduled</th>
-              <th [width]="col10" title="Closing Balance">Closing Bal.</th>
-              <th>Details</th>
-            </tr>
-          </ng-template>
+      <!-- BODY -->
+      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
 
-          <!-- Body -->
-          <ng-template pTemplate="body" let-row>
-            <tr>
+        <tr [ngClass]="{'detail-row': rowData.isDetail}">
 
-              <td>
-                {{row.fecha}}</td>
-              <td>
+          <!-- 🔥 COLUMNA TREE -->
+          <td>
+            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 1)">
-                  {{mostrarImporte(row.conceptos, 1) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 1)" class="ms-2"> </i>
+            <span [ngClass]="{'fw-bold': !rowData.isDetail}">
+              {{ rowData.isDetail ? rowData.location_name : rowData.fecha }}
+            </span>
+          </td>
 
-              </td>
-              <td>
+          <!-- OPENING -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 1)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 1)">
+              {{ mostrarImporte(rowData.conceptos, 1) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 2)">
-                  {{mostrarImporte(row.conceptos, 2) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 2)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td>
+          <!-- NET SALES -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 2)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 2)">
+              {{ mostrarImporte(rowData.conceptos, 2) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 3)">
-                  {{mostrarImporte(row.conceptos, 3) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 3)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td>
+          <!-- DEPOSITS -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 3)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 3)">
+              {{ mostrarImporte(rowData.conceptos, 3) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 4)">
-                  {{mostrarImporte(row.conceptos, 4) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 4)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td>
+          <!-- PAYROLL -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 4)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 4)">
+              {{ mostrarImporte(rowData.conceptos, 4) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 5)">
-                  {{mostrarImporte(row.conceptos, 5) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 5)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td>
+          <!-- RENT -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 5)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 5)">
+              {{ mostrarImporte(rowData.conceptos, 5) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 6)">
-                  {{mostrarImporte(row.conceptos, 6) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 6)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td>
+          <!-- TAXES -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 6)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 6)">
+              {{ mostrarImporte(rowData.conceptos, 6) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 7)">
-                  {{mostrarImporte(row.conceptos, 7) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 7)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td>
+          <!-- AUTO -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 7)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 7)">
+              {{ mostrarImporte(rowData.conceptos, 7) | txtsigno: "$" }}
+            </span>
 
-                <span [ngClass]="getColorPrice(row.conceptos, 8)">
-                  {{mostrarImporte(row.conceptos, 8) }}
-                </span>
-                <i [ngClass]="getIconClassPrice(row.conceptos, 8)" class="ms-2"> </i>
+          </td>
 
-              </td>
-              <td> {{SaldoFinal(row.conceptos) }}</td>
-              <td>
-                <button (click)="toggleRow(row)">
-                  <i [class]="row.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></i>
-                </button>
-              </td>
-            </tr>
+          <!-- SCHEDULED -->
+          <td class="text-end">
+            <i [ngClass]="getIconClassPrice(rowData.conceptos, 8)" class="icon-small ms-1"></i>
+            <span [ngClass]="getColorPrice(rowData.conceptos, 8)">
+              {{ mostrarImporte(rowData.conceptos, 8) | txtsigno: "$" }}
+            </span>
 
-            <tr *ngIf="row.expanded">
-              <td colspan="10">
+          </td>
 
-                <table>
-                  <tr>
-                    <th [width]="col1">Location</th>
-                    <th [width]="col2">Opening Bal.</th>
-                    <th [width]="col3">Net Sales</th>
-                    <th [width]="col4">Deposits</th>
-                    <th [width]="col5">Payroll + Tips</th>
-                    <th [width]="col6">Rent</th>
-                    <th [width]="col7">Taxes (8%)</th>
-                    <th [width]="col8">Auto Payments</th>
-                    <th [width]="col9">Scheduled</th>
-                    <th [width]="col10">Closing Bal.</th>
-                  </tr>
+          <!-- TOTAL -->
+          <td class="text-end fw-bold">
+            = {{ SaldoFinal(rowData.conceptos) | txtsigno: "$" }}
+          </td>
 
-                  <!-- 🔥 DETALLE POR LOCATION -->
-                  <tr *ngFor="let loc of row.detalle">
+        </tr>
 
-                    <td>{{ loc.location_name }}</td>
+      </ng-template>
 
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 1) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 2) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 3) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 4) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 5) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 6) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 7) }}
-                    </td>
-
-                    <td>
-                      {{ mostrarImporte(loc.conceptos, 8) }}
-                    </td>
-
-                    <td>
-                      {{ SaldoFinal(loc.conceptos) }}
-                    </td>
-
-                  </tr>
-                </table>
-
-              </td>
-            </tr>
-
-          </ng-template>
-
-          <!-- Empty -->
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="11" class="text-center text-muted py-4">
-                No records found
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabPanel>
-    </p-tabView>
-
+    </p-treeTable>
 
   </div>
 
