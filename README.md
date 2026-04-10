@@ -68,3 +68,6 @@ For more information on using the Angular CLI, including detailed command refere
 | Guardar            | `btn-success`   | Verde      | Confirmar cambios   |
 | Eliminar           | `btn-danger`    | Rojo       | Acción destructiva  |
 | Crear / Nuevo      | `btn-primary`   | Azul       | Crear registro      |
+
+
+ng serve --hmr

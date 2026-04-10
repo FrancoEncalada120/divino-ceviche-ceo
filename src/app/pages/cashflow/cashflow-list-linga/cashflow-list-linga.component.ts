@@ -1,39 +1,47 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { Concepto, MovimientoAgrupado } from '../../../core/models/cash-movimiento.model';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { TreeTableModule } from 'primeng/treetable';
 
+
 @Component({
-  selector: 'app-cashflow-list',
-  imports: [NgClass, TxtsignoPipe, TreeTableModule],
-  templateUrl: './cashflow-list.component.html',
-  styleUrl: './cashflow-list.component.scss'
+  selector: 'app-cashflow-list-linga',
+  imports: [NgClass, TxtsignoPipe, TreeTableModule, NgIf],
+  templateUrl: './cashflow-list-linga.component.html',
+  styleUrl: './cashflow-list-linga.component.scss'
 })
-export class CashflowListComponent implements OnChanges {
+export class CashflowListLingaComponent {
 
   @Input()
-  movimientos: MovimientoAgrupado[] = [];
+  movimientosLinga: MovimientoAgrupado[] = [];
 
   treeData: any[] = [];
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['movimientos'] && this.movimientos) {
+    if (changes['movimientosLinga'] && this.movimientosLinga) {
       this.buildTree();
     }
   }
 
   buildTree() {
 
-    this.treeData = this.movimientos.map(row => ({
+    this.treeData = this.movimientosLinga.map(row => ({
       data: row,
-      children: row.detalle.map((loc: any) => ({
+      children: row.detalle.map((tipo: any) => ({
         data: {
-          ...loc,
+          ...tipo,
           isDetail: true
-        }
+        },// 🔥 TERCER NIVEL: LOCATIONS
+        children: tipo.locations.map((loc: any) => ({
+          data: {
+            ...loc,
+            isLocation: true
+          }
+        }))
       }))
     }));
+
 
   }
 
@@ -81,6 +89,5 @@ export class CashflowListComponent implements OnChanges {
     else if (accion === '-') return `text-red-500`;
     else return 'text-gray-500';
   }
-
 
 }

@@ -33,4 +33,19 @@ export class cashMovimientoService {
 
   }
 
+  getMovimientosLingaAll(params?: {
+    fechaIni?: string;
+    fechaFin?: string;
+    lstLocations?: string;
+  }): Observable<MovimientoAgrupado[]> {
+
+    return this.http.get<ApiResponse<MovimientoAgrupado[]>>(this.apiUrl + "/Linga", { params: params as any }).pipe(
+      map((res) => {
+        const arr = res?.data;
+        return Array.isArray(arr) ? arr : [];
+      })
+    );
+
+  }
+
 }

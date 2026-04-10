@@ -11,7 +11,12 @@ export interface MovimientoAgrupado {
 export interface Detalle {
   location_id: number;
   location_name: string;
+
+  tipo_col_id: number;
+  tipo_col_name: string;
+
   conceptos: Concepto[];
+  locations: Concepto[]
 }
 
 

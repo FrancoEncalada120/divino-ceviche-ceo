@@ -8,10 +8,11 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { LocationService } from '../../../core/services/location.service';
 import { Location } from '../../../core/models/location.model';
 import { NgIf } from '@angular/common';
+import { CashflowListLingaComponent } from "../cashflow-list-linga/cashflow-list-linga.component";
 
 @Component({
   selector: 'app-cashflow-pri',
-  imports: [FormsModule, DatePickerModule, CashflowListComponent, MultiSelectModule, NgIf],
+  imports: [FormsModule, DatePickerModule, CashflowListComponent, MultiSelectModule, NgIf, CashflowListLingaComponent],
   templateUrl: './cashflow-pri.component.html',
   styleUrl: './cashflow-pri.component.scss'
 })
@@ -23,6 +24,7 @@ export class CashflowPriComponent implements OnInit {
 
   dateRange: Date[] | null = null;
   movimientos: MovimientoAgrupado[] = [];
+  movimientosLinga: MovimientoAgrupado[] = [];
 
   locations: Location[] = [];
   selectedLocations: Location[] = [];
@@ -92,6 +94,23 @@ export class CashflowPriComponent implements OnInit {
       next: (data) => {
 
         this.movimientos = data ?? [];
+
+      },
+      error: (err) => {
+
+
+      },
+      complete: () => { },
+    });
+
+    this.service.getMovimientosLingaAll({
+      fechaIni: startDate,
+      fechaFin: endDate,
+      lstLocations: provedores,
+    }).subscribe({
+      next: (data) => {
+
+        this.movimientosLinga = data ?? [];
 
       },
       error: (err) => {
