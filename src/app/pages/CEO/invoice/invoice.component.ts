@@ -6,7 +6,10 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { debounceTime, Subject } from 'rxjs';
 import { LocationService } from '../../../core/services/location.service';
 import { Location } from '../../../core/models/location.model';
-import { DashboardResponse, Invoice } from '../../../core/models/dashboard.models';
+import {
+  DashboardResponse,
+  Invoice,
+} from '../../../core/models/dashboard.models';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import { TabViewModule } from 'primeng/tabview';
 import { TableModule } from 'primeng/table';
@@ -49,23 +52,29 @@ export class InvoiceComponent {
   dateRange: Date[] | null = null;
   dasboard: DashboardResponse | null = null;
   private locationChange$ = new Subject<void>();
-  activeTab: 1 | 2 | 3 | 4 = 1; // por defecto pestaña 1
+  activeTab: 1 | 2 | 3 | 4 | 5 | 6 = 1; // por defecto pestaña 1
 
   invoice01: Invoice[] = [];
   invoice02: Invoice[] = [];
   invoice03: Invoice[] = [];
   invoice04: Invoice[] = [];
+  invoice05: Invoice[] = [];
+  invoice06: Invoice[] = [];
   allInvoices: any[] = [];
 
   totalCat1 = 0;
   totalCat2 = 0;
   totalCat3 = 0;
   totalCat4 = 0;
+  totalCat5 = 0;
+  totalCat6 = 0;
 
   cantidadCat1 = 0;
   cantidadCat2 = 0;
   cantidadCat3 = 0;
   cantidadCat4 = 0;
+  cantidadCat5 = 0;
+  cantidadCat6 = 0;
 
   selectedCategoryType: number | null = null;
   editingInvoice: Invoice | null = null;
@@ -144,6 +153,14 @@ export class InvoiceComponent {
           (x) => Number(x.category.invoice_type_id) === 4,
         );
 
+        this.invoice05 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 5,
+        );
+
+        this.invoice06 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 6,
+        );
+
         this.allInvoices = invoices;
 
         this.calculateTotals(invoices);
@@ -208,6 +225,13 @@ export class InvoiceComponent {
     this.totalCat4 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 4),
     );
+    this.totalCat5 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 5),
+    );
+
+    this.totalCat6 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+    );
 
     this.cantidadCat1 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 1,
@@ -220,6 +244,12 @@ export class InvoiceComponent {
     ).length;
     this.cantidadCat4 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 4,
+    ).length;
+    this.cantidadCat5 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 5,
+    ).length;
+    this.cantidadCat6 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 6,
     ).length;
   }
 

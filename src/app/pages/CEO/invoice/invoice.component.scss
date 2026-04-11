@@ -1,233 +1,272 @@
-html,
-body {
-  width: 100%;
-  height: 100%;
+.invoice-header-card {
+  margin-bottom: 1.5rem;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.invoice-header__title {
+  min-width: 240px;
+}
+
+.invoice-header__title h2 {
   margin: 0;
-  border: 1px solid red;
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
-app-root {
-  display: block;
-  width: 100%;
+.invoice-header__title p {
+  margin: 0.5rem 0 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
 }
 
-.page-title p {
-  margin: 0;
+.invoice-header__filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex: 1;
+  min-width: 700px;
 }
 
-/* ====== Filters ====== */
-.filters-bar {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  padding: 1rem 1.25rem;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-}
-
-.filter-item {
+.invoice-filter {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  min-width: 280px;
+  flex: 1;
 }
 
-.filter-label {
-  font-weight: 700;
-  color: #343a40;
-  display: inline-flex;
+.invoice-filter--date {
+  min-width: 260px;
+  flex: 0 0 260px;
+}
+
+.invoice-filter__label {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
 }
 
-/* responsive filtros */
-@media (max-width: 900px) {
-  .filters-bar {
-    grid-template-columns: 1fr;
-  }
+.invoice-filter__label i {
+  font-size: 0.95rem;
 }
-
-.summary-row {
+/////////// cards
+.invoice-summary-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(220px, 1fr));
-  gap: 0.75rem;
-  width: 100%;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
 }
 
-/* Card estilo “botón” */
-.sum-card {
+.invoice-summary-card {
+  position: relative;
   cursor: pointer;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
   transition:
     transform 0.2s ease,
     box-shadow 0.2s ease;
 }
 
-/* Contenido interno estilo botón */
-.sum-inner {
-  padding: 1.25rem 1.4rem;
-  background: #fff;
+.invoice-summary-card:hover {
+  transform: translateY(-2px);
 }
 
-/* Stripe lateral como tus botones */
-.sum-cogs {
-  border-left: 6px solid #198754;
+.invoice-summary-card::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  right: 0;
+  width: 5px;
+  height: calc(100% - 24px);
+  border-radius: 8px 0 0 8px;
+  opacity: 0.9;
 }
 
-.sum-fixed {
-  border-left: 6px solid #0dcaf0;
+.invoice-summary-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.sum-other {
-  border-left: 6px solid #ffc107;
-}
-
-.sum-unsig {
-  border-left: 6px solid red;
-}
-
-.sum-top {
+.invoice-summary-card__header {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-weight: 700;
+  gap: 0.5rem;
+  color: #374151;
+  font-weight: 600;
+  font-size: 0.95rem;
+  min-height: 2.5rem;
 }
 
-.sum-top .pi {
-  font-size: 1.2rem;
-}
-
-.sum-title {
+.invoice-summary-card__header i {
   font-size: 1rem;
 }
 
-.sum-value {
-  margin-top: 0.9rem;
-  font-size: 2.1rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
+.invoice-summary-card__value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.2;
+  word-break: break-word;
 }
 
-.sum-sub {
-  margin-top: 0.2rem;
+.invoice-summary-card__meta {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: #6b7280;
 }
 
-/* BOTÓN BASE */
-.action-btn {
-  background: #ffffff !important;
-  color: #212529 !important;
-  border: 1px solid #dee2e6 !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  width: 100%;
-  min-width: 220px;
-  justify-content: center;
+/* Colores sutiles por tipo */
+.invoice-summary-card--cogs::after {
+  background: #14b8a6;
 }
 
-.invoice-actions {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(220px, 1fr));
-  gap: 1rem;
-  width: 100%;
+.invoice-summary-card--fixed::after {
+  background: #6366f1;
 }
 
-/* 🎯 TABLET (2 columnas) */
-@media (max-width: 992px) {
-  .invoice-actions {
-    grid-template-columns: repeat(2, minmax(180px, 1fr));
+.invoice-summary-card--other::after {
+  background: #d97706;
+}
+
+.invoice-summary-card--unassigned::after {
+  background: #9ca3af;
+}
+
+.invoice-summary-card--bank::after {
+  background: #4f46e5;
+}
+
+.invoice-summary-card--app::after {
+  background: #e11d48;
+}
+
+@media (max-width: 1400px) {
+  .invoice-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .action-btn {
-    min-width: 180px;
-  }
-}
-
-/* 📱 MOBILE (1 columna) */
-@media (max-width: 576px) {
-  .invoice-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .action-btn {
-    min-width: 100%;
-    font-size: 0.9rem;
-    padding: 0.55rem 1rem;
-  }
-}
-
-.action-btn.p-button-success {
-  border-left: 5px solid #198754 !important;
-}
-
-.action-btn.p-button-info {
-  border-left: 5px solid #0dcaf0 !important;
-}
-
-.action-btn.p-button-warning {
-  border-left: 5px solid #ffc107 !important;
-}
-
-.summary-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(220px, 1fr));
-  gap: 1rem;
-  width: 100%;
 }
 
 @media (max-width: 992px) {
-  .summary-grid {
-    grid-template-columns: repeat(2, minmax(200px, 1fr));
+  .invoice-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-/* Mobile */
 @media (max-width: 576px) {
-  .summary-grid {
+  .invoice-summary-grid {
     grid-template-columns: 1fr;
   }
-
-  .sum-value {
-    font-size: 1.2rem;
-  }
-
-  .sum-title {
-    font-size: 0.95rem;
-  }
 }
 
-.invoice-tabs-card {
-  width: 100%;
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+.invoice-summary-card__topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
-/* 🔥 permite scroll horizontal correcto */
-:host ::ng-deep .p-tabview-nav {
-  flex-wrap: nowrap;
+.invoice-summary-card__add-btn {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  flex-shrink: 0;
 }
 
-/* evita overflow raro */
-:host ::ng-deep .p-tabview-nav-container {
-  overflow-x: auto;
+.invoice-summary-card__topbar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
 }
 
-/* mejora mobile */
-@media (max-width: 576px) {
-  :host ::ng-deep .p-tabview-nav li a {
-    font-size: 0.85rem;
-    padding: 0.5rem 0.75rem;
-  }
+.invoice-summary-card__add-btn {
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  flex-shrink: 0;
 }
 
-.invoice-container {
-  max-width: 1400px; // ancho profesional tipo dashboard
-  margin-left: auto;
-  margin-right: auto;
+.invoice-summary-card__add-btn .pi {
+  font-size: 1rem;
+}
+
+/* Colores por botón */
+.invoice-summary-card__add-btn--cogs {
+  color: #14b8a6 !important;
+}
+
+.invoice-summary-card__add-btn--fixed {
+  color: #6366f1 !important;
+}
+
+.invoice-summary-card__add-btn--other {
+  color: #d97706 !important;
+}
+
+.invoice-summary-card__add-btn--unassigned {
+  color: #9ca3af !important;
+}
+
+.invoice-summary-card__add-btn--bank {
+  color: #4f46e5 !important;
+}
+
+.invoice-summary-card__add-btn--app {
+  color: #e11d48 !important;
+}
+
+//-----------
+
+.invoice-tabs-wrapper {
+  margin-top: 1.5rem;
+}
+
+.invoice-tab-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-weight: 600;
+}
+
+.invoice-tab-header i {
+  font-size: 0.95rem;
+}
+
+/* Colores iguales a las cards */
+.invoice-tab-header--cogs i {
+  color: #14b8a6;
+}
+
+.invoice-tab-header--fixed i {
+  color: #6366f1;
+}
+
+.invoice-tab-header--other i {
+  color: #d97706;
+}
+
+.invoice-tab-header--unassigned i {
+  color: #9ca3af;
+}
+
+.invoice-tab-header--bank i {
+  color: #4f46e5;
+}
+
+.invoice-tab-header--app i {
+  color: #e11d48;
+}
+
+:host ::ng-deep .p-tabview-nav li {
+  margin-right: 5.5rem;
 }

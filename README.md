@@ -69,5 +69,11 @@ For more information on using the Angular CLI, including detailed command refere
 | Eliminar           | `btn-danger`    | Rojo       | Acción destructiva  |
 | Crear / Nuevo      | `btn-primary`   | Azul       | Crear registro      |
 
-
 ng serve --hmr
+
+COGS Invoice → #14b8a6
+Fixed Expense → #6366f1
+Other Invoice → #d97706
+Unassigned Invoice → #9ca3af
+Bank Movements → #4f46e5
+App Fees → #e11d48
