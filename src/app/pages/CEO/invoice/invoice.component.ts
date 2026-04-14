@@ -175,7 +175,6 @@ export class InvoiceComponent {
       next: (data) => {
         this.locations = data ?? [];
 
-        // 👇 TODOS seleccionados por defecto
         this.selectedLocation = [...this.locations];
       },
       error: (err) => {

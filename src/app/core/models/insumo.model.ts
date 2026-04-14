@@ -21,8 +21,22 @@ export interface Insumo {
   precio_final: number;
   grupo_detalle: GrupoDetalle[];
   estacion_id: Estacion;
-  nombreCompleto: string; // Campo adicional para mostrar el nombre completo en la UI
+  nombreCompleto: string;
   id_receta: number;
+  frecuencia_inventario?: 'DIARIO' | 'SEMANAL' | 'QUINCENAL' | 'MENSUAL' | null;
+  dia_inventario?:
+    | 'LUNES'
+    | 'MARTES'
+    | 'MIERCOLES'
+    | 'JUEVES'
+    | 'VIERNES'
+    | 'SABADO'
+    | 'DOMINGO'
+    | 'FIN_DE_MES'
+    | null;
+  ultima_toma_inventario?: string | null;
+  es_inventariable?: boolean;
+  location_id?: number | null;
 }
 
 export interface Estacion {
@@ -45,6 +59,21 @@ export interface CreateInsumoDto {
   id_receta?: number | null;
   precio_final?: number | null;
   stock?: number | null;
+  frecuencia_inventario?: 'DIARIO' | 'SEMANAL' | 'QUINCENAL' | 'MENSUAL' | null;
+  dia_inventario?:
+    | 'LUNES'
+    | 'MARTES'
+    | 'MIERCOLES'
+    | 'JUEVES'
+    | 'VIERNES'
+    | 'SABADO'
+    | 'DOMINGO'
+    | 'FIN_DE_MES'
+    | null;
+  ultima_toma_inventario?: string | Date | null;
+  es_inventariable?: boolean | null;
+  location_id?: number | null;
+  todoslocales?: boolean | null;
 }
 
 export interface UpdateInsumoDto {
@@ -57,6 +86,20 @@ export interface UpdateInsumoDto {
   unidad_trabajo?: number | null;
   cantidad?: number | null;
   stock_ideal?: number | null;
+  frecuencia_inventario?: 'DIARIO' | 'SEMANAL' | 'QUINCENAL' | 'MENSUAL' | null;
+  dia_inventario?:
+    | 'LUNES'
+    | 'MARTES'
+    | 'MIERCOLES'
+    | 'JUEVES'
+    | 'VIERNES'
+    | 'SABADO'
+    | 'DOMINGO'
+    | 'FIN_DE_MES'
+    | null;
+  ultima_toma_inventario?: string | Date | null;
+  es_inventariable?: boolean | null;
+  location_id?: number | null;
   estado?: 'A' | 'I';
   updated_by?: number | null;
 }

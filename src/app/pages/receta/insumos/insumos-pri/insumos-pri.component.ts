@@ -4,11 +4,10 @@ import { NgIf } from '@angular/common';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
 import { InsumosUpdInsComponent } from '../insumos-upd-ins/insumos-upd-ins.component';
-import { ProveedorService } from '../../../../core/services/ProveedorService';
-import { forkJoin } from 'rxjs';
-import { Unidad } from '../../../../core/models/unidad.model';
-import { UnidadService } from '../../../../core/services/unidad.service';
 
+import { LocationService } from '../../../../core/services/location.service';
+import { Location } from '../../../../core/models/location.model';
+import { UserService } from '../../../../core/services/user.service';
 @Component({
   selector: 'app-insumos-pri',
   standalone: true,
@@ -23,8 +22,12 @@ export class InsumosPriComponent {
   selectedInsunmos: Insumo | null = null;
   insumo: Insumo[] = [];
 
+  locations: Location[] = [];
+  selectedLocation!: Location[];
+
   constructor(
     private insumoService: InsumoService,
+    private locationService: LocationService,
 
     //, private toast: ToastrService
   ) {}
@@ -32,25 +35,15 @@ export class InsumosPriComponent {
   ngOnInit(): void {
     console.log('[Locations] ngOnInit');
     this.load();
+    this.loadLocations();
   }
 
   load(): void {
     this.loading = true;
-    console.log('[LOAD] iniciando...');
 
     this.insumoService.getInsumoAll().subscribe({
       next: (data) => {
-        console.log('[LOAD] data:', data);
-        console.log('[LOAD] insumos:', data?.insumos);
-        console.log('[LOAD] es array?', Array.isArray(data?.insumos));
-        console.log(
-          '[LOAD] length:',
-          Array.isArray(data?.insumos) ? data.insumos.length : 'no es array',
-        );
-
         this.insumo = Array.isArray(data?.insumos) ? data.insumos : [];
-
-        console.log('[LOAD] listado final:', this.insumo);
       },
       error: (err) => {
         console.error('[LOAD] error:', err);
@@ -58,8 +51,20 @@ export class InsumosPriComponent {
       },
       complete: () => {
         this.loading = false;
-        console.log('[LOAD] complete');
       },
+    });
+  }
+
+  loadLocations(): void {
+    this.locationService.getAll().subscribe({
+      next: (data) => {
+        this.locations = data ?? [];
+        this.selectedLocation = [...this.locations];
+      },
+      error: (err) => {
+        console.error('[Locations] GET error:', err);
+      },
+      complete: () => console.log('[Locations] GET complete'),
     });
   }
 
@@ -81,10 +86,6 @@ export class InsumosPriComponent {
   }
 
   handleSubmit(payload: any): void {
-    console.log('[PARENT] modalMode:', this.modalMode);
-    console.log('[PARENT] payload recibido:', payload);
-    console.log('[PARENT] selectedInsunmos:', this.selectedInsunmos);
-
     if (this.modalMode === 'create') {
       this.insumoService.create(payload).subscribe({
         next: () => {
@@ -101,8 +102,6 @@ export class InsumosPriComponent {
         ...payload,
         insumo_id: this.selectedInsunmos.insumo_id,
       };
-
-      console.log('[PARENT] insumoToUpdate:', insumoToUpdate);
 
       this.insumoService.update(insumoToUpdate).subscribe({
         next: () => {

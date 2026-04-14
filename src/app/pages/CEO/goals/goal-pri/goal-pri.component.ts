@@ -5,21 +5,20 @@ import { GoalService } from '../../../../core/services/goal.service';
 import { GoalListComponent } from '../goal-list/goal-list.component';
 import { GoalUpdInsComponent } from '../goal-upd-ins/goal-upd-ins.component';
 
-
 @Component({
   selector: 'app-goal-pri',
   imports: [NgIf, GoalListComponent, GoalUpdInsComponent],
   templateUrl: './goal-pri.component.html',
-  styleUrl: './goal-pri.component.scss'
+  styleUrl: './goal-pri.component.scss',
 })
 export class GoalPriComponent {
-
   goals: Goal[] = [];
   loading = false;
 
-  constructor(private service: GoalService
+  constructor(
+    private service: GoalService,
     //, private toast: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     console.log('[Locations] ngOnInit');
@@ -42,8 +41,6 @@ export class GoalPriComponent {
       },
       complete: () => console.log('[Locations] GET complete'),
     });
-
-
   }
 
   // ===========================================
@@ -73,15 +70,13 @@ export class GoalPriComponent {
     this.service.delete(goal).subscribe({
       next: (deletedGoal) => {
         this.goals = this.goals.filter(
-          g => g.goal_id !== deletedGoal.goal_id
+          (g) => g.goal_id !== deletedGoal.goal_id,
         );
       },
-      error: err => {
+      error: (err) => {
         console.error(err.message);
-      }
+      },
     });
-
-
   }
 
   closeModal() {
@@ -100,12 +95,10 @@ export class GoalPriComponent {
         console.log('[Goals] savedLocation:', savedLocation);
 
         if (isCreate) {
-          // ➕ CREATE → agregar al array
           this.goals.push(savedLocation);
         } else {
-          // ✏️ UPDATE → reemplazar en el array
           const index = this.goals.findIndex(
-            l => l.location_id === savedLocation.location_id
+            (l) => l.location_id === savedLocation.location_id,
           );
 
           if (index !== -1) {
@@ -117,7 +110,7 @@ export class GoalPriComponent {
       },
       error: (err) => {
         console.error('[Locations] save error:', err);
-      }
+      },
     });
   }
 
@@ -129,8 +122,18 @@ export class GoalPriComponent {
   currentYear = new Date().getFullYear();
 
   months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
 
   get currentMonthName(): string {
@@ -146,7 +149,6 @@ export class GoalPriComponent {
     }
 
     this.load();
-
   }
 
   nextMonth() {
@@ -158,13 +160,9 @@ export class GoalPriComponent {
     }
 
     this.load();
-
   }
-
 
   // ===========================================
   // FIN : Manejo de meses
   // ===========================================
-
-
 }

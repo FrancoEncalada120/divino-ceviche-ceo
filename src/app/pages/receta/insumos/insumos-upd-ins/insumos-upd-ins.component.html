@@ -148,22 +148,6 @@
                 ></p-inputNumber>
               </div>
 
-              <!-- Ideal Stock -->
-              <div class="col-12 col-md-4">
-                <label class="form-label">Ideal Stock</label>
-                <p-inputNumber
-                  formControlName="stock_ideal"
-                  [min]="0"
-                  [minFractionDigits]="0"
-                  [maxFractionDigits]="2"
-                  mode="decimal"
-                  [useGrouping]="false"
-                  inputStyleClass="w-100"
-                  styleClass="w-100"
-                  placeholder="Enter ideal stock"
-                ></p-inputNumber>
-              </div>
-
               <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
                 <label class="form-label">Status *</label>
                 <p-dropdown
@@ -206,9 +190,9 @@
           </p-tabPanel>
 
           <!-- PESTAÑA SOLO EDIT -->
-          <p-tabPanel header="Resumen" *ngIf="mode === 'edit'">
+          <p-tabPanel header="Resumen">
             <div class="row g-3">
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-6" *ngIf="mode === 'edit'">
                 <div class="summary-card">
                   <span class="summary-label">Final Price</span>
                   <strong class="summary-value">
@@ -217,7 +201,7 @@
                 </div>
               </div>
 
-              <div class="col-12 col-md-6">
+              <div class="col-12 col-md-6" *ngIf="mode === 'edit'">
                 <div class="summary-card">
                   <span class="summary-label">Current Stock</span>
                   <strong class="summary-value">
@@ -225,8 +209,99 @@
                   </strong>
                 </div>
               </div>
-            </div>
 
+              <!-- Ideal Stock -->
+              <div class="col-12 col-md-4">
+                <label class="form-label">Ideal Stock</label>
+                <p-inputNumber
+                  formControlName="stock_ideal"
+                  [min]="0"
+                  [minFractionDigits]="0"
+                  [maxFractionDigits]="2"
+                  mode="decimal"
+                  [useGrouping]="false"
+                  inputStyleClass="w-100"
+                  styleClass="w-100"
+                  placeholder="Enter ideal stock"
+                ></p-inputNumber>
+              </div>
+              <!-- Frecuencia Inventario -->
+              <div class="col-12 col-md-4">
+                <label class="form-label">Frecuencia Inventario</label>
+                <p-dropdown
+                  formControlName="frecuencia_inventario"
+                  [options]="frecuenciaInventarioOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione frecuencia"
+                  styleClass="w-100"
+                  appendTo="body"
+                  [autoZIndex]="true"
+                  [baseZIndex]="10000"
+                ></p-dropdown>
+              </div>
+
+              <!-- Día Inventario -->
+              <div class="col-12 col-md-4">
+                <label class="form-label">Día Inventario</label>
+                <p-dropdown
+                  formControlName="dia_inventario"
+                  [options]="diaInventarioOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione día"
+                  styleClass="w-100"
+                  appendTo="body"
+                  [autoZIndex]="true"
+                  [baseZIndex]="10000"
+                ></p-dropdown>
+              </div>
+
+              <!-- Última toma inventario -->
+              <div class="col-12 col-md-4">
+                <label class="form-label">Última toma inventario</label>
+                <p-calendar
+                  formControlName="ultima_toma_inventario"
+                  dateFormat="dd/mm/yy"
+                  [showIcon]="true"
+                  styleClass="w-100"
+                  inputStyleClass="w-100"
+                  placeholder="Seleccione fecha"
+                  appendTo="body"
+                  [baseZIndex]="10000"
+                ></p-calendar>
+              </div>
+
+              <!-- Es inventariable -->
+              <div class="col-12 col-md-4">
+                <label class="form-label d-block mb-2">Es inventariable</label>
+                <div class="pt-2">
+                  <p-inputSwitch
+                    formControlName="es_inventariable"
+                  ></p-inputSwitch>
+                </div>
+              </div>
+
+              <!-- Restaurante / Location -->
+              <div class="col-12 col-md-4">
+                <label class="form-label">Restaurante</label>
+                <p-dropdown
+                  formControlName="location_id"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione restaurante"
+                  styleClass="w-100"
+                  [filter]="true"
+                  appendTo="body"
+                  [autoZIndex]="true"
+                  [baseZIndex]="10000"
+                  [options]="locationsOptions"
+                ></p-dropdown>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel header="Kardex" *ngIf="mode === 'edit'">
             <app-inventory-pri
               [inventoryList]="inventoryList"
               [insumo]="insumoInventory"
