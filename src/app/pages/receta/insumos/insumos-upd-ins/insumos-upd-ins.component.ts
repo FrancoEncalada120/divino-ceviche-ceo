@@ -96,25 +96,25 @@ export class InsumosUpdInsComponent implements OnChanges {
   ];
 
   frecuenciaInventarioOptions = [
-    { label: 'Diario', value: 'DIARIO' },
-    { label: 'Semanal', value: 'SEMANAL' },
-    { label: 'Quincenal', value: 'QUINCENAL' },
-    { label: 'Mensual', value: 'MENSUAL' },
+    { label: 'Daily', value: 'DIARIO' },
+    { label: 'Weekly', value: 'SEMANAL' },
+    { label: 'Biweekly', value: 'QUINCENAL' },
+    { label: 'Monthly', value: 'MENSUAL' },
   ];
 
   diaInventarioOptions = [
-    { label: 'Lunes', value: 'LUNES' },
-    { label: 'Martes', value: 'MARTES' },
-    { label: 'Miércoles', value: 'MIERCOLES' },
-    { label: 'Jueves', value: 'JUEVES' },
-    { label: 'Viernes', value: 'VIERNES' },
-    { label: 'Sábado', value: 'SABADO' },
-    { label: 'Domingo', value: 'DOMINGO' },
-    { label: 'Fin de mes', value: 'FIN_DE_MES' },
+    { label: 'Monday', value: 'LUNES' },
+    { label: 'Tuesday', value: 'MARTES' },
+    { label: 'Wednesday', value: 'MIERCOLES' },
+    { label: 'Thursday', value: 'JUEVES' },
+    { label: 'Friday', value: 'VIERNES' },
+    { label: 'Saturday', value: 'SABADO' },
+    { label: 'Sunday', value: 'DOMINGO' },
+    { label: 'End of Month', value: 'FIN_DE_MES' },
   ];
 
   inventariableOptions = [
-    { label: 'Sí', value: true },
+    { label: 'Yes', value: true },
     { label: 'No', value: false },
   ];
 
@@ -135,12 +135,12 @@ export class InsumosUpdInsComponent implements OnChanges {
       unidad_id: [null],
       unidad_trabajo: [null],
       cantidad: [null],
-      stock_ideal: [null],
+      stock_ideal: [null, Validators.required],
       frecuencia_inventario: [null],
       dia_inventario: [null],
       ultima_toma_inventario: [null],
       es_inventariable: [true],
-      location_id: [null],
+      location_id: [null, Validators.required],
     });
   }
 

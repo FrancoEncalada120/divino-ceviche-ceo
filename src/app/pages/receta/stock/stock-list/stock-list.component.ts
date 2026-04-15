@@ -8,11 +8,11 @@ import { TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
 import { debounceTime, filter } from 'rxjs/operators';
 import { FormsModule } from '@angular/forms';
-import { InventoryListComponent } from "../../inventory/inventory-list/inventory-list.component";
+import { InventoryListComponent } from '../../inventory/inventory-list/inventory-list.component';
 import { InventoryService } from '../../../../core/services/inventory.service';
 import { ButtonModule } from 'primeng/button';
-import { PurchaseUpdInsComponent } from "../../purchase/purchase-upd-ins/purchase-upd-ins.component";
-import { PurchaseConfirmationComponent } from "../../purchase/purchase-confirmation/purchase-confirmation.component";
+import { PurchaseUpdInsComponent } from '../../purchase/purchase-upd-ins/purchase-upd-ins.component';
+import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
 import { Compra } from '../../../../core/models/compra.model';
 import { Receta } from '../../../../core/models/receta.model';
 import { CompraFullCreate } from '../../../../core/models/compra-full-create.model';
@@ -20,65 +20,111 @@ import { CompraFullResponse } from '../../../../core/models/compra-full-response
 import { CompraService } from '../../../../core/services/compra.service';
 import { MessageService } from 'primeng/api';
 import { CartService } from '../../../../core/services/cart.service';
+import { ActivatedRoute } from '@angular/router';
+import { LocationService } from '../../../../core/services/location.service';
+import { Location } from '../../../../core/models/location.model';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { InputTextModule } from 'primeng/inputtext';
 
 @Component({
   selector: 'app-stock-list',
-  imports: [FormsModule, CardModule, TagModule, NgClass, TableModule, InventoryListComponent, NgIf, ButtonModule, PurchaseUpdInsComponent, PurchaseConfirmationComponent],
+  imports: [
+    FormsModule,
+    CardModule,
+    TagModule,
+    NgClass,
+    TableModule,
+    InventoryListComponent,
+    NgIf,
+    ButtonModule,
+    PurchaseUpdInsComponent,
+    PurchaseConfirmationComponent,
+    MultiSelectModule,
+    InputTextModule,
+  ],
   templateUrl: './stock-list.component.html',
-  styleUrl: './stock-list.component.scss'
+  styleUrl: './stock-list.component.scss',
 })
 export class StockListComponent implements OnInit {
-
   insumos: Insumo[] = [];
   insumoInventory: Insumo | null = null;
 
   private searchSubject = new Subject<string>();
+  private locationChange$ = new Subject<void>();
+  locations: Location[] = [];
+  selectedLocation!: Location[];
   searchText: string = '';
+  source!: string;
+  title!: string;
+  subtitle!: string;
 
   constructor(
     private insumoService: InsumoService,
     private inventoryService: InventoryService,
     private service: CompraService,
     private messageService: MessageService,
-    private cartService: CartService
-  ) {
-  }
+    private cartService: CartService,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
+    this.source = this.route.snapshot.data['source'];
+
+    this.cartService.clearCart();
+
+    if (this.source === 'stock') {
+      this.title = 'Low Stock Alert';
+      this.subtitle =
+        'Items listed below have inventory levels lower than the recommended stock level and should be replenished.';
+    } else {
+      this.title = 'Update Inventory';
+      this.subtitle =
+        'Search for the product and update the quantity currently available in inventory.';
+    }
 
     this.load();
 
-    this.searchSubject.pipe(
-      debounceTime(1000),          // ⏱ espera 1 segundo
-      filter(text => text.length >= 3 || text.length === 0) // 🔎 mínimo 3 letras
-    ).subscribe(text => {
-      this.searchText = text;
-      this.load();
-    });
+    this.searchSubject
+      .pipe(
+        debounceTime(1000), // ⏱ espera 1 segundo
+        filter((text) => text.length >= 3 || text.length === 0), // 🔎 mínimo 3 letras
+      )
+      .subscribe((text) => {
+        this.searchText = text;
+        this.load();
+      });
 
+    this.locationChange$.pipe(debounceTime(1000)).subscribe(() => {
+      console.log('Locations changed, reloading dashboard...');
+    });
   }
 
   load(): void {
-
     console.log('[Locations] load() start');
     console.log('Buscando:', this.searchText);
 
-    this.insumoService.getInsumoAll({
-      text: this.searchText, // string
-    }).subscribe({
-      next: (data) => {
+    this.insumoService
+      .getInsumoAll({
+        text: this.searchText, // string
+      })
+      .subscribe({
+        next: (data) => {
+          this.insumos = (data.insumos ?? [])
+            //.filter(i => i.stock < i.stock_ideal)
+            .sort(
+              (a, b) => b.stock_ideal - b.stock - (a.stock_ideal - a.stock),
+            );
+        },
+        error: (err) => {
+          console.error('[Locations] GET error:', err);
+        },
+        complete: () => console.log('[Locations] GET complete'),
+      });
+  }
 
-        this.insumos = (data.insumos ?? [])
-          //.filter(i => i.stock < i.stock_ideal)
-          .sort((a, b) => (b.stock_ideal - b.stock) - (a.stock_ideal - a.stock));
-
-      },
-      error: (err) => {
-        console.error('[Locations] GET error:', err);
-
-      },
-      complete: () => console.log('[Locations] GET complete'),
-    });
+  onLocationsChange() {
+    this.locationChange$.next();
+    this.load();
   }
 
   onSearch(value: string) {
@@ -93,26 +139,23 @@ export class StockListComponent implements OnInit {
   }
 
   mostrarPopupKardex(insumo_id: number, insumo: Insumo) {
-
     this.inventoryList = [];
-    this.insumoInventory = insumo
+    this.insumoInventory = insumo;
 
-    this.inventoryService.getAll({
-      insumo_id: insumo_id, // string
-    }).subscribe({
-      next: (data) => {
-
-        this.inventoryList = data ?? [];
-        this.showInventoryModal = true;
-      },
-      error: (err) => {
-        console.error('[inventoryService.getAll] GET error:', err);
-
-      },
-      complete: () => console.log('[inventoryService.getAll] GET complete'),
-    });
-
-
+    this.inventoryService
+      .getAll({
+        insumo_id: insumo_id, // string
+      })
+      .subscribe({
+        next: (data) => {
+          this.inventoryList = data ?? [];
+          this.showInventoryModal = true;
+        },
+        error: (err) => {
+          console.error('[inventoryService.getAll] GET error:', err);
+        },
+        complete: () => console.log('[inventoryService.getAll] GET complete'),
+      });
   }
 
   showAddLocationModal = false;
@@ -123,53 +166,48 @@ export class StockListComponent implements OnInit {
   txtSummary: string = '';
 
   handleSubmit(compra: Compra) {
-
     const isCreate = this.modalMode === 'create';
 
     const CompraFullCreate: CompraFullCreate = {
       compra: compra,
-      detalles: compra.detalles?.map(d => ({
-        insumo_id: d.insumo_id,
-        unidad_id: d.unidad_id,
-        cantidad: d.cantidad,
-        precio: d.precio,
-        grupo_id: d.grupo_id,
-      })) ?? []
+      detalles:
+        compra.detalles?.map((d) => ({
+          insumo_id: d.insumo_id,
+          unidad_id: d.unidad_id,
+          cantidad: d.cantidad,
+          precio: d.precio,
+          grupo_id: d.grupo_id,
+        })) ?? [],
     };
 
-    const action$ = this.service.createFull(CompraFullCreate, compra.created_by ?? undefined)
+    const action$ = this.service.createFull(
+      CompraFullCreate,
+      compra.created_by ?? undefined,
+    );
 
     action$.subscribe({
       next: (savedLocation: CompraFullResponse) => {
-
         if (isCreate) {
-
           this.recetas_impactadas = savedLocation.receta_impactada;
           this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
           this.txtSummary = 'Purchase created successfully';
           this.showConfirmanModal = true;
-
         }
 
         this.closeModalAdd();
         this.cartService.clearCart();
         this.load();
-
       },
       error: (err) => {
-
         //console.error('[Locations] save error:', err);
 
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: err.error?.message
+          detail: err.error?.message,
         });
-
-
-      }
+      },
     });
-
   }
 
   openCreate() {
@@ -185,9 +223,7 @@ export class StockListComponent implements OnInit {
     this.showConfirmanModal = false;
   }
 
-
   addToCart(item: any) {
-
     this.cartService.addToCart(item);
   }
 
@@ -206,9 +242,13 @@ export class StockListComponent implements OnInit {
   decreaseQty(item: any) {
     this.cartService.decreaseQty(item);
   }
+  updateQty(item: any, value: any) {
+    const qty = Number(value);
+
+    this.cartService.updateQty(item, qty);
+  }
 
   get cart() {
     return this.cartService.getCart();
   }
-
 }

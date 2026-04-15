@@ -80,13 +80,13 @@ export class MenuComponent {
         children: [
           ...(this.userRole === 2
             ? [
-              {
-                type: 'link',
-                label: 'Profile',
-                icon: 'bi-person',
-                route: 'settings/Profile',
-              } satisfies MenuLinkItem,
-            ]
+                {
+                  type: 'link',
+                  label: 'Profile',
+                  icon: 'bi-person',
+                  route: 'settings/Profile',
+                } satisfies MenuLinkItem,
+              ]
             : []),
           {
             type: 'link',
@@ -104,9 +104,25 @@ export class MenuComponent {
       },
 
       { type: 'section', label: 'RECIPES' },
-      { type: 'link', label: 'Purchase', icon: 'bi-cart-check', route: 'Purchase' },
-      { type: 'link', label: 'Recepy', icon: 'bi-journal-text', route: 'Recepy' },
+      {
+        type: 'link',
+        label: 'Purchase',
+        icon: 'bi-cart-check',
+        route: 'Purchase',
+      },
+      {
+        type: 'link',
+        label: 'Recepy',
+        icon: 'bi-journal-text',
+        route: 'Recepy',
+      },
       { type: 'link', label: 'Stock', icon: 'bi-box-seam', route: 'Stock' },
+      {
+        type: 'link',
+        label: 'Inventory',
+        icon: 'bi-clipboard-data',
+        route: 'Inventory',
+      },
       {
         type: 'group',
         label: 'Settings',
@@ -128,8 +144,12 @@ export class MenuComponent {
         ],
       },
       { type: 'section', label: 'CASH FLOW' },
-      { type: 'link', label: 'Cash Flow', icon: 'bi-cash-stack', route: 'Cashflow' },
-
+      {
+        type: 'link',
+        label: 'Cash Flow',
+        icon: 'bi-cash-stack',
+        route: 'Cashflow',
+      },
     ];
   }
 
@@ -204,7 +224,5 @@ export class MenuComponent {
     }
 
     return currentSectionIndex === this.activeSectionIndex;
-
   }
-
 }

@@ -19,7 +19,6 @@
   margin-bottom: 20px;
 }
 
-
 /* FILA COMPLETA */
 .row-bajo {
   background-color: #fff1f0; /* rojo suave */
@@ -45,7 +44,6 @@
   background-color: #52c41a;
 }
 
-
 .cart-dropdown {
   position: absolute;
   right: 0;
@@ -61,4 +59,161 @@
   justify-content: space-between;
   padding: 10px;
   border-bottom: 1px solid #eee;
+}
+
+.invoice-header-card {
+  margin-bottom: 1.5rem;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.invoice-header__title {
+  min-width: 240px;
+}
+
+.invoice-header__filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.invoice-header__filters {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.item-name {
+  font-weight: 500;
+}
+
+.item-detail {
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.badge-outline {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  border-radius: 6px;
+  background: white;
+  border: 1px solid;
+}
+
+.badge-bajo {
+  color: #dc3545;
+  border-color: #dc3545;
+}
+
+.badge-ok {
+  color: #198754;
+  border-color: #198754;
+}
+
+.stock-detail {
+  font-size: 0.8rem;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.stock-info {
+  min-width: 150px;
+}
+
+.stock-values {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+  color: #6c757d;
+}
+
+.stock-bar {
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.stock-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+.stock-ok {
+  background: #22c55e;
+}
+
+.stock-low {
+  background: #f59e0b;
+}
+
+.stock-zero {
+  background: #ef4444;
+}
+
+.stock-alert {
+  color: #ef4444;
+  font-weight: 500;
+  margin-left: 6px;
+}
+
+.cart-control {
+  display: inline-flex;
+  align-items: center;
+}
+
+.add-btn {
+  min-width: 70px;
+}
+
+.qty-control {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
+  animation: scaleIn 0.2s ease;
+}
+
+.qty-btn {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+}
+
+.qty-input {
+  width: 48px;
+  height: 26px;
+  border: none;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.qty-input:focus {
+  outline: none;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
