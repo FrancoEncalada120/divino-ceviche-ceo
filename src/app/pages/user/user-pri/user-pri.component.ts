@@ -32,7 +32,6 @@ export class UserPriComponent {
 
     this.service.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.users = data ?? [];
         this.loading = false;
       },
@@ -40,7 +39,7 @@ export class UserPriComponent {
         console.error('[Locations] GET error:', err);
         this.loading = false;
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {},
     });
 
 

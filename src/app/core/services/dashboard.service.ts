@@ -15,8 +15,6 @@ export class DashboardService {
 
     let url = `${this.apiUrl}?fechaIni=${fechaIni}&fechaFin=${fechaFin}&locacion=${locations}`;
 
-    console.log('[Dashboard] getDashboard URL:', url);
-
     return this.http.get<DashboardResponse>(url);
   }
 

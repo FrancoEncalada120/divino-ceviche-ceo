@@ -113,7 +113,6 @@ export class DailymetricListComponent {
   loadLocations(): void {
     this.locationService.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.locations = data ?? [];
 
         // 👇 TODOS seleccionados por defecto
@@ -125,7 +124,7 @@ export class DailymetricListComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {},
     });
   }
 

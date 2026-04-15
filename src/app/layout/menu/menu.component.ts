@@ -47,7 +47,6 @@ export class MenuComponent {
       .subscribe(() => this.syncOpenGroups());
     this.syncOpenGroups();
 
-    console.log('constructor', 'constructor Menu');
   }
 
   buildMenu() {
@@ -126,9 +125,7 @@ export class MenuComponent {
             route: 'settings/groups',
           },
         ],
-      },
-      { type: 'section', label: 'CASH FLOW' },
-      { type: 'link', label: 'Cash Flow', icon: 'bi-cash-stack', route: 'Cashflow' },
+      }
 
     ];
   }

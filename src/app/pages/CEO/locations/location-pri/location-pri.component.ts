@@ -34,7 +34,6 @@ export class LocationPriComponent {
 
       this.locationService.getAll().subscribe({
         next: (data) => {
-          console.log('[Locations] GET ok, items:', data?.length, data);
           this.locations = data ?? [];
           this.loading = false;
         },
@@ -42,7 +41,7 @@ export class LocationPriComponent {
           console.error('[Locations] GET error:', err);
           this.loading = false;
         },
-        complete: () => console.log('[Locations] GET complete'),
+        complete: () => {},
       });
 
 

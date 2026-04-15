@@ -181,7 +181,7 @@ export class InvoiceComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {},
     });
   }
 

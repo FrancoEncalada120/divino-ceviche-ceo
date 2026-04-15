@@ -77,7 +77,7 @@ export class StockListComponent implements OnInit {
         console.error('[Locations] GET error:', err);
 
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {},
     });
   }
 

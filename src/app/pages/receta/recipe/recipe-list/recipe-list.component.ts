@@ -11,7 +11,6 @@ import { CommonModule, NgFor, NgIf } from '@angular/common';
 import { TreeNode } from 'primeng/api';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
-import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
 
 @Component({
   selector: 'app-recipe-list',

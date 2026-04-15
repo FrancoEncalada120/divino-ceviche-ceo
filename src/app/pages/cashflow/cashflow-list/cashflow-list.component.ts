@@ -1,86 +1,214 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { Concepto, MovimientoAgrupado } from '../../../core/models/cash-movimiento.model';
-import { NgClass } from '@angular/common';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { TreeTableModule } from 'primeng/treetable';
+import { CashFlow } from '../../../core/models/dashboard.models';
+import { NgClass, NgIf } from '@angular/common';
+
+interface TreeNode {
+  data: any;
+  children?: TreeNode[];
+}
 
 @Component({
   selector: 'app-cashflow-list',
-  imports: [NgClass, TxtsignoPipe, TreeTableModule],
+  imports: [TxtsignoPipe, TreeTableModule, NgIf, NgClass],
   templateUrl: './cashflow-list.component.html',
   styleUrl: './cashflow-list.component.scss'
 })
 export class CashflowListComponent implements OnChanges {
 
   @Input()
-  movimientos: MovimientoAgrupado[] = [];
+  movimientos: CashFlow[] = [];
 
   treeData: any[] = [];
 
+  col = 250;
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['movimientos'] && this.movimientos) {
-      this.buildTree();
+      this.buildTreeTable();
     }
   }
 
-  buildTree() {
+  buildTreeTable() {
 
-    this.treeData = this.movimientos.map(row => ({
-      data: row,
-      children: row.detalle.map((loc: any) => ({
-        data: {
-          ...loc,
-          isDetail: true
-        }
-      }))
-    }));
+  // 🔥 columnas numéricas
+  const numericFields = [
+    'venta_bruta',
+    'venta_neta',
+    'food_cost',
+    'labor',
+    'renta',
+    'gastos_operacionales',
+    'fees_apps',
+    'gastos_varios',
+    'total_gastos',
+    'ganancia_neta',
+    'saldo_inicial',
+    'saldo_final',
+    'diferencia',
+    'depositos_banco',
+    'debitos_banco',
+    'venta_uber',
+    'venta_doordash',
+    'venta_owner',
+    'venta_grubhub',
+    'venta_inkdind',
+    'tips',
+    'taxes',
+    'descuentos'
+  ];
 
-  }
+  // 🔥 inicializador de totales
+  const initTotals = () => {
+    const obj: any = {};
+    numericFields.forEach(f => obj[f] = 0);
+    obj['net_margin'] = 0; // se calcula luego
+    return obj;
+  };
 
-  mostrarImporte(row: Concepto[], concepto_id: number): number {
+  // 🔹 Agrupar por fecha y location
+  const groupedByDate: any = {};
 
-    const movimiento = row.find(mov => mov.concepto_id === concepto_id)?.total;
+  this.movimientos.forEach(item => {
+    if (!groupedByDate[item.fecha]) {
+      groupedByDate[item.fecha] = {};
+    }
 
-    return movimiento ? movimiento : 0;
-  }
+    if (!groupedByDate[item.fecha][item.location_id]) {
+      groupedByDate[item.fecha][item.location_id] = [];
+    }
 
-  SaldoFinal(row: Concepto[]): number {
+    groupedByDate[item.fecha][item.location_id].push(item);
+  });
 
-    let saldoFinal: number = 0;
-    for (let i = 0; i < row.length; i++) {
+  const tree: TreeNode[] = [];
 
-      if (row[i].concepto_accion === '+') {
-        saldoFinal += Number(row[i].total);
-      } else if (row[i].concepto_accion === '-') {
-        saldoFinal -= Number(row[i].total);
+  // 🔹 recorrer fechas
+  Object.keys(groupedByDate).forEach(fecha => {
+
+    let totalFecha = initTotals();
+
+    const dateNode: TreeNode = {
+      data: {
+        label: fecha,
+        level: 'date',
+        ...initTotals()
+      },
+      children: []
+    };
+
+    // 🔹 recorrer locations
+    Object.keys(groupedByDate[fecha]).forEach(locId => {
+
+      const items = groupedByDate[fecha][locId];
+
+      let totalLoc = initTotals();
+
+      // 🔥 sumar dinámicamente
+      items.forEach((i: any) => {
+        numericFields.forEach(field => {
+          totalLoc[field] += Number(i[field] || 0);
+        });
+      });
+
+      // 🔥 recalcular net_margin correctamente
+      if (totalLoc.venta_neta > 0) {
+        totalLoc.net_margin =
+          (totalLoc.ganancia_neta / totalLoc.venta_neta) * 100;
       }
 
+      // 🔥 acumular a fecha
+      numericFields.forEach(field => {
+        totalFecha[field] += totalLoc[field];
+      });
+
+      // 🔹 nodo location
+      const locationNode: TreeNode = {
+        data: {
+          label: items[0].location_name,
+          level: 'location',
+          ...totalLoc
+        },
+        children: items.map((i: any) => ({
+          data: {
+            label: 'Detalle',
+            level: 'detail',
+            ...numericFields.reduce((acc: any, field) => {
+              acc[field] = Number(i[field] || 0);
+              return acc;
+            }, {}),
+            net_margin: Number(i.net_margin || 0)
+          }
+        }))
+      };
+
+      dateNode.children?.push(locationNode);
+    });
+
+    // 🔥 recalcular net_margin en fecha
+    if (totalFecha.venta_neta > 0) {
+      totalFecha.net_margin =
+        (totalFecha.ganancia_neta / totalFecha.venta_neta) * 100;
     }
 
-    return saldoFinal;
-  }
+    // 🔹 setear totales en fecha
+    dateNode.data = {
+      label: fecha,
+      level: 'date',
+      ...totalFecha
+    };
 
-  getIconClassPrice(row: Concepto[], concepto_id: number): string {
+    tree.push(dateNode);
+  });
 
-    if (!row) return 'text-green-500';
+  this.treeData = tree;
+}
 
-    const accion = row.find(mov => mov.concepto_id === concepto_id)?.concepto_accion;
+  // mostrarImporte(row: Concepto[], concepto_id: number): number {
 
-    if (accion === '+') return `pi pi-plus ${this.getColorPrice(row, concepto_id)}`;
-    else if (accion === '-') return `pi pi-minus ${this.getColorPrice(row, concepto_id)}`;
-    else return `${this.getColorPrice(row, concepto_id)}`;
-  }
+  //   const movimiento = row.find(mov => mov.concepto_id === concepto_id)?.total;
 
-  getColorPrice(row: Concepto[], concepto_id: number): string {
+  //   return movimiento ? movimiento : 0;
+  // }
 
-    if (!row) return 'text-gray-500';
+  // SaldoFinal(row: Concepto[]): number {
 
-    const accion = row.find(mov => mov.concepto_id === concepto_id)?.concepto_accion;
+  //   let saldoFinal: number = 0;
+  //   for (let i = 0; i < row.length; i++) {
 
-    if (accion === '+') return `text-green-500`;
-    else if (accion === '-') return `text-red-500`;
-    else return 'text-gray-500';
-  }
+  //     if (row[i].concepto_accion === '+') {
+  //       saldoFinal += Number(row[i].total);
+  //     } else if (row[i].concepto_accion === '-') {
+  //       saldoFinal -= Number(row[i].total);
+  //     }
+
+  //   }
+
+  //   return saldoFinal;
+  // }
+
+  // getIconClassPrice(row: Concepto[], concepto_id: number): string {
+
+  //   if (!row) return 'text-green-500';
+
+  //   const accion = row.find(mov => mov.concepto_id === concepto_id)?.concepto_accion;
+
+  //   if (accion === '+') return `pi pi-plus ${this.getColorPrice(row, concepto_id)}`;
+  //   else if (accion === '-') return `pi pi-minus ${this.getColorPrice(row, concepto_id)}`;
+  //   else return `${this.getColorPrice(row, concepto_id)}`;
+  // }
+
+  // getColorPrice(row: Concepto[], concepto_id: number): string {
+
+  //   if (!row) return 'text-gray-500';
+
+  //   const accion = row.find(mov => mov.concepto_id === concepto_id)?.concepto_accion;
+
+  //   if (accion === '+') return `text-green-500`;
+  //   else if (accion === '-') return `text-red-500`;
+  //   else return 'text-gray-500';
+  // }
 
 
 }
