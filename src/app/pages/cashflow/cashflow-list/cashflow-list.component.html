@@ -1,121 +1,55 @@
-<div class="row g-3 mb-4 bg-white">
-  <div class="card">
+<div class="container flex">
+  <div class="item flex-item">
 
-    <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" styleClass="p-datatable-sm">
+    <p-treeTable [value]="treeData" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25]"
+      [scrollable]="true" scrollHeight="flex" >
 
       <!-- HEADER -->
       <ng-template pTemplate="header">
         <tr>
-          <th style="width: 20%;"  >Date / Location</th>
-          <th class="text-end">Opening Bal.</th>
-          <th class="text-end">Net Sales</th>
-          <th class="text-end">Deposits</th>
-          <th class="text-end">Payroll + Tips</th>
-          <th class="text-end">Rent</th>
-          <th class="text-end">Taxes (8%)</th>
-          <th class="text-end">Auto Payments</th>
-          <th class="text-end">Scheduled</th>
-          <th class="text-end">Closing Bal.</th>
+          <th>Fecha / Location</th>
+          <th>Venta Bruta</th>
+          <th>Venta Neta</th>
+          <th>Food Cost</th>
+          <th>Labor</th>
+          <th>Renta</th>
+          <th>Gastos Op</th>
+          <th>Fees</th>
+          <th>Varios</th>
+          <th>Total Gastos</th>
+          <th>Ganancia</th>
+          <th>Margen %</th>
+
         </tr>
       </ng-template>
 
       <!-- BODY -->
-      <ng-template pTemplate="body" let-rowNode let-rowData="rowData">
+      <ng-template #body let-rowNode let-rowData="rowData">
+        <tr [ttRow]="rowNode">
 
-        <tr [ngClass]="{'detail-row': rowData.isDetail}">
-
-          <!-- 🔥 COLUMNA TREE -->
+          <!-- 🔥 COLUMNA DINÁMICA -->
           <td>
             <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-
-            <span [ngClass]="{'fw-bold': !rowData.isDetail}">
-              {{ rowData.isDetail ? rowData.location_name : rowData.fecha }}
-            </span>
+            {{ rowData.label }}
           </td>
 
-          <!-- OPENING -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 1)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 1)">
-              {{ mostrarImporte(rowData.conceptos, 1) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- NET SALES -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 2)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 2)">
-              {{ mostrarImporte(rowData.conceptos, 2) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- DEPOSITS -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 3)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 3)">
-              {{ mostrarImporte(rowData.conceptos, 3) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- PAYROLL -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 4)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 4)">
-              {{ mostrarImporte(rowData.conceptos, 4) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- RENT -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 5)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 5)">
-              {{ mostrarImporte(rowData.conceptos, 5) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- TAXES -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 6)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 6)">
-              {{ mostrarImporte(rowData.conceptos, 6) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- AUTO -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 7)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 7)">
-              {{ mostrarImporte(rowData.conceptos, 7) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- SCHEDULED -->
-          <td class="text-end">
-            <i [ngClass]="getIconClassPrice(rowData.conceptos, 8)" class="icon-small ms-1"></i>
-            <span [ngClass]="getColorPrice(rowData.conceptos, 8)">
-              {{ mostrarImporte(rowData.conceptos, 8) | txtsigno: "$" }}
-            </span>
-
-          </td>
-
-          <!-- TOTAL -->
-          <td class="text-end fw-bold">
-            = {{ SaldoFinal(rowData.conceptos) | txtsigno: "$" }}
-          </td>
+          <!-- 🔢 TODAS LAS COLUMNAS -->
+          <td>{{ rowData.venta_bruta | txtsigno:'$' }}</td>
+          <td>{{ rowData.venta_neta | txtsigno:'$' }}</td>
+          <td>{{ rowData.food_cost | txtsigno:'$' }}</td>
+          <td>{{ rowData.labor | txtsigno:'$' }}</td>
+          <td>{{ rowData.renta | txtsigno:'$' }}</td>
+          <td>{{ rowData.gastos_operacionales | txtsigno:'$' }}</td>
+          <td>{{ rowData.fees_apps | txtsigno:'$' }}</td>
+          <td>{{ rowData.gastos_varios | txtsigno:'$' }}</td>
+          <td>{{ rowData.total_gastos | txtsigno:'$' }}</td>
+          <td>{{ rowData.ganancia_neta | txtsigno:'$' }}</td>
+          <td>{{ rowData.net_margin | txtsigno:'$' }}</td>
 
         </tr>
-
       </ng-template>
 
     </p-treeTable>
 
   </div>
-
 </div>

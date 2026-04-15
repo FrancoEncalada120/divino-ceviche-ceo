@@ -11,13 +11,37 @@
 }
 
 .icon-small {
-  font-size: 0.5rem; /* prueba 0.7 - 0.9 */
+  font-size: 0.5rem;
+  /* prueba 0.7 - 0.9 */
 }
 
-::ng-deep .detail-row {
-  background-color: #f4f6f9 !important; // gris suave
+.container {
+  margin: 0px;
+  max-width: 100% !important;
 }
 
-::ng-deep .p-treetable .p-treetable-tbody > tr.detail-row:hover {
-  background-color: #e8edf5 !important;
+.item {
+  width: 150%;   /* Cambiar tamaño del scroll */
 }
+
+/* Inline-block */
+.inline {
+  vertical-align: middle;
+  overflow-x: scroll;
+}
+.inline-item {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+
+/* Flex */
+.flex {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow: auto;
+}
+.flex-item {
+  flex: 0 0 auto;
+}
+

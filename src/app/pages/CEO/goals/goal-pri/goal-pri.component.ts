@@ -31,7 +31,6 @@ export class GoalPriComponent {
 
     this.service.getAll(this.currentMonth + 1, this.currentYear).subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.goals = data ?? [];
         this.loading = false;
       },
@@ -39,7 +38,7 @@ export class GoalPriComponent {
         console.error('[Locations] GET error:', err);
         this.loading = false;
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {},
     });
   }
 

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Location } from '../../../core/models/location.model';
 import { DashboardService } from '../../../core/services/dashboard.service';
-import { DashboardResponse } from '../../../core/models/dashboard.models';
+import { CashFlow, DashboardResponse } from '../../../core/models/dashboard.models';
 import { LocationService } from '../../../core/services/location.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -11,15 +11,17 @@ import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
+import { CashflowListComponent } from "../../cashflow/cashflow-list/cashflow-list.component";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe],
+  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe, CashflowListComponent],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
+
   loading = false;
   locations: Location[] = [];
   dasboard: DashboardResponse | null = null;
@@ -27,6 +29,7 @@ export class DashboardComponent implements OnInit {
   dateRange: Date[] | null = null;
 
   selectedLocation!: Location[];
+  movimientos: CashFlow[] = [];
 
   constructor(
     private dashboardSvc: DashboardService,
@@ -70,16 +73,13 @@ export class DashboardComponent implements OnInit {
       .map((loc) => loc.location_id)
       .join(',');
 
-    console.log('Range de fechas:', this.formattedDateRange);
-    console.log('Range de fechas:', this.dateRange);
-
     const startDate = this.dateRange[0].toISOString().split('T')[0];
     const endDate = this.dateRange[1].toISOString().split('T')[0];
 
     this.dashboardSvc.getDashboard(startDate, endDate, locales).subscribe({
       next: (res) => {
         this.dasboard = res;
-        console.log('Dashboard data:', res);
+        this.movimientos = res.cashflow
       },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),
@@ -89,7 +89,6 @@ export class DashboardComponent implements OnInit {
   loadLocations(): void {
     this.locationService.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.locations = data ?? [];
 
         // 👇 TODOS seleccionados por defecto
@@ -100,7 +99,7 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => { },
     });
   }
 

@@ -1,3 +1,5 @@
+
+
 <div class="container-fluid py-3">
 
   <!-- ===================== -->
@@ -11,14 +13,8 @@
         <i class="pi pi-map-marker"></i> Locations
       </label>
 
-      <p-multiSelect
-        [options]="locations"
-        [(ngModel)]="selectedLocation"
-        optionLabel="location_name"
-        placeholder="Select locations"
-        display="chip"
-        class="w-100"
-        (onChange)="onLocationsChange()">
+      <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+        placeholder="Select locations" display="chip" class="w-100" (onChange)="onLocationsChange()">
       </p-multiSelect>
     </div>
 
@@ -28,14 +24,8 @@
         <i class="pi pi-calendar"></i> Date Range
       </label>
 
-      <p-datepicker
-        [(ngModel)]="dateRange"
-        selectionMode="range"
-        dateFormat="dd/mm/yy"
-        [showIcon]="true"
-        [readonlyInput]="true"
-        class="w-100"
-        (ngModelChange)="onLocationsChangeDate($event)">
+      <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
+        [readonlyInput]="true" class="w-100" (ngModelChange)="onLocationsChangeDate($event)">
       </p-datepicker>
     </div>
   </div>
@@ -63,9 +53,7 @@
   <!-- KPI CARDS -->
   <!-- ===================== -->
   <div class="row g-3 mb-4">
-    <div
-      class="col-12 col-sm-6 col-lg-4"
-      *ngFor="let item of dasboard?.totales">
+    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
 
       <div class="kpi-card bg-white">
         <div class="sum-inner">
@@ -97,6 +85,14 @@
 
   <!-- Loading -->
   <div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
+
+  <div class="card mb-5">
+    <div class="card-header bg-white">
+      CashFlow
+    </div>
+  <app-cashflow-list [movimientos]="movimientos" ></app-cashflow-list>
+
+  </div>
 
   <!-- ===================== -->
   <!-- DAILY SCORECARD -->

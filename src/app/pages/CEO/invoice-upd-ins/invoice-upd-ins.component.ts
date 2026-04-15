@@ -48,13 +48,12 @@ export class InvoiceUpdInsComponent {
   load(): void {
     this.locationService.getAll().subscribe({
       next: (data) => {
-        console.log('[Locations] GET ok, items:', data?.length, data);
         this.locations = data ?? [];
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => console.log('[Locations] GET complete'),
+      complete: () => {},
     });
 
     this.categoriaService.getAll().subscribe({

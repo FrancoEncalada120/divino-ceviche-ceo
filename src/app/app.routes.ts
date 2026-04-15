@@ -109,13 +109,6 @@ export const routes: Routes = [
             (m) => m.RecipePriComponent,
           ),
       },
-      {
-        path: 'Cashflow',
-        loadComponent: () =>
-          import('./pages/cashflow/cashflow-pri/cashflow-pri.component').then(
-            (m) => m.CashflowPriComponent,
-          ),
-      },
 
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],

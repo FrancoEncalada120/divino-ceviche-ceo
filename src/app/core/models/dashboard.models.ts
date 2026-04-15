@@ -6,6 +6,7 @@ export interface DashboardResponse {
   invoices: Invoice[];
   dailyMetrics: DailyMetric[];
   totales: TotalMetric[];
+  cashflow: CashFlow[];
 }
 
 export interface Invoice {
@@ -77,4 +78,35 @@ export interface Eval {
   color: string;
   arrow: string;
   status: string;
+}
+
+export interface CashFlow {
+  id: number;
+  fecha: string;
+  location_id: number;
+  location_name: string;
+  venta_bruta: string;
+  venta_neta: string;
+  food_cost: string;
+  labor: string;
+  renta: string;
+  gastos_operacionales: string;
+  fees_apps: string;
+  gastos_varios: string;
+  total_gastos: string;
+  ganancia_neta: string;
+  net_margin: string;
+  saldo_inicial: string;
+  saldo_final: string;
+  diferencia: string;
+  depositos_banco: string;
+  debitos_banco: string;
+  venta_uber: string;
+  venta_doordash: string;
+  venta_owner: string;
+  venta_grubhub: string;
+  venta_inkdind: string;
+  tips: string;
+  taxes: string;
+  descuentos: string;
 }
