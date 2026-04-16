@@ -2,7 +2,9 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { TreeTableModule } from 'primeng/treetable';
 import { CashFlow } from '../../../core/models/dashboard.models';
-import { NgClass, NgIf } from '@angular/common';
+import { NgClass } from '@angular/common';
+import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
 
 interface TreeNode {
   data: any;
@@ -11,7 +13,7 @@ interface TreeNode {
 
 @Component({
   selector: 'app-cashflow-list',
-  imports: [TxtsignoPipe, TreeTableModule, NgIf, NgClass],
+  imports: [TxtsignoPipe, TreeTableModule, NgClass, TableModule, TabViewModule],
   templateUrl: './cashflow-list.component.html',
   styleUrl: './cashflow-list.component.scss'
 })
@@ -22,7 +24,9 @@ export class CashflowListComponent implements OnChanges {
 
   treeData: any[] = [];
 
-  col = 250;
+  col1 = "15%";
+  colSaldos = "23%";
+  colApps = "23%";
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['movimientos'] && this.movimientos) {
@@ -32,138 +36,127 @@ export class CashflowListComponent implements OnChanges {
 
   buildTreeTable() {
 
-  // 🔥 columnas numéricas
-  const numericFields = [
-    'venta_bruta',
-    'venta_neta',
-    'food_cost',
-    'labor',
-    'renta',
-    'gastos_operacionales',
-    'fees_apps',
-    'gastos_varios',
-    'total_gastos',
-    'ganancia_neta',
-    'saldo_inicial',
-    'saldo_final',
-    'diferencia',
-    'depositos_banco',
-    'debitos_banco',
-    'venta_uber',
-    'venta_doordash',
-    'venta_owner',
-    'venta_grubhub',
-    'venta_inkdind',
-    'tips',
-    'taxes',
-    'descuentos'
-  ];
+    // 🔥 columnas numéricas
+    const numericFields = [
+      'venta_bruta',
+      'venta_neta',
+      'food_cost',
+      'labor',
+      'renta',
+      'gastos_operacionales',
+      'fees_apps',
+      'gastos_varios',
+      'total_gastos',
+      'ganancia_neta',
+      'saldo_inicial',
+      'saldo_final',
+      'diferencia',
+      'depositos_banco',
+      'debitos_banco',
+      'venta_uber',
+      'venta_doordash',
+      'venta_owner',
+      'venta_grubhub',
+      'venta_inkdind',
+      'tips',
+      'taxes',
+      'descuentos'
+    ];
 
-  // 🔥 inicializador de totales
-  const initTotals = () => {
-    const obj: any = {};
-    numericFields.forEach(f => obj[f] = 0);
-    obj['net_margin'] = 0; // se calcula luego
-    return obj;
-  };
-
-  // 🔹 Agrupar por fecha y location
-  const groupedByDate: any = {};
-
-  this.movimientos.forEach(item => {
-    if (!groupedByDate[item.fecha]) {
-      groupedByDate[item.fecha] = {};
-    }
-
-    if (!groupedByDate[item.fecha][item.location_id]) {
-      groupedByDate[item.fecha][item.location_id] = [];
-    }
-
-    groupedByDate[item.fecha][item.location_id].push(item);
-  });
-
-  const tree: TreeNode[] = [];
-
-  // 🔹 recorrer fechas
-  Object.keys(groupedByDate).forEach(fecha => {
-
-    let totalFecha = initTotals();
-
-    const dateNode: TreeNode = {
-      data: {
-        label: fecha,
-        level: 'date',
-        ...initTotals()
-      },
-      children: []
+    // 🔥 inicializador de totales
+    const initTotals = () => {
+      const obj: any = {};
+      numericFields.forEach(f => obj[f] = 0);
+      obj['net_margin'] = 0; // se calcula luego
+      return obj;
     };
 
-    // 🔹 recorrer locations
-    Object.keys(groupedByDate[fecha]).forEach(locId => {
+    // 🔹 Agrupar por fecha y location
+    const groupedByDate: any = {};
 
-      const items = groupedByDate[fecha][locId];
-
-      let totalLoc = initTotals();
-
-      // 🔥 sumar dinámicamente
-      items.forEach((i: any) => {
-        numericFields.forEach(field => {
-          totalLoc[field] += Number(i[field] || 0);
-        });
-      });
-
-      // 🔥 recalcular net_margin correctamente
-      if (totalLoc.venta_neta > 0) {
-        totalLoc.net_margin =
-          (totalLoc.ganancia_neta / totalLoc.venta_neta) * 100;
+    this.movimientos.forEach(item => {
+      if (!groupedByDate[item.fecha]) {
+        groupedByDate[item.fecha] = {};
       }
 
-      // 🔥 acumular a fecha
-      numericFields.forEach(field => {
-        totalFecha[field] += totalLoc[field];
-      });
+      if (!groupedByDate[item.fecha][item.location_id]) {
+        groupedByDate[item.fecha][item.location_id] = [];
+      }
 
-      // 🔹 nodo location
-      const locationNode: TreeNode = {
-        data: {
-          label: items[0].location_name,
-          level: 'location',
-          ...totalLoc
-        },
-        children: items.map((i: any) => ({
-          data: {
-            label: 'Detalle',
-            level: 'detail',
-            ...numericFields.reduce((acc: any, field) => {
-              acc[field] = Number(i[field] || 0);
-              return acc;
-            }, {}),
-            net_margin: Number(i.net_margin || 0)
-          }
-        }))
-      };
-
-      dateNode.children?.push(locationNode);
+      groupedByDate[item.fecha][item.location_id].push(item);
     });
 
-    // 🔥 recalcular net_margin en fecha
-    if (totalFecha.venta_neta > 0) {
-      totalFecha.net_margin =
-        (totalFecha.ganancia_neta / totalFecha.venta_neta) * 100;
-    }
+    const tree: TreeNode[] = [];
 
-    // 🔹 setear totales en fecha
-    dateNode.data = {
-      label: fecha,
-      level: 'date',
-      ...totalFecha
-    };
+    // 🔹 recorrer fechas
+    Object.keys(groupedByDate).forEach(fecha => {
 
-    tree.push(dateNode);
-  });
+      let totalFecha = initTotals();
 
-  this.treeData = tree;
-}
+      const dateNode: TreeNode = {
+        data: {
+          label: fecha,
+          level: 'date',
+          ...initTotals()
+        },
+        children: []
+      };
+
+      // 🔹 recorrer locations
+      Object.keys(groupedByDate[fecha]).forEach(locId => {
+
+        const items = groupedByDate[fecha][locId];
+
+        let totalLoc = initTotals();
+
+        // 🔥 sumar dinámicamente
+        items.forEach((i: any) => {
+          numericFields.forEach(field => {
+            totalLoc[field] += Number(i[field] || 0);
+          });
+        });
+
+        // 🔥 recalcular net_margin correctamente
+        if (totalLoc.venta_neta > 0) {
+          totalLoc.net_margin =
+            (totalLoc.ganancia_neta / totalLoc.venta_neta) * 100;
+        }
+
+        // 🔥 acumular a fecha
+        numericFields.forEach(field => {
+          totalFecha[field] += totalLoc[field];
+        });
+
+        // 🔹 nodo location
+        const locationNode: TreeNode = {
+          data: {
+            label: items[0].location_name,
+            level: 'location',
+            ...totalLoc
+          }
+        };
+
+        dateNode.children?.push(locationNode);
+      });
+
+      // 🔥 recalcular net_margin en fecha
+      if (totalFecha.venta_neta > 0) {
+        totalFecha.net_margin =
+          (totalFecha.ganancia_neta / totalFecha.venta_neta) * 100;
+      }
+
+      // 🔹 setear totales en fecha
+      dateNode.data = {
+        label: fecha,
+        level: 'date',
+        ...totalFecha
+      };
+
+      tree.push(dateNode);
+    });
+
+    this.treeData = tree;
+  }
 
   // mostrarImporte(row: Concepto[], concepto_id: number): number {
 

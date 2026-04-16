@@ -1,3 +1,5 @@
+import { Location } from "./location.model";
+
 export interface User {
   user_id: number;
   user_name: string;
@@ -6,6 +8,8 @@ export interface User {
   user_estado: string;
   user_email: string;
   user_rol: number;
+  location_id: number
+  location: Location;
 }
 
 export interface UserRequest {

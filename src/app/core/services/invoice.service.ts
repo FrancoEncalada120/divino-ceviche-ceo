@@ -31,7 +31,6 @@ export class InvoiceService {
 
   // CREATE -> devuelve { success, invoice }
   create(invoice: Partial<Invoice>): Observable<Invoice> {
-    console.log('[InvoiceService] POST', this.apiUrl, invoice);
 
     return this.http.post<ApiResponseOne<Invoice>>(this.apiUrl, invoice).pipe(
       map((res) => {

@@ -25,7 +25,7 @@ export class GoalUpdInsComponent implements OnInit {
 
   load(): void {
 
-    this.locationService.getAll().subscribe({
+    this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
       },

@@ -1,7 +1,4 @@
 
-
-<div class="container-fluid py-3">
-
   <!-- ===================== -->
   <!-- FILTERS (RESPONSIVE) -->
   <!-- ===================== -->
@@ -86,27 +83,20 @@
   <!-- Loading -->
   <div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
 
-  <div class="card mb-5">
-    <div class="card-header bg-white">
-      CashFlow
-    </div>
-  <app-cashflow-list [movimientos]="movimientos" ></app-cashflow-list>
 
-  </div>
 
-  <!-- ===================== -->
-  <!-- DAILY SCORECARD -->
-  <!-- ===================== -->
-  <div class="card mb-5">
-    <div class="card-header bg-white">
-      Daily Scorecard
-    </div>
+<app-cashflow-list [movimientos]="movimientos"></app-cashflow-list>
 
-    <div *ngIf="dasboard?.dailyMetrics?.length; else noDaily" class="card-body">
 
-      <div class="table-responsive">
-        <table class="table align-middle">
-          <thead class="table-light">
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="Daily Scorecard">
+        <p-table [value]="dasboard?.dailyMetrics!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <!-- Header -->
+          <ng-template pTemplate="header">
             <tr>
               <th>Date</th>
               <th>Location</th>
@@ -115,44 +105,43 @@
               <th class="d-none d-md-table-cell">Labor %</th>
               <th>AOV</th>
             </tr>
-          </thead>
+          </ng-template>
 
-          <tbody>
-            <tr *ngFor="let item of dasboard?.dailyMetrics">
-              <td>{{ item.daily_metric_date }}</td>
-              <td>{{ item.location_name }}</td>
-              <td>{{ item.totalNetSales | number:'1.0-3' }}</td>
-              <td class="d-none d-md-table-cell">{{ item.totalDailyHourly }}</td>
-              <td class="d-none d-md-table-cell">{{ item.LaborCost | number:'1.0-3' }}</td>
-              <td>{{ item.AOV | number:'1.0-3' }}</td>
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.daily_metric_date }}</td>
+              <td>{{ row.location_name }}</td>
+              <td>{{ row.totalNetSales | number:'1.0-3' }}</td>
+              <td class="d-none d-md-table-cell">{{ row.totalDailyHourly }}</td>
+              <td class="d-none d-md-table-cell">{{ row.LaborCost | number:'1.0-3' }}</td>
+              <td>{{ row.AOV | number:'1.0-3' }}</td>
             </tr>
-          </tbody>
-        </table>
-      </div>
+          </ng-template>
 
-    </div>
-
-    <ng-template #noDaily>
-      <div class="alert alert-danger m-0">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        No Daily exist for the selected dates and locations
-      </div>
-    </ng-template>
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                No Daily exist for the selected dates and locations
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
   </div>
+</div>
 
-  <!-- ===================== -->
-  <!-- INVOICES -->
-  <!-- ===================== -->
-  <div class="card mb-5">
-    <div class="card-header bg-white">
-      Invoices
-    </div>
-
-    <div *ngIf="dasboard?.invoices?.length; else noInvoices" class="card-body">
-
-      <div class="table-responsive">
-        <table class="table align-middle">
-          <thead class="table-light">
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="Invoices">
+        <p-table [value]="dasboard?.invoices!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <!-- Header -->
+          <ng-template pTemplate="header">
             <tr>
               <th>Date</th>
               <th>Location</th>
@@ -160,28 +149,29 @@
               <th>Description</th>
               <th class="text-end">Amount</th>
             </tr>
-          </thead>
+          </ng-template>
 
-          <tbody>
-            <tr *ngFor="let item of dasboard?.invoices">
-              <td>{{ item.invoice_date }}</td>
-              <td>{{ item.locations.location_name }}</td>
-              <td class="d-none d-md-table-cell">{{ item.category.category_code }}</td>
-              <td>{{ item.invoice_vendor_description }}</td>
-              <td class="text-end">{{ item.invoice_amount }}</td>
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td>{{ row.invoice_date }}</td>
+              <td>{{ row.locations.location_name }}</td>
+              <td class="d-none d-md-table-cell">{{ row.category.category_code }}</td>
+              <td>{{ row.invoice_vendor_description }}</td>
+              <td class="text-end">{{ row.invoice_amount }}</td>
             </tr>
-          </tbody>
-        </table>
-      </div>
+          </ng-template>
 
-    </div>
-
-    <ng-template #noInvoices>
-      <div class="alert alert-danger m-0">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
-        No invoices exist for the selected dates and locations
-      </div>
-    </ng-template>
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                No invoices exist for the selected dates and locations
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
   </div>
-
 </div>

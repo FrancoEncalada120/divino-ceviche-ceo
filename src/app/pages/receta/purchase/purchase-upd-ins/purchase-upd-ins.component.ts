@@ -78,7 +78,7 @@ export class PurchaseUpdInsComponent {
 
   load(): void {
 
-    this.locationService.getAll().subscribe({
+    this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
       },

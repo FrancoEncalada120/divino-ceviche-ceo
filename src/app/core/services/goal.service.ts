@@ -19,7 +19,6 @@ export class GoalService {
   getAll(month: Number, year: Number): Observable<Goal[]> {
 
     const url = `${this.apiUrl}?month=${month}&year=${year}`;
-    console.log('[Goals] getAll URL:', url);
 
     return this.http.get<ApiResponse<Goal[]>>(url).pipe(
       map((res) => {

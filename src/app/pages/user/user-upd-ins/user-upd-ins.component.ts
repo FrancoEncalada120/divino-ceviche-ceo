@@ -27,7 +27,14 @@ export class UserUpdInsComponent {
     user_id: 0,
     user_name: '',
     user_password: '',
-    user_rol: 3
+    user_rol: 3,
+    location_id: 0,
+    location: {
+      location_AccountNumber: "",
+      location_id: 0,
+      location_name: "",
+      location_status: "",
+    }
   };
 
   ngOnInit() {

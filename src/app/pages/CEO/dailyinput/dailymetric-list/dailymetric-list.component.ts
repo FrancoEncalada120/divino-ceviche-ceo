@@ -111,7 +111,7 @@ export class DailymetricListComponent {
   }
 
   loadLocations(): void {
-    this.locationService.getAll().subscribe({
+    this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
 

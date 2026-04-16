@@ -7,7 +7,8 @@ import { LocationService } from '../../../core/services/location.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
-
+import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
@@ -16,7 +17,7 @@ import { CashflowListComponent } from "../../cashflow/cashflow-list/cashflow-lis
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe, CashflowListComponent],
+  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe, CashflowListComponent, TableModule, TabViewModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -87,7 +88,7 @@ export class DashboardComponent implements OnInit {
   }
 
   loadLocations(): void {
-    this.locationService.getAll().subscribe({
+    this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
 

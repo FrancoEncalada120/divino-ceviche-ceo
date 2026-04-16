@@ -32,7 +32,7 @@ export class LocationPriComponent {
 
 
 
-      this.locationService.getAll().subscribe({
+      this.locationService.getLocationAll().subscribe({
         next: (data) => {
           this.locations = data ?? [];
           this.loading = false;

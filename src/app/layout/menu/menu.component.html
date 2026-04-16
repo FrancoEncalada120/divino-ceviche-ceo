@@ -96,6 +96,7 @@
       <div class="brand-title">{{ User?.user_email }}</div>
       <div class="brand-subtitle"> {{ User?.user_name + ' ' + User?.user_apellido }} </div>
       <div class="brand-subtitle"> {{ User?.user_rol == 1 ? 'SYSTEM' : User?.user_rol == 2 ? 'ADMIN' : 'USER' }}</div>
+      <div class="brand-subtitle"> {{ User?.location!.location_name }}</div>
     </div>
   </div>
 

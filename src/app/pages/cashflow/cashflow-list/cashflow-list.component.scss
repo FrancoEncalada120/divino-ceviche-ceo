@@ -21,7 +21,8 @@
 }
 
 .item {
-  width: 150%;   /* Cambiar tamaño del scroll */
+  width: 150%;
+  /* Cambiar tamaño del scroll */
 }
 
 /* Inline-block */
@@ -29,6 +30,7 @@
   vertical-align: middle;
   overflow-x: scroll;
 }
+
 .inline-item {
   display: inline-block;
   vertical-align: middle;
@@ -41,7 +43,27 @@
   flex-wrap: nowrap;
   overflow: auto;
 }
+
 .flex-item {
   flex: 0 0 auto;
+}
+
+
+/* Fecha (nivel 1) → limpio */
+:host ::ng-deep .p-treetable .p-treetable-tbody>tr.row-date {
+  background-color: #ffffff !important;
+  font-weight: 600;
+}
+
+/* Location (nivel 2) → gris muy suave */
+:host ::ng-deep .p-treetable .p-treetable-tbody>tr.row-location {
+  background-color: #f8fafc !important;
+  /* gris ultra light */
+}
+
+/* Detail (nivel 3) → leve diferencia */
+:host ::ng-deep .p-treetable .p-treetable-tbody>tr.row-detail {
+  background-color: #fdfefe !important;
+  /* casi blanco */
 }
 

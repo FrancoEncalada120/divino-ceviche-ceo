@@ -102,7 +102,7 @@ export class DailymetriUpdInsComponent {
   }
 
   loadLocations(): void {
-    this.locationService.getAll().subscribe({
+    this.locationService.getLocationAll().subscribe({
       next: (data: AppLocation[]) => {
         this.locations = Array.isArray(data) ? data : [];
       },

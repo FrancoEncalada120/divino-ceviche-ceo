@@ -1,55 +1,174 @@
-<div class="container flex">
-  <div class="item flex-item">
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="CashFlow">
+        <div class="container flex">
+          <div class="item flex-item">
 
-    <p-treeTable [value]="treeData" [paginator]="true" [rows]="5" [rowsPerPageOptions]="[5, 10, 25]"
-      [scrollable]="true" scrollHeight="flex" >
+            <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 15, 25]"
+              [scrollable]="true" scrollHeight="flex" appendTo="body">
 
-      <!-- HEADER -->
-      <ng-template pTemplate="header">
-        <tr>
-          <th>Fecha / Location</th>
-          <th>Venta Bruta</th>
-          <th>Venta Neta</th>
-          <th>Food Cost</th>
-          <th>Labor</th>
-          <th>Renta</th>
-          <th>Gastos Op</th>
-          <th>Fees</th>
-          <th>Varios</th>
-          <th>Total Gastos</th>
-          <th>Ganancia</th>
-          <th>Margen %</th>
+              <!-- HEADER -->
+              <ng-template pTemplate="header">
+                <tr>
+                  <th [width]="col1">Date / Location</th>
+                  <th>Gross Sales</th>
+                  <th>Net Sales</th>
+                  <th>Food Cost</th>
+                  <th>Labor</th>
+                  <th>Rent</th>
+                  <th>O. Expenses</th>
+                  <th>App Fees</th>
+                  <th>Others</th>
+                  <th>T. Expenses</th>
+                  <th>Net Profit</th>
+                  <th>Net Margin</th>
 
-        </tr>
-      </ng-template>
+                </tr>
+              </ng-template>
 
-      <!-- BODY -->
-      <ng-template #body let-rowNode let-rowData="rowData">
-        <tr [ttRow]="rowNode">
+              <!-- BODY -->
+              <ng-template #body let-rowNode let-rowData="rowData">
+                <tr [ttRow]="rowNode" [ngClass]="{
+        'row-date': rowData.level === 'date',
+        'row-location': rowData.level === 'location'
+      }">
 
-          <!-- 🔥 COLUMNA DINÁMICA -->
-          <td>
-            <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
-            {{ rowData.label }}
-          </td>
+                  <!-- 🔥 COLUMNA DINÁMICA -->
+                  <td [width]="col1">
+                    <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                    {{ rowData.label }}
+                  </td>
 
-          <!-- 🔢 TODAS LAS COLUMNAS -->
-          <td>{{ rowData.venta_bruta | txtsigno:'$' }}</td>
-          <td>{{ rowData.venta_neta | txtsigno:'$' }}</td>
-          <td>{{ rowData.food_cost | txtsigno:'$' }}</td>
-          <td>{{ rowData.labor | txtsigno:'$' }}</td>
-          <td>{{ rowData.renta | txtsigno:'$' }}</td>
-          <td>{{ rowData.gastos_operacionales | txtsigno:'$' }}</td>
-          <td>{{ rowData.fees_apps | txtsigno:'$' }}</td>
-          <td>{{ rowData.gastos_varios | txtsigno:'$' }}</td>
-          <td>{{ rowData.total_gastos | txtsigno:'$' }}</td>
-          <td>{{ rowData.ganancia_neta | txtsigno:'$' }}</td>
-          <td>{{ rowData.net_margin | txtsigno:'$' }}</td>
+                  <!-- 🔢 TODAS LAS COLUMNAS -->
+                  <td>{{ rowData.venta_bruta | txtsigno:'$' }}</td>
+                  <td>{{ rowData.venta_neta | txtsigno:'$' }}</td>
+                  <td>{{ rowData.food_cost | txtsigno:'$' }}</td>
+                  <td>{{ rowData.labor | txtsigno:'$' }}</td>
+                  <td>{{ rowData.renta | txtsigno:'$' }}</td>
+                  <td>{{ rowData.gastos_operacionales | txtsigno:'$' }}</td>
+                  <td>{{ rowData.fees_apps | txtsigno:'$' }}</td>
+                  <td>{{ rowData.gastos_varios | txtsigno:'$' }}</td>
+                  <td>{{ rowData.total_gastos | txtsigno:'$' }}</td>
+                  <td>{{ rowData.ganancia_neta | txtsigno:'$' }}</td>
+                  <td>{{ rowData.net_margin | txtsigno:'$' }}</td>
 
-        </tr>
-      </ng-template>
+                </tr>
+              </ng-template>
 
-    </p-treeTable>
+            </p-treeTable>
 
+          </div>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="Saldos">
+
+        <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 15, 25]"
+          [scrollable]="true" scrollHeight="flex" appendTo="body">
+
+          <!-- HEADER -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th [width]="colSaldos">Date / Location</th>
+              <th>Opening Balance</th>
+              <th>Closing Balance</th>
+              <th>Difference</th>
+              <th>Bank Deposits</th>
+              <th>Bank Debits</th>
+            </tr>
+          </ng-template>
+
+          <!-- BODY -->
+          <ng-template #body let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode" [ngClass]="{
+        'row-date': rowData.level === 'date',
+        'row-location': rowData.level === 'location'
+      }">
+
+              <!-- 🔥 COLUMNA DINÁMICA -->
+              <td [width]="colSaldos">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{ rowData.label }}
+              </td>
+
+              <!-- 🔢 TODAS LAS COLUMNAS -->
+              <td>{{ rowData.saldo_inicial | txtsigno:'$' }}</td>
+              <td>{{ rowData.saldo_final | txtsigno:'$' }}</td>
+              <td>{{ rowData.diferencia | txtsigno:'$' }}</td>
+              <td>{{ rowData.depositos_banco | txtsigno:'$' }}</td>
+              <td>{{ rowData.debitos_banco | txtsigno:'$' }}</td>
+
+            </tr>
+          </ng-template>
+
+        </p-treeTable>
+
+      </p-tabPanel>
+    </p-tabView>
+  </div>
+</div>
+
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+    <p-tabView>
+      <p-tabPanel header="Apps and tips">
+
+
+        <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 15, 25]"
+          [scrollable]="true" scrollHeight="flex" appendTo="body">
+
+          <!-- HEADER -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th [width]="colApps">Date / Location</th>
+              <th>Uber</th>
+              <th>DoorDash</th>
+              <th>Owner</th>
+              <th>Grubhub</th>
+              <th>Inkind</th>
+              <th>Tips</th>
+              <th>Taxes</th>
+              <th>Discount</th>
+            </tr>
+          </ng-template>
+
+          <!-- BODY -->
+          <ng-template #body let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode" [ngClass]="{
+        'row-date': rowData.level === 'date',
+        'row-location': rowData.level === 'location'
+      }">
+
+              <!-- 🔥 COLUMNA DINÁMICA -->
+              <td [width]="colApps">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{ rowData.label }}
+              </td>
+
+              <!-- 🔢 TODAS LAS COLUMNAS -->
+
+              <td>{{ rowData.venta_uber | txtsigno:'$' }}</td>
+              <td>{{ rowData.venta_doordash | txtsigno:'$' }}</td>
+              <td>{{ rowData.venta_owner | txtsigno:'$' }}</td>
+              <td>{{ rowData.venta_grubhub | txtsigno:'$' }}</td>
+              <td>{{ rowData.venta_inkdind | txtsigno:'$' }}</td>
+              <td>{{ rowData.tips | txtsigno:'$' }}</td>
+              <td>{{ rowData.taxes | txtsigno:'$' }}</td>
+              <td>{{ rowData.descuentos | txtsigno:'$' }}</td>
+
+            </tr>
+          </ng-template>
+
+        </p-treeTable>
+
+      </p-tabPanel>
+    </p-tabView>
   </div>
 </div>

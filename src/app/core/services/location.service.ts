@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Location } from '../models/location.model';
 import { environment } from '../../../environments/environment';
+import { User } from '../models/user.models';
 
 type ApiResponse<T> = {
   success: boolean;
@@ -17,10 +18,18 @@ export class LocationService {
 
   constructor(private http: HttpClient) { }
 
-  getAll(): Observable<Location[]> {
+  getLocationAll(): Observable<Location[]> {
+
+    const userData = localStorage.getItem('user');
+    const user: User | null = userData ? (JSON.parse(userData) as User) : null;
+
+    let url = this.apiUrl;
+    if (user?.user_rol === 3) {
+      url += `?location_id=${user?.location_id}`
+    }
 
 
-    return this.http.get<ApiResponse<Location[]>>(this.apiUrl).pipe(
+    return this.http.get<ApiResponse<Location[]>>(url).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];
