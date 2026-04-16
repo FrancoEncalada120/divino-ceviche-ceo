@@ -1,8 +1,13 @@
-import { NgClass, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { CardModule } from 'primeng/card';
 import { TagModule } from 'primeng/tag';
-import { Insumo } from '../../../../core/models/insumo.model';
+import {
+  DIA_INVENTARIO_OPTIONS,
+  FRECUENCIA_INVENTARIO_OPTIONS,
+  Insumo,
+  INVENTARIABLE_OPTIONS,
+} from '../../../../core/models/insumo.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { TableModule } from 'primeng/table';
 import { Subject } from 'rxjs';
@@ -27,6 +32,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.models';
+import { DropdownModule } from 'primeng/dropdown';
 
 @Component({
   selector: 'app-stock-list',
@@ -43,6 +49,8 @@ import { User } from '../../../../core/models/user.models';
     PurchaseConfirmationComponent,
     MultiSelectModule,
     InputTextModule,
+    DatePipe,
+    DropdownModule,
   ],
   templateUrl: './stock-list.component.html',
   styleUrl: './stock-list.component.scss',
@@ -60,6 +68,10 @@ export class StockListComponent implements OnInit {
   title!: string;
   subtitle!: string;
   user: User | null = null;
+
+  frecuenciaInventarioOptions = FRECUENCIA_INVENTARIO_OPTIONS;
+  diaInventarioOptions = DIA_INVENTARIO_OPTIONS;
+  inventariableOptions = INVENTARIABLE_OPTIONS;
 
   constructor(
     private insumoService: InsumoService,
@@ -110,7 +122,7 @@ export class StockListComponent implements OnInit {
 
     this.insumoService
       .getInsumoAll({
-        text: this.searchText, // string
+        text: this.searchText,
       })
       .subscribe({
         next: (data) => {

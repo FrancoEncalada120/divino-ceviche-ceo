@@ -36,7 +36,7 @@
         </p-multiSelect>
       </div>
 
-      <div class="col-md-4">
+      <div class="col-md-6">
         <span class="p-input-icon-left w-100">
           <input
             pInputText
@@ -47,6 +47,33 @@
             (ngModelChange)="onSearch($event)"
           />
         </span>
+      </div>
+
+      <div class="col-12 col-md-6 pt-3" *ngIf="source === 'inventory'">
+        <p-dropdown
+          [options]="frecuenciaInventarioOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccione frecuencia"
+          styleClass="w-100"
+          appendTo="body"
+          [autoZIndex]="true"
+          [baseZIndex]="10000"
+        ></p-dropdown>
+      </div>
+
+      <!-- Día Inventario -->
+      <div class="col-12 col-md-6 pt-3" *ngIf="source === 'inventory'">
+        <p-dropdown
+          [options]="diaInventarioOptions"
+          optionLabel="label"
+          optionValue="value"
+          placeholder="Seleccione día"
+          styleClass="w-100"
+          appendTo="body"
+          [autoZIndex]="true"
+          [baseZIndex]="10000"
+        ></p-dropdown>
       </div>
     </div>
   </p-card>
@@ -71,6 +98,7 @@
             <!-- <th>Minimum Stock</th> -->
             <th *ngIf="source === 'stock'">Purchase Quantity</th>
             <th *ngIf="source === 'inventory'">update Inventory</th>
+            <th *ngIf="source === 'inventory'">Last inventory</th>
             <th>kardex</th>
           </tr>
         </ng-template>
@@ -171,6 +199,34 @@
                 class="p-inputtext p-component p-inputtext-sm text-center"
                 (input)="onCantidadChange(cantidadInput.value, item)"
               />
+            </td>
+            <td class="text-center" *ngIf="source === 'inventory'">
+              <div class="item-name">
+                <small>
+                  <i
+                    class="pi pi-calendar"
+                    [ngClass]="
+                      item.ultima_toma_inventario
+                        ? 'text-success'
+                        : 'text-danger'
+                    "
+                  >
+                  </i>
+
+                  {{
+                    item.ultima_toma_inventario
+                      ? (item.ultima_toma_inventario | date: "yyyy-MM-dd")
+                      : ""
+                  }}</small
+                >
+              </div>
+
+              <div class="item-detail">
+                <small>
+                  {{ item.frecuencia_inventario || "" }} -
+                  {{ item.dia_inventario || "-" }}</small
+                >
+              </div>
             </td>
 
             <td class="text-center">

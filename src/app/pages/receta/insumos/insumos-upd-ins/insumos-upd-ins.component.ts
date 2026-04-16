@@ -19,7 +19,12 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputNumberModule } from 'primeng/inputnumber';
 import {
   CreateInsumoDto,
+  DIA_INVENTARIO_OPTIONS,
+  ESTADO_OPTIONS,
+  FRECUENCIA_INVENTARIO_OPTIONS,
+  GRUPOS_OPTIONS,
   Insumo,
+  INVENTARIABLE_OPTIONS,
   UpdateInsumoDto,
 } from '../../../../core/models/insumo.model';
 import { forkJoin } from 'rxjs';
@@ -83,40 +88,11 @@ export class InsumosUpdInsComponent implements OnChanges {
   allUnidadesOptions: any[] = [];
   unidadesOptions: any[] = [];
 
-  gruposOptions = [
-    { label: 'Weight', value: 'WEIGHT' },
-    { label: 'Volume', value: 'VOLUME' },
-    { label: 'Unit', value: 'UNIT' },
-    { label: 'Other', value: 'OTHER' },
-  ];
-
-  estadoOptions = [
-    { label: 'Active', value: 'A' },
-    { label: 'Inactive', value: 'I' },
-  ];
-
-  frecuenciaInventarioOptions = [
-    { label: 'Daily', value: 'DIARIO' },
-    { label: 'Weekly', value: 'SEMANAL' },
-    { label: 'Biweekly', value: 'QUINCENAL' },
-    { label: 'Monthly', value: 'MENSUAL' },
-  ];
-
-  diaInventarioOptions = [
-    { label: 'Monday', value: 'LUNES' },
-    { label: 'Tuesday', value: 'MARTES' },
-    { label: 'Wednesday', value: 'MIERCOLES' },
-    { label: 'Thursday', value: 'JUEVES' },
-    { label: 'Friday', value: 'VIERNES' },
-    { label: 'Saturday', value: 'SABADO' },
-    { label: 'Sunday', value: 'DOMINGO' },
-    { label: 'End of Month', value: 'FIN_DE_MES' },
-  ];
-
-  inventariableOptions = [
-    { label: 'Yes', value: true },
-    { label: 'No', value: false },
-  ];
+  gruposOptions = GRUPOS_OPTIONS;
+  estadoOptions = ESTADO_OPTIONS;
+  frecuenciaInventarioOptions = FRECUENCIA_INVENTARIO_OPTIONS;
+  diaInventarioOptions = DIA_INVENTARIO_OPTIONS;
+  inventariableOptions = INVENTARIABLE_OPTIONS;
 
   constructor(
     private fb: FormBuilder,

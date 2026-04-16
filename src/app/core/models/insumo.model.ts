@@ -131,3 +131,38 @@ export interface CalcularPrecioRequest {
 export interface CalcularPrecioResponse {
   precio_calculado: number;
 }
+
+export const GRUPOS_OPTIONS = [
+  { label: 'Weight', value: 'WEIGHT' },
+  { label: 'Volume', value: 'VOLUME' },
+  { label: 'Unit', value: 'UNIT' },
+  { label: 'Other', value: 'OTHER' },
+];
+
+export const ESTADO_OPTIONS = [
+  { label: 'Active', value: 'A' },
+  { label: 'Inactive', value: 'I' },
+];
+
+export const FRECUENCIA_INVENTARIO_OPTIONS = [
+  { label: 'Daily', value: 'Daily' },
+  { label: 'Weekly', value: 'Weekly' },
+  { label: 'Biweekly', value: 'Biweekly' },
+  { label: 'Monthly', value: 'Monthly' },
+];
+
+export const DIA_INVENTARIO_OPTIONS = [
+  { label: 'Monday', value: 'Monday' },
+  { label: 'Tuesday', value: 'Tuesday' },
+  { label: 'Wednesday', value: 'Wednesday' },
+  { label: 'Thursday', value: 'Thursday' },
+  { label: 'Friday', value: 'Friday' },
+  { label: 'Saturday', value: 'Saturday' },
+  { label: 'Sunday', value: 'Sunday' },
+  { label: 'End of Month', value: 'End of Month' },
+];
+
+export const INVENTARIABLE_OPTIONS = [
+  { label: 'Yes', value: true },
+  { label: 'No', value: false },
+];
