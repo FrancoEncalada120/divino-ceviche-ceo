@@ -69,7 +69,8 @@
             <!-- <th>Details</th> -->
             <th>Stock/Ideal</th>
             <!-- <th>Minimum Stock</th> -->
-            <th>Purchase Quantity</th>
+            <th *ngIf="source === 'stock'">Purchase Quantity</th>
+            <th *ngIf="source === 'inventory'">update Inventory</th>
             <th>kardex</th>
           </tr>
         </ng-template>
@@ -100,8 +101,8 @@
               <div class="stock-info">
                 <div class="stock-values">
                   {{ item.stock }} / {{ item.stock_ideal }}
-                  <span *ngIf="item.stock === 0" class="stock-alert">
-                    <i class="pi pi-exclamation-triangle"></i> Out of stock
+                  <span *ngIf="+item.stock === 0" class="stock-alert">
+                    <small>Out of stock</small>
                   </span>
                 </div>
 
@@ -124,7 +125,7 @@
               </div>
             </td>
 
-            <td class="text-center">
+            <td class="text-center" *ngIf="source === 'stock'">
               <div class="cart-control">
                 <!-- BOTÓN ADD -->
                 <button
@@ -160,6 +161,16 @@
                   ></button>
                 </div>
               </div>
+            </td>
+            <td class="text-center" *ngIf="source === 'inventory'">
+              <input
+                #cantidadInput
+                type="number"
+                min="0"
+                step="1"
+                class="p-inputtext p-component p-inputtext-sm text-center"
+                (input)="onCantidadChange(cantidadInput.value, item)"
+              />
             </td>
 
             <td class="text-center">

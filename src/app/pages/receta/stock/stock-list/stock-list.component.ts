@@ -25,6 +25,8 @@ import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
+import { UserService } from '../../../../core/services/user.service';
+import { User } from '../../../../core/models/user.models';
 
 @Component({
   selector: 'app-stock-list',
@@ -57,6 +59,7 @@ export class StockListComponent implements OnInit {
   source!: string;
   title!: string;
   subtitle!: string;
+  user: User | null = null;
 
   constructor(
     private insumoService: InsumoService,
@@ -65,10 +68,12 @@ export class StockListComponent implements OnInit {
     private messageService: MessageService,
     private cartService: CartService,
     private route: ActivatedRoute,
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
     this.source = this.route.snapshot.data['source'];
+    this.user = this.userService.getUser();
 
     this.cartService.clearCart();
 
@@ -250,5 +255,48 @@ export class StockListComponent implements OnInit {
 
   get cart() {
     return this.cartService.getCart();
+  }
+
+  timers: Map<number, any> = new Map();
+
+  onCantidadChange(valor: string, item: any) {
+    const cantidad = Number(valor);
+
+    if (this.timers.get(item.insumo_id)) {
+      clearTimeout(this.timers.get(item.insumo_id));
+    }
+
+    const timer = setTimeout(() => {
+      this.actualizarInventario(cantidad, item);
+    }, 1000);
+
+    this.timers.set(item.insumo_id, timer);
+  }
+
+  actualizarInventario(cantidad: number, item: any) {
+    const auditUserId = this.userService.getUser()?.user_id;
+
+    this.insumoService
+      .updateStock(item.insumo_id, cantidad, auditUserId || 1)
+      .subscribe({
+        next: (res) => {
+          item.stock = res.stock;
+
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Inventario actualizado',
+            detail: 'Se actualizó el inventario del producto: ' + item.nombre,
+          });
+        },
+        error: (err) => {
+          console.error(err);
+
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: 'No se pudo actualizar el inventario',
+          });
+        },
+      });
   }
 }

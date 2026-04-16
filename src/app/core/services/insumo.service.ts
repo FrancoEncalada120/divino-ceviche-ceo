@@ -85,6 +85,28 @@ export class InsumoService {
     );
   }
 
+  updateStock(
+    insumo_id: number,
+    cantidad: number,
+    updated_by: number,
+  ): Observable<Insumo> {
+    const url = `${this.apiUrl}/${insumo_id}/stock`;
+
+    const body = {
+      cantidad,
+      updated_by,
+    };
+
+    return this.http.patch<ApiResponse<Insumo>>(url, body).pipe(
+      map((res) => {
+        if (!res.success) {
+          throw new Error(res.message || 'Error updating stock');
+        }
+        return res.data;
+      }),
+    );
+  }
+
   calcularPrecio(data: CalcularPrecioRequest): Observable<number> {
     const url = `${this.apiUrl}/calcular-precio`;
 
