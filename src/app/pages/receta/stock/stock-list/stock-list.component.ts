@@ -123,9 +123,6 @@ export class StockListComponent implements OnInit {
   }
 
   load(): void {
-    console.log('[Locations] load() start');
-    console.log('Buscando:', this.searchText);
-
     const auditUserId = this.userService.getUser()?.location_id;
 
     this.insumoService

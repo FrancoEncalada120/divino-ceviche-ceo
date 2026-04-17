@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { InsumosListaComponent } from '../insumos-lista/insumos-lista.component';
-import { NgIf } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
 import { InsumosUpdInsComponent } from '../insumos-upd-ins/insumos-upd-ins.component';
@@ -8,10 +8,20 @@ import { InsumosUpdInsComponent } from '../insumos-upd-ins/insumos-upd-ins.compo
 import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
 import { UserService } from '../../../../core/services/user.service';
+import { Card } from 'primeng/card';
+import { MultiSelect } from 'primeng/multiselect';
+import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-insumos-pri',
   standalone: true,
-  imports: [NgIf, InsumosListaComponent, InsumosUpdInsComponent],
+  imports: [
+    NgIf,
+    InsumosListaComponent,
+    InsumosUpdInsComponent,
+    FormsModule,
+    Card,
+    MultiSelect,
+  ],
   templateUrl: './insumos-pri.component.html',
   styleUrl: './insumos-pri.component.scss',
 })
@@ -28,6 +38,7 @@ export class InsumosPriComponent {
   constructor(
     private insumoService: InsumoService,
     private locationService: LocationService,
+    private userService: UserService,
 
     //, private toast: ToastrService
   ) {}
@@ -40,19 +51,24 @@ export class InsumosPriComponent {
 
   load(): void {
     this.loading = true;
+    const auditUserId = this.userService.getUser()?.location_id;
 
-    this.insumoService.getInsumoAll().subscribe({
-      next: (data) => {
-        this.insumo = Array.isArray(data?.insumos) ? data.insumos : [];
-      },
-      error: (err) => {
-        console.error('[LOAD] error:', err);
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      },
-    });
+    this.insumoService
+      .getInsumoAll({
+        location_id: auditUserId,
+      })
+      .subscribe({
+        next: (data) => {
+          this.insumo = Array.isArray(data?.insumos) ? data.insumos : [];
+        },
+        error: (err) => {
+          console.error('[LOAD] error:', err);
+          this.loading = false;
+        },
+        complete: () => {
+          this.loading = false;
+        },
+      });
   }
 
   loadLocations(): void {
@@ -66,6 +82,10 @@ export class InsumosPriComponent {
       },
       complete: () => console.log('[Locations] GET complete'),
     });
+  }
+
+  loadData() {
+    this.load();
   }
 
   openCreate() {
