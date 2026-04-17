@@ -2,7 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Location } from '../../../core/models/location.model';
 import { DashboardService } from '../../../core/services/dashboard.service';
-import { CashFlow, DashboardResponse } from '../../../core/models/dashboard.models';
+import {
+  CashFlow,
+  DashboardResponse,
+} from '../../../core/models/dashboard.models';
 import { LocationService } from '../../../core/services/location.service';
 import { DatePickerModule } from 'primeng/datepicker';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -12,17 +15,26 @@ import { TabViewModule } from 'primeng/tabview';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
-import { CashflowListComponent } from "../../cashflow/cashflow-list/cashflow-list.component";
+import { TabPanel } from 'primeng/tabview';
+import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-list.component';
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, FormsModule, DatePickerModule, MultiSelectModule, TxtsignoPipe, CashflowListComponent, TableModule, TabViewModule],
+
+  imports: [
+    CommonModule,
+    FormsModule,
+    DatePickerModule,
+    MultiSelectModule,
+    TxtsignoPipe,
+    CashflowListComponent,
+    TableModule,
+    TabViewModule,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
-
   loading = false;
   locations: Location[] = [];
   dasboard: DashboardResponse | null = null;
@@ -34,8 +46,8 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardSvc: DashboardService,
-    private locationService: LocationService
-  ) { }
+    private locationService: LocationService,
+  ) {}
 
   ngOnInit(): void {
     // 📅 Inicializar con AYER
@@ -80,7 +92,7 @@ export class DashboardComponent implements OnInit {
     this.dashboardSvc.getDashboard(startDate, endDate, locales).subscribe({
       next: (res) => {
         this.dasboard = res;
-        this.movimientos = res.cashflow
+        this.movimientos = res.cashflow;
       },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),
@@ -100,7 +112,7 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
   }
 

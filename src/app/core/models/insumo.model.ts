@@ -145,21 +145,26 @@ export const ESTADO_OPTIONS = [
 ];
 
 export const FRECUENCIA_INVENTARIO_OPTIONS = [
-  { label: 'Daily', value: 'Daily' },
-  { label: 'Weekly', value: 'Weekly' },
-  { label: 'Biweekly', value: 'Biweekly' },
-  { label: 'Monthly', value: 'Monthly' },
+  { label: 'Not defined', value: null },
+  { label: 'Daily', value: 'DAILY' },
+  { label: 'Weekly', value: 'WEEKLY' },
+  { label: 'Biweekly', value: 'BIWEEKLY' },
+  { label: 'Monthly', value: 'MONTHLY' },
+  { label: 'On Demand', value: 'ON_DEMAND' },
 ];
 
 export const DIA_INVENTARIO_OPTIONS = [
-  { label: 'Monday', value: 'Monday' },
-  { label: 'Tuesday', value: 'Tuesday' },
-  { label: 'Wednesday', value: 'Wednesday' },
-  { label: 'Thursday', value: 'Thursday' },
-  { label: 'Friday', value: 'Friday' },
-  { label: 'Saturday', value: 'Saturday' },
-  { label: 'Sunday', value: 'Sunday' },
-  { label: 'End of Month', value: 'End of Month' },
+  { label: 'Not defined', value: null },
+  { label: 'Everyday', value: 'EVERYDAY' },
+  { label: 'Monday', value: 'MONDAY' },
+  { label: 'Tuesday', value: 'TUESDAY' },
+  { label: 'Wednesday', value: 'WEDNESDAY' },
+  { label: 'Thursday', value: 'THURSDAY' },
+  { label: 'Friday', value: 'FRIDAY' },
+  { label: 'Saturday', value: 'SATURDAY' },
+  { label: 'Sunday', value: 'SUNDAY' },
+
+  { label: 'End of Month', value: 'END_OF_MONTH' },
 ];
 
 export const INVENTARIABLE_OPTIONS = [

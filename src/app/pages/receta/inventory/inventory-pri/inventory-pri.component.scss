@@ -1,35 +1,35 @@
-.row-inline {
-  display: flex;
-  gap: 20px; // separación horizontal
+/* filas */
+.row-in {
+  background-color: #e9f7ef;
 }
 
-.field {
-  flex: 1;
-  display: flex;
-  flex-direction: column; // 👈 label arriba, select abajo
+.row-out {
+  background-color: #fdecea;
 }
 
-.field label {
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 6px;
+/* badge */
+.badge {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
-.field select {
-  height: 40px;
-  padding: 0 12px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
+.bg-success {
+  background-color: #28a745;
+  color: white;
 }
 
-.text-green-500 {
-  color: #22c55e; // verde bonito
+.bg-danger {
+  background-color: #dc3545;
+  color: white;
 }
 
-.text-red-500 {
-  color: #ef4444; // rojo bonito
+.chart-container {
+  width: 50%;
+  height: 400px;
 }
 
-.text-gray-500 {
-  color: #6b7280;
+:host ::ng-deep .p-chart {
+  width: 100% !important;
 }

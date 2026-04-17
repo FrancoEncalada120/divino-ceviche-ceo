@@ -31,7 +31,7 @@
           placeholder="Select locations"
           display="chip"
           styleClass="w-100"
-          (onChange)="onLocationsChange()"
+          (onChange)="loadData()"
         >
         </p-multiSelect>
       </div>
@@ -59,6 +59,8 @@
           appendTo="body"
           [autoZIndex]="true"
           [baseZIndex]="10000"
+          [(ngModel)]="frecuenciaInventario"
+          (onChange)="loadData()"
         ></p-dropdown>
       </div>
 
@@ -73,6 +75,8 @@
           appendTo="body"
           [autoZIndex]="true"
           [baseZIndex]="10000"
+          [(ngModel)]="diaInventario"
+          (onChange)="loadData()"
         ></p-dropdown>
       </div>
     </div>
@@ -97,8 +101,16 @@
             <th>Stock/Ideal</th>
             <!-- <th>Minimum Stock</th> -->
             <th *ngIf="source === 'stock'">Purchase Quantity</th>
-            <th *ngIf="source === 'inventory'">update Inventory</th>
-            <th *ngIf="source === 'inventory'">Last inventory</th>
+            <th class="text-center" *ngIf="source === 'inventory'">
+              update Inventory
+            </th>
+
+            <th class="text-center" *ngIf="source === 'inventory'">
+              Last inventory
+            </th>
+            <th class="text-center" *ngIf="source === 'inventory'">
+              Frecuency
+            </th>
             <th>kardex</th>
           </tr>
         </ng-template>
@@ -202,26 +214,26 @@
             </td>
             <td class="text-center" *ngIf="source === 'inventory'">
               <div class="item-name">
-                <small>
-                  <i
-                    class="pi pi-calendar"
-                    [ngClass]="
-                      item.ultima_toma_inventario
-                        ? 'text-success'
-                        : 'text-danger'
-                    "
-                  >
-                  </i>
-
-                  {{
-                    item.ultima_toma_inventario
-                      ? (item.ultima_toma_inventario | date: "yyyy-MM-dd")
-                      : ""
-                  }}</small
+                <i
+                  class="pi pi-calendar"
+                  [ngClass]="
+                    item.ultima_toma_inventario ? 'text-success' : 'text-danger'
+                  "
                 >
+                </i>
+                {{
+                  item.ultima_toma_inventario
+                    ? (item.ultima_toma_inventario | date: "yyyy-MM-dd")
+                    : ""
+                }}
               </div>
-
               <div class="item-detail">
+                <small> {{ item.ultima_toma_inventario | timeAgo }}</small>
+              </div>
+            </td>
+
+            <td class="text-center" *ngIf="source === 'inventory'">
+              <div class="item-name">
                 <small>
                   {{ item.frecuencia_inventario || "" }} -
                   {{ item.dia_inventario || "-" }}</small

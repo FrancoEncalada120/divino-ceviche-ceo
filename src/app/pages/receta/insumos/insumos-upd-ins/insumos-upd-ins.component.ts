@@ -302,6 +302,8 @@ export class InsumosUpdInsComponent implements OnChanges {
       todoslocales: todosLocales, // Usamos el parámetro pasado por la confirmación
     };
 
+    console.log('payload', payload);
+
     this.submit.emit(payload);
   }
 

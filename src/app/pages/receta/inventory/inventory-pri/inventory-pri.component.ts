@@ -6,9 +6,21 @@ import { TableModule } from 'primeng/table';
 import * as XLSX from 'xlsx';
 import { ButtonModule } from 'primeng/button';
 
+import { TimeAgoPipe } from '../../../../core/pipes/timeAgo';
+import { TabPanel, TabView } from 'primeng/tabview';
+import { ChartModule } from 'primeng/chart';
+
 @Component({
   selector: 'app-inventory-pri',
-  imports: [TableModule, CommonModule, ButtonModule],
+  imports: [
+    TableModule,
+    CommonModule,
+    ButtonModule,
+    ChartModule,
+    TimeAgoPipe,
+    TabPanel,
+    TabView,
+  ],
   templateUrl: './inventory-pri.component.html',
   styleUrl: './inventory-pri.component.scss',
 })
@@ -19,6 +31,12 @@ export class InventoryPriComponent {
   @Input()
   insumo: Insumo | null = null;
   @Output() close = new EventEmitter<void>();
+
+  chartData: any;
+  chartOptions: any;
+  ngOnInit() {
+    this.buildChart();
+  }
 
   getColorPrice(i: number): string {
     if (i == 0) return '';
@@ -86,33 +104,100 @@ export class InventoryPriComponent {
         return '(-) Actualización del insumo';
       case '3':
         return 'ID de Compra: ' + compra_id;
-        case '4':
+      case '4':
         return 'Compra eliminada';
       default:
         return desc || '-';
     }
   }
 
-
   exportToExcel() {
-
     if (!this.inventoryList || this.inventoryList.length === 0) return;
 
     // Mapear data a columnas planas en inglés
     const data = this.inventoryList.map((i, idx) => ({
-      'Date': i.inventario_fecha,
-      'Insumo': `${this.insumo?.nombre} ${this.insumo?.cantidad || 0} x ${this.insumo?.unidad?.abreviatura || ''}`,
-      'Cantidad': i.cantidad,
-      'Price': i.precio,
-      'Total': i.total,
-      'Stock': i.stock,
-      'Descripción': this.getDesc(i.inventario_desc!, i.compra_id.toString())
+      Date: i.inventario_fecha,
+      Insumo: `${this.insumo?.nombre} ${this.insumo?.cantidad || 0} x ${this.insumo?.unidad?.abreviatura || ''}`,
+      Cantidad: i.cantidad,
+      Price: i.precio,
+      Total: i.total,
+      Stock: i.stock,
+      Descripción: this.getDesc(i.inventario_desc!, i.compra_id.toString()),
     }));
 
     const ws: XLSX.WorkSheet = XLSX.utils.json_to_sheet(data);
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Inventory List");
-    XLSX.writeFile(wb, "inventory-list.xlsx");
+    XLSX.utils.book_append_sheet(wb, ws, 'Inventory List');
+    XLSX.writeFile(wb, 'inventory-list.xlsx');
   }
 
+  buildChart() {
+    const labels = this.inventoryList.map((item) =>
+      new Date(item.inventario_fecha).toLocaleDateString('es-PE'),
+    );
+
+    const stockData = this.inventoryList.map((item) => item.stock);
+    const priceData = this.inventoryList.map((item) => item.precio);
+
+    this.chartData = {
+      labels: labels,
+      datasets: [
+        {
+          type: 'line',
+          label: 'Stock',
+          data: stockData,
+          borderColor: '#42A5F5',
+          backgroundColor: '#42A5F5',
+          tension: 0.3,
+          fill: false,
+          yAxisID: 'y',
+        },
+        {
+          type: 'line', // 👈 mejor línea que barra para precio
+          label: 'Price',
+          data: priceData,
+          borderColor: '#FFA726',
+          backgroundColor: '#FFA726',
+          tension: 0.3,
+          fill: false,
+          yAxisID: 'y1',
+        },
+      ],
+    };
+
+    this.chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+      },
+      scales: {
+        y: {
+          type: 'linear',
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Stock',
+          },
+        },
+        y1: {
+          type: 'linear',
+          position: 'right',
+          grid: {
+            drawOnChartArea: false,
+          },
+          title: {
+            display: true,
+            text: 'Precio',
+          },
+        },
+      },
+    };
+  }
 }

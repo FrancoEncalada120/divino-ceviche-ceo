@@ -5,6 +5,7 @@ import { CashFlow } from '../../../core/models/dashboard.models';
 import { NgClass } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
+import { UIChart } from 'primeng/chart';
 
 interface TreeNode {
   data: any;
@@ -13,29 +14,38 @@ interface TreeNode {
 
 @Component({
   selector: 'app-cashflow-list',
-  imports: [TxtsignoPipe, TreeTableModule, NgClass, TableModule, TabViewModule],
+  imports: [
+    TxtsignoPipe,
+    TreeTableModule,
+    NgClass,
+    TableModule,
+    TabViewModule,
+    UIChart,
+  ],
   templateUrl: './cashflow-list.component.html',
-  styleUrl: './cashflow-list.component.scss'
+  styleUrl: './cashflow-list.component.scss',
 })
 export class CashflowListComponent implements OnChanges {
-
   @Input()
   movimientos: CashFlow[] = [];
 
   treeData: any[] = [];
 
-  col1 = "15%";
-  colSaldos = "23%";
-  colApps = "23%";
+  col1 = '15%';
+  colSaldos = '23%';
+  colApps = '23%';
+
+  chartData: any;
+  chartOptions: any;
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['movimientos'] && this.movimientos) {
       this.buildTreeTable();
+      this.buildNetMarginChart();
     }
   }
 
   buildTreeTable() {
-
     // 🔥 columnas numéricas
     const numericFields = [
       'venta_bruta',
@@ -60,13 +70,13 @@ export class CashflowListComponent implements OnChanges {
       'venta_inkdind',
       'tips',
       'taxes',
-      'descuentos'
+      'descuentos',
     ];
 
     // 🔥 inicializador de totales
     const initTotals = () => {
       const obj: any = {};
-      numericFields.forEach(f => obj[f] = 0);
+      numericFields.forEach((f) => (obj[f] = 0));
       obj['net_margin'] = 0; // se calcula luego
       return obj;
     };
@@ -74,7 +84,7 @@ export class CashflowListComponent implements OnChanges {
     // 🔹 Agrupar por fecha y location
     const groupedByDate: any = {};
 
-    this.movimientos.forEach(item => {
+    this.movimientos.forEach((item) => {
       if (!groupedByDate[item.fecha]) {
         groupedByDate[item.fecha] = {};
       }
@@ -89,29 +99,27 @@ export class CashflowListComponent implements OnChanges {
     const tree: TreeNode[] = [];
 
     // 🔹 recorrer fechas
-    Object.keys(groupedByDate).forEach(fecha => {
-
+    Object.keys(groupedByDate).forEach((fecha) => {
       let totalFecha = initTotals();
 
       const dateNode: TreeNode = {
         data: {
           label: fecha,
           level: 'date',
-          ...initTotals()
+          ...initTotals(),
         },
-        children: []
+        children: [],
       };
 
       // 🔹 recorrer locations
-      Object.keys(groupedByDate[fecha]).forEach(locId => {
-
+      Object.keys(groupedByDate[fecha]).forEach((locId) => {
         const items = groupedByDate[fecha][locId];
 
         let totalLoc = initTotals();
 
         // 🔥 sumar dinámicamente
         items.forEach((i: any) => {
-          numericFields.forEach(field => {
+          numericFields.forEach((field) => {
             totalLoc[field] += Number(i[field] || 0);
           });
         });
@@ -123,7 +131,7 @@ export class CashflowListComponent implements OnChanges {
         }
 
         // 🔥 acumular a fecha
-        numericFields.forEach(field => {
+        numericFields.forEach((field) => {
           totalFecha[field] += totalLoc[field];
         });
 
@@ -132,8 +140,8 @@ export class CashflowListComponent implements OnChanges {
           data: {
             label: items[0].location_name,
             level: 'location',
-            ...totalLoc
-          }
+            ...totalLoc,
+          },
         };
 
         dateNode.children?.push(locationNode);
@@ -149,13 +157,66 @@ export class CashflowListComponent implements OnChanges {
       dateNode.data = {
         label: fecha,
         level: 'date',
-        ...totalFecha
+        ...totalFecha,
       };
 
       tree.push(dateNode);
     });
 
     this.treeData = tree;
+  }
+
+  ngOnInit() {
+    this.buildNetMarginChart();
+  }
+
+  buildNetMarginChart() {
+    // 👇 solo filas de tipo fecha
+    const dateRows = this.treeData
+      .map((node) => node.data)
+      .filter((item) => item.level === 'date');
+
+    const labels = dateRows.map((item) => item.label);
+
+    const netMarginData = dateRows.map((item) => item.net_margin);
+
+    this.chartData = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Net Margin %',
+          data: netMarginData,
+          backgroundColor: netMarginData.map((val) =>
+            val >= 0 ? '#66BB6A' : '#EF5350',
+          ),
+        },
+      ],
+    };
+
+    this.chartOptions = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: true,
+        },
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Net Margin %',
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Fecha',
+          },
+        },
+      },
+    };
   }
 
   // mostrarImporte(row: Concepto[], concepto_id: number): number {
@@ -202,6 +263,4 @@ export class CashflowListComponent implements OnChanges {
   //   else if (accion === '-') return `text-red-500`;
   //   else return 'text-gray-500';
   // }
-
-
 }

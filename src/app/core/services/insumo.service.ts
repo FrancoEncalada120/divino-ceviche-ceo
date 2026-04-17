@@ -30,10 +30,15 @@ export class InsumoService {
 
   getInsumoAll(params?: {
     text?: string;
-    bGrupo?: Number;
+    bGrupo?: number;
+    dia_inventario?: string;
+    frecuencia_inventario?: string;
+    location_id?: number;
   }): Observable<DataResponse> {
     return this.http
-      .get<ApiResponseAll<DataResponse>>(this.apiUrl, { params: params as any })
+      .get<ApiResponseAll<DataResponse>>(this.apiUrl, {
+        params: params as any,
+      })
       .pipe(
         map((res) => {
           const arr = res?.data;

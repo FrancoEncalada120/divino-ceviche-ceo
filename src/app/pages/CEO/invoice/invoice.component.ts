@@ -104,6 +104,7 @@ export class InvoiceComponent {
     });
 
     this.load();
+    this.loadLocations();
   }
 
   load(): void {

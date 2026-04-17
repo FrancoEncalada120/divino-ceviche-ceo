@@ -33,6 +33,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.models';
 import { DropdownModule } from 'primeng/dropdown';
+import { TimeAgoPipe } from '../../../../core/pipes/timeAgo';
 
 @Component({
   selector: 'app-stock-list',
@@ -51,6 +52,7 @@ import { DropdownModule } from 'primeng/dropdown';
     InputTextModule,
     DatePipe,
     DropdownModule,
+    TimeAgoPipe,
   ],
   templateUrl: './stock-list.component.html',
   styleUrl: './stock-list.component.scss',
@@ -72,6 +74,8 @@ export class StockListComponent implements OnInit {
   frecuenciaInventarioOptions = FRECUENCIA_INVENTARIO_OPTIONS;
   diaInventarioOptions = DIA_INVENTARIO_OPTIONS;
   inventariableOptions = INVENTARIABLE_OPTIONS;
+  frecuenciaInventario: string | null = null;
+  diaInventario: string | null = null;
 
   constructor(
     private insumoService: InsumoService,
@@ -81,6 +85,7 @@ export class StockListComponent implements OnInit {
     private cartService: CartService,
     private route: ActivatedRoute,
     private userService: UserService,
+    private locationService: LocationService,
   ) {}
 
   ngOnInit(): void {
@@ -100,6 +105,7 @@ export class StockListComponent implements OnInit {
     }
 
     this.load();
+    this.loadLocations();
 
     this.searchSubject
       .pipe(
@@ -120,9 +126,14 @@ export class StockListComponent implements OnInit {
     console.log('[Locations] load() start');
     console.log('Buscando:', this.searchText);
 
+    const auditUserId = this.userService.getUser()?.location_id;
+
     this.insumoService
       .getInsumoAll({
         text: this.searchText,
+        dia_inventario: this.diaInventario || '',
+        frecuencia_inventario: this.frecuenciaInventario || '',
+        location_id: this.userService.getUser()?.location_id || 0,
       })
       .subscribe({
         next: (data) => {
@@ -131,6 +142,8 @@ export class StockListComponent implements OnInit {
             .sort(
               (a, b) => b.stock_ideal - b.stock - (a.stock_ideal - a.stock),
             );
+
+          console.log('data.insumos:', data.insumos);
         },
         error: (err) => {
           console.error('[Locations] GET error:', err);
@@ -139,8 +152,21 @@ export class StockListComponent implements OnInit {
       });
   }
 
-  onLocationsChange() {
-    this.locationChange$.next();
+  loadLocations(): void {
+    this.locationService.getLocationAll().subscribe({
+      next: (data) => {
+        this.locations = data ?? [];
+
+        this.selectedLocation = [...this.locations];
+      },
+      error: (err) => {
+        console.error('[Locations] GET error:', err);
+      },
+      complete: () => {},
+    });
+  }
+
+  loadData() {
     this.load();
   }
 
@@ -293,6 +319,7 @@ export class StockListComponent implements OnInit {
       .subscribe({
         next: (res) => {
           item.stock = res.stock;
+          item.ultima_toma_inventario = new Date();
 
           this.messageService.add({
             severity: 'success',

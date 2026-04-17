@@ -1,100 +1,113 @@
+<!-- ===================== -->
+<!-- FILTERS (RESPONSIVE) -->
+<!-- ===================== -->
+<div class="row g-3 mb-4">
+  <!-- Locations -->
+  <div class="col-12 col-md-6">
+    <label class="filter-label d-block mb-1">
+      <i class="pi pi-map-marker"></i> Locations
+    </label>
 
-  <!-- ===================== -->
-  <!-- FILTERS (RESPONSIVE) -->
-  <!-- ===================== -->
-  <div class="row g-3 mb-4">
-
-    <!-- Locations -->
-    <div class="col-12 col-md-6">
-      <label class="filter-label d-block mb-1">
-        <i class="pi pi-map-marker"></i> Locations
-      </label>
-
-      <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
-        placeholder="Select locations" display="chip" class="w-100" (onChange)="onLocationsChange()">
-      </p-multiSelect>
-    </div>
-
-    <!-- Date range -->
-    <div class="col-12 col-md-6">
-      <label class="filter-label d-block mb-1">
-        <i class="pi pi-calendar"></i> Date Range
-      </label>
-
-      <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
-        [readonlyInput]="true" class="w-100" (ngModelChange)="onLocationsChangeDate($event)">
-      </p-datepicker>
-    </div>
+    <p-multiSelect
+      [options]="locations"
+      [(ngModel)]="selectedLocation"
+      optionLabel="location_name"
+      placeholder="Select locations"
+      display="chip"
+      class="w-100"
+      (onChange)="onLocationsChange()"
+    >
+    </p-multiSelect>
   </div>
 
-  <!-- ===================== -->
-  <!-- SUBHEADER -->
-  <!-- ===================== -->
-  <div class="mb-4">
-    <div class="text-muted small">
-      <ng-container *ngIf="selectedLocation.length; else noneSelected">
-        {{ selectedLocationNames }}
-      </ng-container>
+  <!-- Date range -->
+  <div class="col-12 col-md-6">
+    <label class="filter-label d-block mb-1">
+      <i class="pi pi-calendar"></i> Date Range
+    </label>
 
-      <ng-template #noneSelected>
-        None
-      </ng-template>
+    <p-datepicker
+      [(ngModel)]="dateRange"
+      selectionMode="range"
+      dateFormat="dd/mm/yy"
+      [showIcon]="true"
+      [readonlyInput]="true"
+      class="w-100"
+      (ngModelChange)="onLocationsChangeDate($event)"
+    >
+    </p-datepicker>
+  </div>
+</div>
 
-      <div class="small">
-        {{ formattedDateRange }}
-      </div>
+<!-- ===================== -->
+<!-- SUBHEADER -->
+<!-- ===================== -->
+<div class="mb-4">
+  <div class="text-muted small">
+    <ng-container *ngIf="selectedLocation.length; else noneSelected">
+      {{ selectedLocationNames }}
+    </ng-container>
+
+    <ng-template #noneSelected> None </ng-template>
+
+    <div class="small">
+      {{ formattedDateRange }}
     </div>
   </div>
+</div>
 
-  <!-- ===================== -->
-  <!-- KPI CARDS -->
-  <!-- ===================== -->
-  <div class="row g-3 mb-4">
-    <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
+<!-- ===================== -->
+<!-- KPI CARDS -->
+<!-- ===================== -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i [class]="item.icon"></i>
+          <span class="sum-title">{{ item.name }}</span>
+        </div>
 
-      <div class="kpi-card bg-white">
-        <div class="sum-inner">
+        <div class="kpi-value">
+          {{ item.Result | txtsigno: item.signo }}
+        </div>
 
-          <div class="sum-top d-flex align-items-center gap-2">
-            <i [class]="item.icon"></i>
-            <span class="sum-title">{{ item.name }}</span>
-          </div>
+        <div class="kpi-footer">
+          <span class="kpi-target">
+            Target: {{ item.goal | txtsigno: item.signo }}
+          </span>
 
-          <div class="kpi-value">
-            {{ item.Result | txtsigno:item.signo }}
-          </div>
-
-          <div class="kpi-footer">
-            <span class="kpi-target">
-              Target: {{ item.goal | txtsigno:item.signo }}
-            </span>
-
-            <span [class]="item.eval.color">
-              <i [class]="item.eval.arrow"></i>
-              {{ item.diff | txtsigno:item.signo }}
-            </span>
-          </div>
-
+          <span [class]="item.eval.color">
+            <i [class]="item.eval.arrow"></i>
+            {{ item.diff | txtsigno: item.signo }}
+          </span>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Loading -->
-  <div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
-
-
+<!-- Loading -->
+<div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
 
 <app-cashflow-list [movimientos]="movimientos"></app-cashflow-list>
-
 
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Daily Scorecard">
-        <p-table [value]="dasboard?.dailyMetrics!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+        <p-table
+          [value]="dasboard?.dailyMetrics!"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'"
+          breakpoint="768px"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          styleClass="p-datatable-sm"
+        >
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
@@ -112,10 +125,12 @@
             <tr>
               <td>{{ row.daily_metric_date }}</td>
               <td>{{ row.location_name }}</td>
-              <td>{{ row.totalNetSales | number:'1.0-3' }}</td>
+              <td>{{ row.totalNetSales | number: "1.0-3" }}</td>
               <td class="d-none d-md-table-cell">{{ row.totalDailyHourly }}</td>
-              <td class="d-none d-md-table-cell">{{ row.LaborCost | number:'1.0-3' }}</td>
-              <td>{{ row.AOV | number:'1.0-3' }}</td>
+              <td class="d-none d-md-table-cell">
+                {{ row.LaborCost | number: "1.0-3" }}
+              </td>
+              <td>{{ row.AOV | number: "1.0-3" }}</td>
             </tr>
           </ng-template>
 
@@ -137,9 +152,18 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Invoices">
-        <p-table [value]="dasboard?.invoices!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+        <p-table
+          [value]="dasboard?.invoices!"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'"
+          breakpoint="768px"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          styleClass="p-datatable-sm"
+        >
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
@@ -156,7 +180,9 @@
             <tr>
               <td>{{ row.invoice_date }}</td>
               <td>{{ row.locations.location_name }}</td>
-              <td class="d-none d-md-table-cell">{{ row.category.category_code }}</td>
+              <td class="d-none d-md-table-cell">
+                {{ row.category.category_code }}
+              </td>
               <td>{{ row.invoice_vendor_description }}</td>
               <td class="text-end">{{ row.invoice_amount }}</td>
             </tr>
