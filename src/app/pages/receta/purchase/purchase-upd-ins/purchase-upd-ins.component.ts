@@ -81,6 +81,10 @@ export class PurchaseUpdInsComponent {
     this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
+        console.log('this.locations', this.locations);
+
+        this.formData.location_id = this.user?.location_id;
+
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
@@ -88,7 +92,12 @@ export class PurchaseUpdInsComponent {
       complete: () => { },
     });
 
-    this.service.getInsumoAll().subscribe({
+    this.service.getInsumoAll(
+      {
+        location_id: this.userService.getUser()?.location_id || 0,
+      }
+
+    ).subscribe({
       next: (data) => {
         this.cInsumo = data.insumos ?? [];
       },
@@ -120,7 +129,7 @@ export class PurchaseUpdInsComponent {
     fecha: this.fechaHoy,
     detalle: '',
     total: 0,
-    location_id: 7,
+    location_id: this.user?.location_id,
     created_by: this.user?.user_id,
     detalles: []
   };
@@ -150,7 +159,6 @@ export class PurchaseUpdInsComponent {
 
     this.formData.created_by = this.user?.user_id;
 
-    console.log('Form data to submit:', this.formData);
 
     this.submit.emit(this.formData as Compra);
   }

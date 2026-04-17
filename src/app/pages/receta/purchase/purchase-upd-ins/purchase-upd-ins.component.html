@@ -30,7 +30,7 @@
             </div>
 
             <div class="field">
-              <label>Location</label>
+              <label>Location </label>
               <select [(ngModel)]="formData.location_id" disabled="true">
                 <option [ngValue]="0">Select locations</option>
                 <option *ngFor="let loc of locations" [value]="loc.location_id">
