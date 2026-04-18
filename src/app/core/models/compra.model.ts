@@ -3,6 +3,7 @@ import { User } from './user.models';
 
 export interface Compra {
   compra_id: number;
+  compra_order_id: number;
   fecha: string | null;
   detalle: string | null;
   total: number;
@@ -17,5 +18,7 @@ export interface Compra {
   created_user: User | null;
 
   referencia_id?: string | null;
+  compra_orden_referencia: string | null;
+  compra_order_estado: number;
 
 }

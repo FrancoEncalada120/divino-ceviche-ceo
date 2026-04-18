@@ -1,0 +1,37 @@
+.page {
+  background: #f8f9fb;
+  min-height: auto; // ✅ en vez de 100%
+  padding-bottom: 1rem; // opcional: para que respire
+  margin-bottom: 1rem; // ✅ separa del siguiente componente sin huecos raros
+}
+
+/* ===== Titles ===== */
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #1f2937;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
+
+
+::ng-deep .p-multiselect .p-multiselect-label {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px;
+  white-space: normal !important;
+
+  overflow: visible !important;     /* 🔥 CLAVE */
+  text-overflow: unset !important;  /* 🔥 CLAVE */
+}
+
+::ng-deep .p-multiselect {
+  height: auto !important;
+  min-height: 38px; /* altura base bonita */
+  align-items: flex-start;
+}

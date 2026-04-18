@@ -71,6 +71,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'PurchaseOrder',
+        loadComponent: () =>
+          import('./pages/receta/purchase-order/purchase-order-pri/purchase-order-pri.component').then(
+            (m) => m.PurchaseOrderPriComponent,
+          ),
+      },
+      {
         path: 'Stock',
         data: { source: 'stock' },
         loadComponent: () =>

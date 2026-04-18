@@ -33,10 +33,10 @@ import { CartService } from '../../../../core/services/cart.service';
     DropdownModule,
     NgIf,
   ],
-  templateUrl: './purchase-upd-ins.component.html',
-  styleUrl: './purchase-upd-ins.component.scss',
+  templateUrl: './purchase-order-upd-ins.component.html',
+  styleUrl: './purchase-order-upd-ins.component.scss',
 })
-export class PurchaseUpdInsComponent {
+export class PurchaseOrderUpdInsComponent {
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<Compra>();
 
@@ -116,11 +116,14 @@ export class PurchaseUpdInsComponent {
 
   formData: Partial<Compra> = {
     compra_id: 0,
+    compra_order_id: 0,
     fecha: this.fechaHoy,
     detalle: '',
     total: 0,
     location_id: this.user?.location_id,
     created_by: this.user?.user_id,
+    compra_orden_referencia: '',
+    compra_order_estado: 0,
     detalles: [],
   };
 
@@ -205,6 +208,9 @@ export class PurchaseUpdInsComponent {
       } else {
         row.grupo_id = 0; // o algún valor por defecto
       }
+
+      row.precio = insumoSeleccionado.insumos_detalles?.find(x => x.location_id == this.formData.location_id)?.precio_final || 0;
+
       // row.unidadesFiltradas = this.cUnidad.filter(u =>
       //   u.grupo === insumoSeleccionado.grupo
       // );

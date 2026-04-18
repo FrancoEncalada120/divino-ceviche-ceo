@@ -5,6 +5,7 @@ import { Unidad } from './unidad.model';
 export interface CompraDetalle {
   detalle_id: number;
   compra_id: number;
+  compra_order_id: number;
   insumo_id: number;
   unidad_id: number;
 

@@ -1,0 +1,98 @@
+<div class="row g-3 mb-4 bg-white">
+  <div class="card">
+
+    <p-tabView>
+      <p-tabPanel header="Purchase List">
+
+        <div class="card-body d-flex justify-content-end">
+          <button pButton type="button" label="Export to Excel" icon="pi pi-file-excel"
+            (click)="exportToExcel()"></button>
+        </div>
+
+        <p-table [value]="compraDetalle" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <!-- Header -->
+          <ng-template pTemplate="header">
+            <tr>
+              <th>Id</th>
+              <th>Reference Id</th>
+              <th>Date</th>
+              <th>items</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Total</th>
+              <th>User</th>
+              <th>Notes</th>
+              <th>Status</th>
+              <th class="col-actions"></th>
+            </tr>
+          </ng-template>
+
+          <!-- Body -->
+          <ng-template pTemplate="body" let-row>
+            <tr>
+              <td class="col-date">{{ row.compra_order_id }}</td>
+
+              <td>
+                {{ row.compra_order.compra_orden_referencia || "---" }}
+              </td>
+
+              <td>
+                {{ row.compra_order.fecha }}
+              </td>
+
+              <td> {{ row.insumo.nombreCompleto }} </td>
+
+              <td>
+                {{ row.cantidad }}
+              </td>
+              <td>
+                {{ row.precio | txtsigno: "$" }}
+              </td>
+              <td>
+                {{ row.total | txtsigno: "$" }}
+              </td>
+
+              <td>
+                {{ row.compra_order.created_user_order?.user_name }}
+                {{ row.compra_order.created_user_order?.user_apellido }}
+              </td>
+
+              <td>
+                {{ row.compra_order.detalle || "---" }}
+              </td>
+
+              <td>
+                {{ row.compra_order.compra_order_estado == 1 ? 'Submitted' : 'Completed' }}
+              </td>
+
+
+              <td *ngIf="row.compra_order.compra_order_estado == 1" class="col-actions text-end">
+                <button class="btn btn-sm btn-secondary m-1">
+                  Add Purchase
+                </button>
+                <button class="btn btn-sm btn-danger m-1" (click)="onDelete(row)">
+                  Delete
+                </button>
+              </td>
+            </tr>
+
+          </ng-template>
+
+          <!-- Empty -->
+          <ng-template pTemplate="emptymessage">
+            <tr>
+              <td colspan="6" class="text-center text-muted py-4">
+                No records found
+              </td>
+            </tr>
+          </ng-template>
+        </p-table>
+      </p-tabPanel>
+    </p-tabView>
+
+
+  </div>
+
+</div>

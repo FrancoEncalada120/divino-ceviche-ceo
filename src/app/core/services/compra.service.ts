@@ -35,6 +35,21 @@ export class CompraService {
     );
   }
 
+  getComprasOrderAll(params?: {
+    fechaIni?: string;
+    fechaFin?: string;
+    lstProveedor?: string;
+    lstInsumo?: string;
+  }): Observable<CompraDetalle[]> {
+
+    return this.http.get<ApiResponse<CompraDetalle[]>>(this.apiUrl + "/order", { params: params as any }).pipe(
+      map((res) => {
+        const arr = res?.data;
+        return Array.isArray(arr) ? arr : [];
+      }),
+    );
+  }
+
   /**
    * Crea compra + detalles en una sola llamada
    * POST /ceo/rec_compras/full
@@ -58,12 +73,49 @@ export class CompraService {
       );
   }
 
+
+  createFullOrder(
+    payload: CompraFullCreate,
+    userId?: number,
+  ): Observable<CompraFullResponse> {
+    const url = `${this.apiUrl}/fullorder`;
+
+    return this.http
+      .post<ApiResponse<CompraFullResponse>>(url, payload)
+      .pipe(
+        map((res) => {
+          if (!res.success)
+            throw new Error(res.message || 'Error creating compra full');
+          return res.data;
+        }),
+      );
+  }
+
   deleteCompra(
     compraId: number,
     userId?: number
   ): Observable<DeleteCompraResponse> {
 
     const url = `${this.apiUrl}/${compraId}`;
+
+    return this.http
+      .delete<ApiResponse<DeleteCompraResponse>>(url)
+      .pipe(
+        map((res) => {
+          if (!res.success) {
+            throw new Error(res.message || 'Error deleting compra');
+          }
+          return res.data;
+        })
+      );
+  }
+
+  deleteCompraOrder(
+    compraId: number,
+    userId?: number
+  ): Observable<DeleteCompraResponse> {
+
+    const url = `${this.apiUrl}/order/${compraId}`;
 
     return this.http
       .delete<ApiResponse<DeleteCompraResponse>>(url)
