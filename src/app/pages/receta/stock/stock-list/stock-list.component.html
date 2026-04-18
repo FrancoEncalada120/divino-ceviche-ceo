@@ -140,7 +140,8 @@
             <td>
               <div class="stock-info">
                 <div class="stock-values">
-                  {{ item.stock }} / {{ item.stock_ideal }}
+                  {{ item.insumos_detalles[0]?.stock }} /
+                  {{ item.insumos_detalles[0]?.stock_ideal }}
                   <span *ngIf="+item.stock === 0" class="stock-alert">
                     <small>Out of stock</small>
                   </span>

@@ -297,6 +297,31 @@ export class StockListComponent implements OnInit {
 
   timers: Map<number, any> = new Map();
 
+  pendingUpdates = new Map<number, UpdateStockInsumoDto>();
+
+  actualizarInventario(cantidad: number, item: any) {
+    const auditUserId = this.userService.getUser()?.user_id;
+
+    const payload: UpdateStockInsumoDto = {
+      cantidad: cantidad,
+      location_id: item.insumos_detalles[0].location_id,
+      updated_by: auditUserId || 1,
+    };
+
+    // Validar si ya existe
+    if (this.pendingUpdates.has(item.insumo_id)) {
+      // Solo actualiza la cantidad
+      const existing = this.pendingUpdates.get(item.insumo_id)!;
+      existing.cantidad = cantidad;
+    } else {
+      this.pendingUpdates.set(item.insumo_id, payload);
+    }
+
+    // Opcional: actualizar UI
+    item.stock = cantidad;
+    item.ultima_toma_inventario = new Date();
+  }
+
   onCantidadChange(valor: string, item: any) {
     const cantidad = Number(valor);
 
@@ -311,32 +336,30 @@ export class StockListComponent implements OnInit {
     this.timers.set(item.insumo_id, timer);
   }
 
-  actualizarInventario(cantidad: number, item: any) {
-    const auditUserId = this.userService.getUser()?.user_id;
+  guardarTodo() {
+    const updatesArray = Array.from(this.pendingUpdates.entries()).map(
+      ([insumo_id, payload]) => ({
+        insumo_id,
+        ...payload,
+      }),
+    );
 
-    const payload: UpdateStockInsumoDto = {
-      cantidad: cantidad,
-      location_id: item.location_id,
-      updated_by: auditUserId || 1,
-    };
-
-    this.insumoService.updateStock(item.insumo_id, payload).subscribe({
-      next: (res) => {
-        item.stock = res.stock;
-        item.ultima_toma_inventario = new Date();
-
+    this.insumoService.updateStockBatch(updatesArray).subscribe({
+      next: () => {
         this.messageService.add({
           severity: 'success',
           summary: 'Inventario actualizado',
-          detail: 'Se actualizó el inventario del producto: ' + item.nombre,
+          detail: 'Se guardaron todos los cambios',
         });
+
+        this.pendingUpdates.clear();
       },
       error: (err) => {
         console.error(err);
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'No se pudo actualizar el inventario',
+          detail: 'No se pudieron guardar los cambios',
         });
       },
     });
