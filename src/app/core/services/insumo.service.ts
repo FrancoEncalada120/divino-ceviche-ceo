@@ -93,6 +93,22 @@ export class InsumoService {
       );
   }
 
+  updateStockBatch(
+    payload: (UpdateStockInsumoDto & { insumo_id: number })[],
+  ): Observable<InsumoDetalle[]> {
+    return this.http
+      .patch<
+        ApiResponse<InsumoDetalle[]>
+      >(`${this.apiUrl}/stock/batch`, payload)
+      .pipe(
+        map((res) => {
+          if (!res.success)
+            throw new Error(res.message || 'Error actualizando stock en lote');
+          return res.data;
+        }),
+      );
+  }
+
   // ─── POST calcular precio ─────────────────────────────────
   calcularPrecio(data: CalcularPrecioRequest): Observable<number> {
     const url = `${this.apiUrl}/calcular-precio`;
