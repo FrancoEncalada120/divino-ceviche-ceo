@@ -8,9 +8,14 @@ export interface Insumo {
   descripcion: string;
   estado: string;
   grupo: string;
+  // ─── Campos base ──────────────────────────────────────────
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
   unidad_id?: number | null;
   unidad_trabajo?: number | null;
   es_inventariable: boolean;
+  cantidad_insumo?: number | null;
+  id_receta?: number | null;
   created_at?: string | null;
   created_by?: number | null;
   updated_at?: string | null;
@@ -20,38 +25,18 @@ export interface Insumo {
   // ─── Relaciones ───────────────────────────────────────────
   unidad?: Unidad;
   unidadTrabajo?: Unidad;
+  proveedor?: Proveedor;
+  estacion?: Estacion;
   created_user?: User;
   updated_user?: User;
   grupo_detalle?: GrupoDetalle[];
 
-  // ─── Detalle por location ─────────────────────────────────
+  // ─── Detalle por location (stock, precios, inventario) ────
   insumos_detalles?: InsumoDetalle[];
-
-  // ─── Inventario por location ──────────────────────────────
-  insumos_inventarios?: InsumoInventario[];
 }
 
 export interface InsumoDetalle {
   detalle_id: number;
-  insumo_id: number;
-  location_id: number;
-  proveedor_id?: number | null;
-  estacion_id?: number | null;
-  cantidad_total?: number | null;
-  id_receta: number;
-  created_at?: string | null;
-  created_by?: number | null;
-  updated_at?: string | null;
-  updated_by?: number | null;
-
-  // ─── Relaciones ───────────────────────────────────────────
-  proveedor?: Proveedor;
-  estacion?: Estacion;
-  location?: Location;
-}
-
-export interface InsumoInventario {
-  inventario_id: number;
   insumo_id: number;
   location_id: number;
   stock: number;
@@ -75,23 +60,37 @@ export interface Estacion {
   estacion_estado: string;
 }
 
+export interface Proveedor {
+  proveedor_id: number;
+  nombre: string;
+  ruc?: string | null;
+  telefono?: string | null;
+  email?: string | null;
+  direccion?: string | null;
+  contacto?: string | null;
+  estado?: string | null;
+  created_at?: string | Date | null;
+  created_by?: number | null;
+  updated_at?: string | Date | null;
+  updated_by?: number | null;
+}
+
 // ─── Create ───────────────────────────────────────────────────
 export interface CreateInsumoDto {
   // rec_insumos (base)
   nombre: string;
   descripcion: string;
   grupo?: string | null;
-  unidad_id?: number | null;
-  unidad_trabajo?: number | null;
-  es_inventariable?: boolean | null;
-  created_by?: number | null;
-
-  // rec_insumos_detalle
   proveedor_id?: number | null;
   estacion_id?: number | null;
+  unidad_id?: number | null;
+  unidad_trabajo?: number | null;
+  cantidad_insumo?: number | null;
+  es_inventariable?: boolean | null;
   id_receta?: number | null;
+  created_by?: number | null;
 
-  // rec_insumos_inventario
+  // rec_insumos_detalle (stock e inventario por location)
   stock?: number | null;
   precio_final?: number | null;
   stock_ideal?: number | null;
@@ -110,25 +109,24 @@ export interface UpdateInsumoDto {
   nombre?: string | null;
   descripcion?: string | null;
   grupo?: string | null;
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
   unidad_id?: number | null;
   unidad_trabajo?: number | null;
+  cantidad_insumo?: number | null;
   es_inventariable?: boolean | null;
+  id_receta?: number | null;
   estado?: 'A' | 'I';
   updated_by?: number | null;
 
-  // rec_insumos_detalle
-  proveedor_id?: number | null;
-  estacion_id?: number | null;
-  id_receta?: number | null;
-
-  // rec_insumos_inventario
+  // rec_insumos_detalle (stock e inventario por location)
   precio_final?: number | null;
   stock_ideal?: number | null;
   frecuencia_inventario?: string | null;
   dia_inventario?: string | null;
   ultima_toma_inventario?: string | Date | null;
 
-  // obligatorio para saber qué detalle e inventario actualizar
+  // obligatorio para saber qué detalle actualizar
   location_id: number;
 }
 
@@ -139,21 +137,27 @@ export interface UpdateStockInsumoDto {
   updated_by?: number | null;
 }
 
-export interface Proveedor {
-  proveedor_id: number;
-  nombre: string;
-  ruc?: string | null;
-  telefono?: string | null;
-  email?: string | null;
-  direccion?: string | null;
-  contacto?: string | null;
-  estado?: string | null;
-  created_at?: string | Date | null;
-  created_by?: number | null;
-  updated_at?: string | Date | null;
-  updated_by?: number | null;
+// ─── Responses ────────────────────────────────────────────────
+export type CreateInsumoResponse = {
+  insumo: Insumo;
+  detalles: InsumoDetalle[];
+};
+
+export type UpdateInsumoResponse = {
+  insumo: Insumo;
+  detalle: InsumoDetalle | null;
+};
+
+// ─── Query params ─────────────────────────────────────────────
+export interface GetInsumosParams {
+  text?: string;
+  bGrupo?: number;
+  dia_inventario?: string;
+  frecuencia_inventario?: string;
+  location_id?: number;
 }
 
+// ─── Misc ─────────────────────────────────────────────────────
 export interface CalcularPrecioRequest {
   insumo_id: number;
   unidad_receta: number;
@@ -198,7 +202,6 @@ export const DIA_INVENTARIO_OPTIONS = [
   { label: 'Friday', value: 'FRIDAY' },
   { label: 'Saturday', value: 'SATURDAY' },
   { label: 'Sunday', value: 'SUNDAY' },
-
   { label: 'End of Month', value: 'END_OF_MONTH' },
 ];
 
@@ -206,25 +209,3 @@ export const INVENTARIABLE_OPTIONS = [
   { label: 'Yes', value: true },
   { label: 'No', value: false },
 ];
-
-// ─── Responses ────────────────────────────────────────────────
-export type CreateInsumoResponse = {
-  insumo: Insumo;
-  detalles: InsumoDetalle[];
-  inventarios: InsumoInventario[];
-};
-
-export type UpdateInsumoResponse = {
-  insumo: Insumo;
-  detalle: InsumoDetalle | null;
-  inventario: InsumoInventario | null;
-};
-
-// ─── Query params ─────────────────────────────────────────────
-export interface GetInsumosParams {
-  text?: string;
-  bGrupo?: number;
-  dia_inventario?: string;
-  frecuencia_inventario?: string;
-  location_id?: number;
-}

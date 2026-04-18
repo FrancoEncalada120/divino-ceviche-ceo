@@ -108,14 +108,13 @@ export class InsumosUpdInsComponent implements OnChanges {
       unidad_trabajo: [null],
       es_inventariable: [true],
       estado: ['A'],
-
-      // ─── rec_insumos_detalle ──────────────────────────────
       proveedor_id: [null],
       estacion_id: [null, Validators.required],
       id_receta: [null],
-      location_id: [null, Validators.required],
+      cantidad_insumo: [null],
 
-      // ─── rec_insumos_inventario ───────────────────────────
+      // ─── rec_insumos_detalle (stock e inventario) ─────────
+      location_id: [null, Validators.required],
       precio_final: [null],
       stock_ideal: [null],
       frecuencia_inventario: [null],
@@ -183,9 +182,7 @@ export class InsumosUpdInsComponent implements OnChanges {
 
   private loadForm(): void {
     if (this.mode === 'edit' && this.insumo) {
-      // Toma el primer detalle e inventario disponible
       const detalle = this.insumo.insumos_detalles?.[0];
-      const inventario = this.insumo.insumos_inventarios?.[0];
 
       this.form.patchValue({
         // ─── rec_insumos (base) ─────────────────────────────
@@ -196,20 +193,19 @@ export class InsumosUpdInsComponent implements OnChanges {
         unidad_trabajo: this.insumo.unidadTrabajo?.unidad_id ?? null,
         es_inventariable: this.insumo.es_inventariable ?? true,
         estado: this.insumo.estado ?? 'A',
+        proveedor_id: this.insumo.proveedor_id ?? null,
+        estacion_id: this.insumo.estacion_id ?? null,
+        id_receta: this.insumo.id_receta ?? null,
+        cantidad_insumo: this.insumo.cantidad_insumo ?? null,
 
         // ─── rec_insumos_detalle ────────────────────────────
-        proveedor_id: detalle?.proveedor_id ?? null,
-        estacion_id: detalle?.estacion_id ?? null,
-        id_receta: detalle?.id_receta ?? null,
         location_id: detalle?.location_id ?? null,
-
-        // ─── rec_insumos_inventario ─────────────────────────
-        precio_final: inventario?.precio_final ?? null,
-        stock_ideal: inventario?.stock_ideal ?? null,
-        frecuencia_inventario: inventario?.frecuencia_inventario ?? null,
-        dia_inventario: inventario?.dia_inventario ?? null,
-        ultima_toma_inventario: inventario?.ultima_toma_inventario
-          ? new Date(inventario.ultima_toma_inventario)
+        precio_final: detalle?.precio_final ?? null,
+        stock_ideal: detalle?.stock_ideal ?? null,
+        frecuencia_inventario: detalle?.frecuencia_inventario ?? null,
+        dia_inventario: detalle?.dia_inventario ?? null,
+        ultima_toma_inventario: detalle?.ultima_toma_inventario
+          ? new Date(detalle.ultima_toma_inventario)
           : null,
       });
     } else {
@@ -217,19 +213,20 @@ export class InsumosUpdInsComponent implements OnChanges {
         nombre: null,
         descripcion: null,
         grupo: null,
-        proveedor_id: null,
-        estacion_id: null,
-        id_receta: null,
         unidad_id: null,
         unidad_trabajo: null,
         es_inventariable: true,
         estado: 'A',
+        proveedor_id: null,
+        estacion_id: null,
+        id_receta: null,
+        cantidad_insumo: null,
+        location_id: null,
         precio_final: null,
         stock_ideal: null,
         frecuencia_inventario: null,
         dia_inventario: null,
         ultima_toma_inventario: null,
-        location_id: null,
       });
     }
 
@@ -274,14 +271,13 @@ export class InsumosUpdInsComponent implements OnChanges {
       unidad_trabajo: raw.unidad_trabajo ?? undefined,
       es_inventariable: raw.es_inventariable ?? undefined,
       estado: raw.estado ?? undefined,
-
-      // rec_insumos_detalle
       proveedor_id: raw.proveedor_id ?? undefined,
       estacion_id: raw.estacion_id ?? undefined,
       id_receta: raw.id_receta ?? undefined,
-      location_id: Number(raw.location_id), // obligatorio
+      cantidad_insumo: raw.cantidad_insumo ?? undefined,
 
-      // rec_insumos_inventario
+      // rec_insumos_detalle
+      location_id: Number(raw.location_id),
       precio_final: raw.precio_final ?? undefined,
       stock_ideal: raw.stock_ideal ?? undefined,
       frecuencia_inventario: raw.frecuencia_inventario ?? undefined,
@@ -307,15 +303,15 @@ export class InsumosUpdInsComponent implements OnChanges {
       unidad_id: raw.unidad_id ? Number(raw.unidad_id) : null,
       unidad_trabajo: raw.unidad_trabajo ? Number(raw.unidad_trabajo) : null,
       es_inventariable: raw.es_inventariable ?? true,
-      created_by: auditUserId,
-
-      // rec_insumos_detalle
       proveedor_id: raw.proveedor_id ? Number(raw.proveedor_id) : null,
       estacion_id: raw.estacion_id ? Number(raw.estacion_id) : null,
       id_receta: raw.id_receta ? Number(raw.id_receta) : null,
-      location_id: raw.location_id ? Number(raw.location_id) : null,
+      cantidad_insumo:
+        raw.cantidad_insumo != null ? Number(raw.cantidad_insumo) : null,
+      created_by: auditUserId,
 
-      // rec_insumos_inventario
+      // rec_insumos_detalle
+      location_id: raw.location_id ? Number(raw.location_id) : null,
       stock: 0,
       precio_final: raw.precio_final != null ? Number(raw.precio_final) : null,
       stock_ideal: raw.stock_ideal != null ? Number(raw.stock_ideal) : null,

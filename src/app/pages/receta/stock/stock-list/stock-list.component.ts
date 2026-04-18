@@ -136,8 +136,8 @@ export class StockListComponent implements OnInit {
       .subscribe({
         next: (data) => {
           this.insumos = (data.insumos ?? []).sort((a, b) => {
-            const invA = a.insumos_inventarios?.[0];
-            const invB = b.insumos_inventarios?.[0];
+            const invA = a.insumos_detalles?.[0];
+            const invB = b.insumos_detalles?.[0];
 
             const diffB = (invB?.stock_ideal ?? 0) - (invB?.stock ?? 0);
             const diffA = (invA?.stock_ideal ?? 0) - (invA?.stock ?? 0);

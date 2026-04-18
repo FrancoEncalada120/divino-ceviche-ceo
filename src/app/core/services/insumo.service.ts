@@ -9,20 +9,14 @@ import {
   CreateInsumoResponse,
   GetInsumosParams,
   Insumo,
-  InsumoInventario,
+  InsumoDetalle,
   UpdateInsumoDto,
   UpdateInsumoResponse,
   UpdateStockInsumoDto,
 } from '../models/insumo.model';
-import { DataResponse, Grupo } from '../models/grupos.model';
+import { DataResponse } from '../models/grupos.model';
 
 type ApiResponse<T> = {
-  success: boolean;
-  data: T;
-  message?: string;
-};
-
-type ApiResponseAll<T> = {
   success: boolean;
   data: T;
   message?: string;
@@ -85,10 +79,10 @@ export class InsumoService {
   updateStock(
     insumo_id: number,
     payload: UpdateStockInsumoDto,
-  ): Observable<InsumoInventario> {
+  ): Observable<InsumoDetalle> {
     return this.http
       .patch<
-        ApiResponse<InsumoInventario>
+        ApiResponse<InsumoDetalle>
       >(`${this.apiUrl}/${insumo_id}/stock`, payload)
       .pipe(
         map((res) => {
@@ -98,18 +92,16 @@ export class InsumoService {
         }),
       );
   }
+
+  // ─── POST calcular precio ─────────────────────────────────
   calcularPrecio(data: CalcularPrecioRequest): Observable<number> {
     const url = `${this.apiUrl}/calcular-precio`;
-
-    console.log('[InsumoService] POST', url);
-    console.log('[InsumoService] data', data);
+    console.log('[InsumoService] POST', url, data);
 
     return this.http.post<ApiResponse<CalcularPrecioResponse>>(url, data).pipe(
       map((res) => {
-        if (!res.success) {
+        if (!res.success)
           throw new Error(res.message || 'Error calculando precio');
-        }
-
         return Number(res.data?.precio_calculado ?? 0);
       }),
     );
