@@ -20,17 +20,23 @@ import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.models';
 import { CartService } from '../../../../core/services/cart.service';
 
-
 @Component({
   selector: 'app-purchase-upd-ins',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule,
-    DatePickerModule, TableModule, ButtonModule, InputNumberModule,
-    DropdownModule, NgIf],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    DatePickerModule,
+    TableModule,
+    ButtonModule,
+    InputNumberModule,
+    DropdownModule,
+    NgIf,
+  ],
   templateUrl: './purchase-upd-ins.component.html',
-  styleUrl: './purchase-upd-ins.component.scss'
+  styleUrl: './purchase-upd-ins.component.scss',
 })
 export class PurchaseUpdInsComponent {
-
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<Compra>();
 
@@ -40,22 +46,20 @@ export class PurchaseUpdInsComponent {
   user: User | null = null;
   fechaHoy: string = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
-  constructor(private service: InsumoService,
+  constructor(
+    private service: InsumoService,
     private locationService: LocationService,
     private sUnid: UnidadService,
     private userService: UserService,
-    private cartService: CartService
-  ) { }
+    private cartService: CartService,
+  ) {}
 
   ngOnInit(): void {
-
     this.load();
     this.user = this.userService.getUser();
 
     if (this.cartService.getCart() && this.cartService.getCart().length > 0) {
-
       for (const item of this.cartService.getCart()) {
-
         this.items.push({
           detalle_id: 0,
           compra_id: 0,
@@ -66,62 +70,47 @@ export class PurchaseUpdInsComponent {
           unidad_id: item.unidad_id,
           grupo_id: item.grupo_id,
         });
-
-
       }
-
-
-    } else
-      this.addRow();
-
+    } else this.addRow();
   }
 
   load(): void {
-
     this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
         console.log('this.locations', this.locations);
 
         this.formData.location_id = this.user?.location_id;
-
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
 
-    this.service.getInsumoAll(
-      {
+    this.service
+      .getInsumoAll({
         location_id: this.userService.getUser()?.location_id || 0,
-      }
-
-    ).subscribe({
-      next: (data) => {
-        this.cInsumo = data.insumos ?? [];
-      },
-      error: (err) => {
-        console.error('[cInsumo] GET error:', err);
-
-      },
-      complete: () => { }
-    });
+      })
+      .subscribe({
+        next: (data) => {
+          this.cInsumo = data.insumos ?? [];
+        },
+        error: (err) => {
+          console.error('[cInsumo] GET error:', err);
+        },
+        complete: () => {},
+      });
 
     this.sUnid.getAll().subscribe({
       next: (data) => {
         this.cUnidad = data ?? [];
-
       },
       error: (err) => {
         console.error('[cUnidad] GET error:', err);
-
       },
-      complete: () => {
-
-      },
+      complete: () => {},
     });
-
   }
 
   formData: Partial<Compra> = {
@@ -131,7 +120,7 @@ export class PurchaseUpdInsComponent {
     total: 0,
     location_id: this.user?.location_id,
     created_by: this.user?.user_id,
-    detalles: []
+    detalles: [],
   };
 
   onClose() {
@@ -139,14 +128,17 @@ export class PurchaseUpdInsComponent {
   }
 
   onSubmit() {
-
-    const invalidRow = this.items.find(r => !r.cantidad || r.cantidad <= 0 || !r.precio || r.precio <= 0);
+    const invalidRow = this.items.find(
+      (r) => !r.cantidad || r.cantidad <= 0 || !r.precio || r.precio <= 0,
+    );
     if (invalidRow) {
-      alert('Please ensure all items have a valid quantity and price greater than zero.');
+      alert(
+        'Please ensure all items have a valid quantity and price greater than zero.',
+      );
       return; // ❌ no deja grabar
     }
 
-    this.formData.detalles = this.items.map(item => ({
+    this.formData.detalles = this.items.map((item) => ({
       detalle_id: 0,
       compra_id: 0,
       insumo_id: item.insumo_id,
@@ -159,17 +151,14 @@ export class PurchaseUpdInsComponent {
 
     this.formData.created_by = this.user?.user_id;
 
-
     this.submit.emit(this.formData as Compra);
   }
-
 
   // ================
 
   items: CompraDetalle[] = [];
 
   addRow() {
-
     this.items.push({
       detalle_id: 0,
       compra_id: 0,
@@ -187,10 +176,9 @@ export class PurchaseUpdInsComponent {
   }
 
   onInsumoChange(insumoId: number, row: any) {
-
     // Verificar si ya existe ese insumo en otra fila
-    const existe = this.items.some(item =>
-      item.insumo_id === insumoId && item !== row
+    const existe = this.items.some(
+      (item) => item.insumo_id === insumoId && item !== row,
     );
 
     if (existe) {
@@ -199,14 +187,17 @@ export class PurchaseUpdInsComponent {
       return;
     }
 
-
-    const insumoSeleccionado = this.cInsumo.find(i => i.insumo_id === insumoId);
+    const insumoSeleccionado = this.cInsumo.find(
+      (i) => i.insumo_id === insumoId,
+    );
     if (insumoSeleccionado) {
-
       console.log('Insumo seleccionado:', insumoSeleccionado);
 
-      row.unidad_id = insumoSeleccionado.unidad.unidad_id; // asignar unidad automáticamente
-      if (insumoSeleccionado.grupo_detalle && insumoSeleccionado.grupo_detalle.length > 0) {
+      row.unidad_id = insumoSeleccionado.unidad?.unidad_id ?? 0;
+      if (
+        insumoSeleccionado.grupo_detalle &&
+        insumoSeleccionado.grupo_detalle.length > 0
+      ) {
         row.grupo_id = insumoSeleccionado.grupo_detalle[0].grupo_id;
       } else {
         row.grupo_id = 0; // o algún valor por defecto
@@ -214,7 +205,6 @@ export class PurchaseUpdInsComponent {
       // row.unidadesFiltradas = this.cUnidad.filter(u =>
       //   u.grupo === insumoSeleccionado.grupo
       // );
-
     } else {
       //row.unidadesFiltradas = [];
     }
@@ -234,9 +224,7 @@ export class PurchaseUpdInsComponent {
   calcularTotalCompra() {
     this.formData.total = this.items.reduce(
       (sum, item) => sum + (Number(item.total) || 0),
-      0
+      0,
     );
   }
-
-
 }

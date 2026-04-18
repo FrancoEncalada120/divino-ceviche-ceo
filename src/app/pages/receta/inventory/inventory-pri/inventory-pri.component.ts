@@ -117,8 +117,8 @@ export class InventoryPriComponent {
     // Mapear data a columnas planas en inglés
     const data = this.inventoryList.map((i, idx) => ({
       Date: i.inventario_fecha,
-      Insumo: `${this.insumo?.nombre} ${this.insumo?.cantidad || 0} x ${this.insumo?.unidad?.abreviatura || ''}`,
-      Cantidad: i.cantidad,
+      //Insumo: `${this.insumo?.nombre} ${this.insumo?.cantidad || 0} x ${this.insumo?.unidad?.abreviatura || ''}`,
+      // Cantidad: i.cantidad,
       Price: i.precio,
       Total: i.total,
       Stock: i.stock,

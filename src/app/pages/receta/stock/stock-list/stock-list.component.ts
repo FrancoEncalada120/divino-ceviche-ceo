@@ -7,6 +7,7 @@ import {
   FRECUENCIA_INVENTARIO_OPTIONS,
   Insumo,
   INVENTARIABLE_OPTIONS,
+  UpdateStockInsumoDto,
 } from '../../../../core/models/insumo.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { TableModule } from 'primeng/table';
@@ -134,13 +135,15 @@ export class StockListComponent implements OnInit {
       })
       .subscribe({
         next: (data) => {
-          this.insumos = (data.insumos ?? [])
-            //.filter(i => i.stock < i.stock_ideal)
-            .sort(
-              (a, b) => b.stock_ideal - b.stock - (a.stock_ideal - a.stock),
-            );
+          this.insumos = (data.insumos ?? []).sort((a, b) => {
+            const invA = a.insumos_inventarios?.[0];
+            const invB = b.insumos_inventarios?.[0];
 
-          console.log('data.insumos:', data.insumos);
+            const diffB = (invB?.stock_ideal ?? 0) - (invB?.stock ?? 0);
+            const diffA = (invA?.stock_ideal ?? 0) - (invA?.stock ?? 0);
+
+            return diffB - diffA;
+          });
         },
         error: (err) => {
           console.error('[Locations] GET error:', err);
@@ -311,28 +314,31 @@ export class StockListComponent implements OnInit {
   actualizarInventario(cantidad: number, item: any) {
     const auditUserId = this.userService.getUser()?.user_id;
 
-    this.insumoService
-      .updateStock(item.insumo_id, cantidad, auditUserId || 1)
-      .subscribe({
-        next: (res) => {
-          item.stock = res.stock;
-          item.ultima_toma_inventario = new Date();
+    const payload: UpdateStockInsumoDto = {
+      cantidad: cantidad,
+      location_id: item.location_id,
+      updated_by: auditUserId || 1,
+    };
 
-          this.messageService.add({
-            severity: 'success',
-            summary: 'Inventario actualizado',
-            detail: 'Se actualizó el inventario del producto: ' + item.nombre,
-          });
-        },
-        error: (err) => {
-          console.error(err);
+    this.insumoService.updateStock(item.insumo_id, payload).subscribe({
+      next: (res) => {
+        item.stock = res.stock;
+        item.ultima_toma_inventario = new Date();
 
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'No se pudo actualizar el inventario',
-          });
-        },
-      });
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Inventario actualizado',
+          detail: 'Se actualizó el inventario del producto: ' + item.nombre,
+        });
+      },
+      error: (err) => {
+        console.error(err);
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo actualizar el inventario',
+        });
+      },
+    });
   }
 }

@@ -72,21 +72,18 @@ export class InsumosUpdInsComponent implements OnChanges {
   form!: FormGroup;
   submitted = false;
 
-  Todoslocales: boolean = false;
-
   locationsOptions: { label: string; value: number }[] = [];
   inventoryList: any[] = [];
-  insumos: Insumo[] = [];
   insumoInventory: Insumo | null = null;
   proveedoresOptions: { label: string; value: number }[] = [];
+  allUnidadesOptions: any[] = [];
+  unidadesOptions: any[] = [];
 
   estacionesOptions: { label: string; value: number }[] = [
     { label: 'Barra', value: 1 },
     { label: 'Cocina', value: 2 },
     { label: 'Almacén', value: 3 },
   ];
-  allUnidadesOptions: any[] = [];
-  unidadesOptions: any[] = [];
 
   gruposOptions = GRUPOS_OPTIONS;
   estadoOptions = ESTADO_OPTIONS;
@@ -103,25 +100,31 @@ export class InsumosUpdInsComponent implements OnChanges {
     private userService: UserService,
   ) {
     this.form = this.fb.group({
+      // ─── rec_insumos (base) ───────────────────────────────
       nombre: [null, Validators.required],
       descripcion: [null, Validators.required],
       grupo: [null, Validators.required],
-      proveedor_id: [null],
-      estacion_id: [null, Validators.required],
       unidad_id: [null],
       unidad_trabajo: [null],
-      cantidad: [null],
-      stock_ideal: [null, Validators.required],
+      es_inventariable: [true],
+      estado: ['A'],
+
+      // ─── rec_insumos_detalle ──────────────────────────────
+      proveedor_id: [null],
+      estacion_id: [null, Validators.required],
+      id_receta: [null],
+      location_id: [null, Validators.required],
+
+      // ─── rec_insumos_inventario ───────────────────────────
+      precio_final: [null],
+      stock_ideal: [null],
       frecuencia_inventario: [null],
       dia_inventario: [null],
       ultima_toma_inventario: [null],
-      es_inventariable: [true],
-      location_id: [null, Validators.required],
     });
   }
 
   ngOnInit(): void {
-    console.log('[Locations] ngOnInit');
     this.load();
     if (this.location) {
       this.locationsOptions = this.location.map((loc) => ({
@@ -154,34 +157,21 @@ export class InsumosUpdInsComponent implements OnChanges {
         }));
 
         this.inventoryList = [...(inventarios ?? [])];
-
         this.unidadesOptions = [...this.allUnidadesOptions];
 
         this.loadForm();
         this.listenGrupoChanges();
       },
-      error: (err) => {
-        console.error('[LOAD] error:', err);
-      },
+      error: (err) => console.error('[LOAD] error:', err),
     });
   }
 
   listenGrupoChanges(): void {
     this.form.get('grupo')?.valueChanges.subscribe((grupo) => {
-      console.log('[GRUPO] seleccionado:', grupo);
-
-      if (!grupo) {
-        this.unidadesOptions = [...this.allUnidadesOptions];
-      } else {
-        this.unidadesOptions = this.allUnidadesOptions.filter(
-          (u) => u.grupo === grupo,
-        );
-      }
-
-      // limpia unidad seleccionada al cambiar grupo
+      this.unidadesOptions = grupo
+        ? this.allUnidadesOptions.filter((u) => u.grupo === grupo)
+        : [...this.allUnidadesOptions];
       this.form.get('unidad_id')?.setValue(null);
-
-      console.log('[GRUPO] unidades filtradas:', this.unidadesOptions);
     });
   }
 
@@ -193,29 +183,34 @@ export class InsumosUpdInsComponent implements OnChanges {
 
   private loadForm(): void {
     if (this.mode === 'edit' && this.insumo) {
-      console.log('[EDIT insumo]', this.insumo);
+      // Toma el primer detalle e inventario disponible
+      const detalle = this.insumo.insumos_detalles?.[0];
+      const inventario = this.insumo.insumos_inventarios?.[0];
 
       this.form.patchValue({
+        // ─── rec_insumos (base) ─────────────────────────────
         nombre: this.insumo.nombre ?? null,
         descripcion: this.insumo.descripcion ?? null,
         grupo: this.insumo.grupo ?? null,
-        proveedor_id: this.insumo.proveedor.proveedor_id ?? null,
-        unidad_id: this.insumo.unidad.unidad_id ?? null,
-        unidad_trabajo: this.insumo.unidad_trabajo?.unidad_id ?? null,
-        cantidad: Number(this.insumo.cantidad ?? 0),
-        stock_ideal: Number(this.insumo.stock_ideal ?? 0),
-        stock: Number(this.insumo.stock ?? 0),
-        estado: this.insumo.estado ?? 'A',
-        precio_final: Number(this.insumo.precio_final ?? 0),
-        estacion_id: this.insumo.estacion_id?.estacion_id ?? null,
-        frecuencia_inventario: this.insumo.frecuencia_inventario ?? null,
-        dia_inventario: this.insumo.dia_inventario ?? null,
-        ultima_toma_inventario: this.insumo.ultima_toma_inventario
-          ? new Date(this.insumo.ultima_toma_inventario)
-          : null,
+        unidad_id: this.insumo.unidad?.unidad_id ?? null,
+        unidad_trabajo: this.insumo.unidadTrabajo?.unidad_id ?? null,
         es_inventariable: this.insumo.es_inventariable ?? true,
-        // location_id:
-        //  this.insumo.location_id ?? this.insumo.location?.location_id ?? null,
+        estado: this.insumo.estado ?? 'A',
+
+        // ─── rec_insumos_detalle ────────────────────────────
+        proveedor_id: detalle?.proveedor_id ?? null,
+        estacion_id: detalle?.estacion_id ?? null,
+        id_receta: detalle?.id_receta ?? null,
+        location_id: detalle?.location_id ?? null,
+
+        // ─── rec_insumos_inventario ─────────────────────────
+        precio_final: inventario?.precio_final ?? null,
+        stock_ideal: inventario?.stock_ideal ?? null,
+        frecuencia_inventario: inventario?.frecuencia_inventario ?? null,
+        dia_inventario: inventario?.dia_inventario ?? null,
+        ultima_toma_inventario: inventario?.ultima_toma_inventario
+          ? new Date(inventario.ultima_toma_inventario)
+          : null,
       });
     } else {
       this.form.reset({
@@ -223,17 +218,24 @@ export class InsumosUpdInsComponent implements OnChanges {
         descripcion: null,
         grupo: null,
         proveedor_id: null,
-        unidad_id: null,
-        cantidad: 0,
-        stock_ideal: 0,
-        stock: 0,
-        estado: 'A',
         estacion_id: null,
+        id_receta: null,
+        unidad_id: null,
+        unidad_trabajo: null,
+        es_inventariable: true,
+        estado: 'A',
+        precio_final: null,
+        stock_ideal: null,
+        frecuencia_inventario: null,
+        dia_inventario: null,
+        ultima_toma_inventario: null,
+        location_id: null,
       });
     }
 
     this.submitted = false;
   }
+
   onClose(): void {
     this.close.emit();
   }
@@ -256,53 +258,73 @@ export class InsumosUpdInsComponent implements OnChanges {
         icon: 'pi pi-question-circle',
         acceptLabel: 'Sí, todos los locales',
         rejectLabel: 'No, solo este local',
-        accept: () => {
-          // Ejecutamos la lógica enviando true
-          this.processCreate(raw, auditUserId, true);
-        },
-        reject: () => {
-          // Ejecutamos la lógica enviando false
-          this.processCreate(raw, auditUserId, false);
-        },
+        accept: () => this.processCreate(raw, auditUserId, true),
+        reject: () => this.processCreate(raw, auditUserId, false),
       });
-      // NO poner código aquí, ya que se ejecutaría antes de la confirmación
       return;
     }
 
-    // Lógica para modo 'update' (esto sí se ejecuta directo porque no tiene confirmación)
+    // ─── Update ───────────────────────────────────────────────
     const payload: UpdateInsumoDto = {
-      // ... (tu mapeo de campos de actualización)
+      // rec_insumos (base)
+      nombre: raw.nombre?.trim() ?? undefined,
+      descripcion: raw.descripcion?.trim() ?? undefined,
+      grupo: raw.grupo ?? undefined,
+      unidad_id: raw.unidad_id ?? undefined,
+      unidad_trabajo: raw.unidad_trabajo ?? undefined,
+      es_inventariable: raw.es_inventariable ?? undefined,
+      estado: raw.estado ?? undefined,
+
+      // rec_insumos_detalle
+      proveedor_id: raw.proveedor_id ?? undefined,
+      estacion_id: raw.estacion_id ?? undefined,
+      id_receta: raw.id_receta ?? undefined,
+      location_id: Number(raw.location_id), // obligatorio
+
+      // rec_insumos_inventario
+      precio_final: raw.precio_final ?? undefined,
+      stock_ideal: raw.stock_ideal ?? undefined,
+      frecuencia_inventario: raw.frecuencia_inventario ?? undefined,
+      dia_inventario: raw.dia_inventario ?? undefined,
+      ultima_toma_inventario: raw.ultima_toma_inventario ?? undefined,
+
       updated_by: auditUserId,
     };
+
     this.submit.emit(payload);
   }
 
-  // Función auxiliar para no repetir código en Create
   private processCreate(
     raw: any,
     auditUserId: any,
     todosLocales: boolean,
   ): void {
     const payload: CreateInsumoDto = {
+      // rec_insumos (base)
       nombre: raw.nombre?.trim() ?? '',
       descripcion: raw.descripcion?.trim() ?? '',
       grupo: raw.grupo ?? null,
-      proveedor_id: raw.proveedor_id ? Number(raw.proveedor_id) : null,
-      estacion_id: raw.estacion_id ? Number(raw.estacion_id) : null,
       unidad_id: raw.unidad_id ? Number(raw.unidad_id) : null,
       unidad_trabajo: raw.unidad_trabajo ? Number(raw.unidad_trabajo) : null,
-      cantidad: raw.cantidad != null ? Number(raw.cantidad) : null,
+      es_inventariable: raw.es_inventariable ?? true,
+      created_by: auditUserId,
+
+      // rec_insumos_detalle
+      proveedor_id: raw.proveedor_id ? Number(raw.proveedor_id) : null,
+      estacion_id: raw.estacion_id ? Number(raw.estacion_id) : null,
+      id_receta: raw.id_receta ? Number(raw.id_receta) : null,
+      location_id: raw.location_id ? Number(raw.location_id) : null,
+
+      // rec_insumos_inventario
+      stock: 0,
+      precio_final: raw.precio_final != null ? Number(raw.precio_final) : null,
       stock_ideal: raw.stock_ideal != null ? Number(raw.stock_ideal) : null,
       frecuencia_inventario: raw.frecuencia_inventario ?? null,
       dia_inventario: raw.dia_inventario ?? null,
       ultima_toma_inventario: raw.ultima_toma_inventario ?? null,
-      es_inventariable: raw.es_inventariable ?? true,
-      location_id: raw.location_id ? Number(raw.location_id) : null,
-      created_by: auditUserId,
-      todoslocales: todosLocales, // Usamos el parámetro pasado por la confirmación
-    };
 
-    console.log('payload', payload);
+      todoslocales: todosLocales,
+    };
 
     this.submit.emit(payload);
   }

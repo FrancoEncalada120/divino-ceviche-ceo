@@ -174,7 +174,7 @@ export class RecipePriComponent {
             estacion_id: 1,
             unidad_id: payload.receta.unidad_receta,
             unidad_trabajo: payload.receta.unidad_receta,
-            cantidad: cantidad,
+            // cantidad: cantidad,
             stock_ideal: cantidad,
             created_by: 1,
             id_receta: recetaId,

@@ -6,7 +6,13 @@ import {
   CalcularPrecioRequest,
   CalcularPrecioResponse,
   CreateInsumoDto,
+  CreateInsumoResponse,
+  GetInsumosParams,
   Insumo,
+  InsumoInventario,
+  UpdateInsumoDto,
+  UpdateInsumoResponse,
+  UpdateStockInsumoDto,
 } from '../models/insumo.model';
 import { DataResponse, Grupo } from '../models/grupos.model';
 
@@ -28,90 +34,70 @@ export class InsumoService {
 
   constructor(private http: HttpClient) {}
 
-  getInsumoAll(params?: {
-    text?: string;
-    bGrupo?: number;
-    dia_inventario?: string;
-    frecuencia_inventario?: string;
-    location_id?: number;
-  }): Observable<DataResponse> {
+  // ─── GET todos ────────────────────────────────────────────
+  getInsumoAll(params?: GetInsumosParams): Observable<DataResponse> {
     return this.http
-      .get<ApiResponseAll<DataResponse>>(this.apiUrl, {
-        params: params as any,
-      })
+      .get<ApiResponse<DataResponse>>(this.apiUrl, { params: params as any })
+      .pipe(map((res) => res?.data ?? { insumos: [], grupos: [] }));
+  }
+
+  // ─── GET por id ───────────────────────────────────────────
+  getById(id: number): Observable<Insumo | null> {
+    return this.http
+      .get<ApiResponse<Insumo>>(`${this.apiUrl}/${id}`)
+      .pipe(map((res) => (res?.success ? res.data : null)));
+  }
+
+  // ─── POST crear ───────────────────────────────────────────
+  create(payload: CreateInsumoDto): Observable<CreateInsumoResponse> {
+    console.log('[InsumoService] POST', this.apiUrl, payload);
+
+    return this.http
+      .post<ApiResponse<CreateInsumoResponse>>(this.apiUrl, payload)
       .pipe(
         map((res) => {
-          const arr = res?.data;
-          return arr ?? { insumos: [], grupos: [] };
+          if (!res.success)
+            throw new Error(res.message || 'Error creando insumo');
+          return res.data;
         }),
       );
   }
 
-  getById(id: number): Observable<Insumo | null> {
-    const url = `${this.apiUrl}/${id}`;
+  // ─── PUT actualizar ───────────────────────────────────────
+  update(
+    id: number,
+    payload: UpdateInsumoDto,
+  ): Observable<UpdateInsumoResponse> {
+    console.log('[InsumoService] PUT', `${this.apiUrl}/${id}`, payload);
 
-    return this.http.get<ApiResponse<Insumo>>(url).pipe(
-      map((res) => {
-        if (!res?.success) return null;
-        return res.data ?? null;
-      }),
-    );
+    return this.http
+      .put<ApiResponse<UpdateInsumoResponse>>(`${this.apiUrl}/${id}`, payload)
+      .pipe(
+        map((res) => {
+          if (!res.success)
+            throw new Error(res.message || 'Error actualizando insumo');
+          return res.data;
+        }),
+      );
   }
 
-  create(payload: CreateInsumoDto): Observable<Insumo> {
-    console.log('[InsumoService] POST', this.apiUrl);
-    console.log('[InsumoService] data', payload);
-
-    return this.http.post<ApiResponse<Insumo>>(this.apiUrl, payload).pipe(
-      map((res) => {
-        console.log('[InsumoService] res', res);
-
-        if (!res.success) {
-          throw new Error(res.message || 'Error creating insumo');
-        }
-
-        return res.data;
-      }),
-    );
-  }
-
-  update(insumo: Insumo): Observable<Insumo> {
-    const url = `${this.apiUrl}/${insumo.insumo_id}`;
-    console.log('[InsumoService] PUT', url);
-    console.log('[InsumoService] data', insumo);
-
-    return this.http.put<ApiResponse<Insumo>>(url, insumo).pipe(
-      map((res) => {
-        if (!res.success) {
-          throw new Error(res.message || 'Error updating insumo');
-        }
-        return res.data;
-      }),
-    );
-  }
-
+  // ─── PATCH stock ──────────────────────────────────────────
   updateStock(
     insumo_id: number,
-    cantidad: number,
-    updated_by: number,
-  ): Observable<Insumo> {
-    const url = `${this.apiUrl}/${insumo_id}/stock`;
-
-    const body = {
-      cantidad,
-      updated_by,
-    };
-
-    return this.http.patch<ApiResponse<Insumo>>(url, body).pipe(
-      map((res) => {
-        if (!res.success) {
-          throw new Error(res.message || 'Error updating stock');
-        }
-        return res.data;
-      }),
-    );
+    payload: UpdateStockInsumoDto,
+  ): Observable<InsumoInventario> {
+    return this.http
+      .patch<
+        ApiResponse<InsumoInventario>
+      >(`${this.apiUrl}/${insumo_id}/stock`, payload)
+      .pipe(
+        map((res) => {
+          if (!res.success)
+            throw new Error(res.message || 'Error actualizando stock');
+          return res.data;
+        }),
+      );
   }
-
   calcularPrecio(data: CalcularPrecioRequest): Observable<number> {
     const url = `${this.apiUrl}/calcular-precio`;
 

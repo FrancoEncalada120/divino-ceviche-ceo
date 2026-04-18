@@ -123,15 +123,15 @@ export class InsumosPriComponent {
         insumo_id: this.selectedInsunmos.insumo_id,
       };
 
-      this.insumoService.update(insumoToUpdate).subscribe({
-        next: () => {
-          this.closeModal();
-          this.load();
-        },
-        error: (err) => {
-          console.error('[Insumos] UPDATE error:', err);
-        },
-      });
+      // this.insumoService.update(1,insumoToUpdate).subscribe({
+      //   next: () => {
+      //     this.closeModal();
+      //     this.load();
+      //   },
+      //   error: (err) => {
+      //     console.error('[Insumos] UPDATE error:', err);
+      //   },
+      // });
     }
   }
 }

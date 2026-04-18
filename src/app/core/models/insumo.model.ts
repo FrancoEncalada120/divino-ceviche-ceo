@@ -5,38 +5,68 @@ import { GrupoDetalle } from './grupos.model';
 export interface Insumo {
   insumo_id: number;
   nombre: string;
-  descripcion: string | null;
+  descripcion: string;
   estado: string;
-  created_at?: string | null;
-  created_by?: User;
-  updated_at?: string | null;
-  updated_by?: User;
   grupo: string;
-  proveedor: Proveedor;
-  unidad: Unidad;
-  unidad_trabajo?: Unidad;
-  cantidad: number;
-  stock_ideal: number;
+  unidad_id?: number | null;
+  unidad_trabajo?: number | null;
+  es_inventariable: boolean;
+  created_at?: string | null;
+  created_by?: number | null;
+  updated_at?: string | null;
+  updated_by?: number | null;
+  nombreCompleto?: string;
+
+  // ─── Relaciones ───────────────────────────────────────────
+  unidad?: Unidad;
+  unidadTrabajo?: Unidad;
+  created_user?: User;
+  updated_user?: User;
+  grupo_detalle?: GrupoDetalle[];
+
+  // ─── Detalle por location ─────────────────────────────────
+  insumos_detalles?: InsumoDetalle[];
+
+  // ─── Inventario por location ──────────────────────────────
+  insumos_inventarios?: InsumoInventario[];
+}
+
+export interface InsumoDetalle {
+  detalle_id: number;
+  insumo_id: number;
+  location_id: number;
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
+  cantidad_total?: number | null;
+  id_receta: number;
+  created_at?: string | null;
+  created_by?: number | null;
+  updated_at?: string | null;
+  updated_by?: number | null;
+
+  // ─── Relaciones ───────────────────────────────────────────
+  proveedor?: Proveedor;
+  estacion?: Estacion;
+  location?: Location;
+}
+
+export interface InsumoInventario {
+  inventario_id: number;
+  insumo_id: number;
+  location_id: number;
   stock: number;
   precio_final: number;
-  grupo_detalle: GrupoDetalle[];
-  estacion_id: Estacion;
-  nombreCompleto: string;
-  id_receta: number;
-  frecuencia_inventario?: 'DIARIO' | 'SEMANAL' | 'QUINCENAL' | 'MENSUAL' | null;
-  dia_inventario?:
-    | 'LUNES'
-    | 'MARTES'
-    | 'MIERCOLES'
-    | 'JUEVES'
-    | 'VIERNES'
-    | 'SABADO'
-    | 'DOMINGO'
-    | 'FIN_DE_MES'
-    | null;
+  stock_ideal?: number | null;
+  frecuencia_inventario?: string | null;
+  dia_inventario?: string | null;
   ultima_toma_inventario?: string | null;
-  es_inventariable?: boolean;
-  location_id?: number | null;
+  created_at?: string | null;
+  created_by?: number | null;
+  updated_at?: string | null;
+  updated_by?: number | null;
+
+  // ─── Relaciones ───────────────────────────────────────────
+  location?: Location;
 }
 
 export interface Estacion {
@@ -45,62 +75,67 @@ export interface Estacion {
   estacion_estado: string;
 }
 
+// ─── Create ───────────────────────────────────────────────────
 export interface CreateInsumoDto {
+  // rec_insumos (base)
   nombre: string;
   descripcion: string;
   grupo?: string | null;
-  proveedor_id?: number | null;
-  estacion_id?: number | null;
   unidad_id?: number | null;
   unidad_trabajo?: number | null;
-  cantidad?: number | null;
-  stock_ideal?: number | null;
-  created_by?: number | null;
-  id_receta?: number | null;
-  precio_final?: number | null;
-  stock?: number | null;
-  frecuencia_inventario?: 'DIARIO' | 'SEMANAL' | 'QUINCENAL' | 'MENSUAL' | null;
-  dia_inventario?:
-    | 'LUNES'
-    | 'MARTES'
-    | 'MIERCOLES'
-    | 'JUEVES'
-    | 'VIERNES'
-    | 'SABADO'
-    | 'DOMINGO'
-    | 'FIN_DE_MES'
-    | null;
-  ultima_toma_inventario?: string | Date | null;
   es_inventariable?: boolean | null;
+  created_by?: number | null;
+
+  // rec_insumos_detalle
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
+  id_receta?: number | null;
+
+  // rec_insumos_inventario
+  stock?: number | null;
+  precio_final?: number | null;
+  stock_ideal?: number | null;
+  frecuencia_inventario?: string | null;
+  dia_inventario?: string | null;
+  ultima_toma_inventario?: string | Date | null;
+
+  // control de locations
   location_id?: number | null;
   todoslocales?: boolean | null;
 }
 
+// ─── Update ───────────────────────────────────────────────────
 export interface UpdateInsumoDto {
-  nombre?: string;
+  // rec_insumos (base)
+  nombre?: string | null;
   descripcion?: string | null;
   grupo?: string | null;
-  proveedor_id?: number | null;
-  estacion_id?: number | null;
   unidad_id?: number | null;
   unidad_trabajo?: number | null;
-  cantidad?: number | null;
-  stock_ideal?: number | null;
-  frecuencia_inventario?: 'DIARIO' | 'SEMANAL' | 'QUINCENAL' | 'MENSUAL' | null;
-  dia_inventario?:
-    | 'LUNES'
-    | 'MARTES'
-    | 'MIERCOLES'
-    | 'JUEVES'
-    | 'VIERNES'
-    | 'SABADO'
-    | 'DOMINGO'
-    | 'FIN_DE_MES'
-    | null;
-  ultima_toma_inventario?: string | Date | null;
   es_inventariable?: boolean | null;
-  location_id?: number | null;
   estado?: 'A' | 'I';
+  updated_by?: number | null;
+
+  // rec_insumos_detalle
+  proveedor_id?: number | null;
+  estacion_id?: number | null;
+  id_receta?: number | null;
+
+  // rec_insumos_inventario
+  precio_final?: number | null;
+  stock_ideal?: number | null;
+  frecuencia_inventario?: string | null;
+  dia_inventario?: string | null;
+  ultima_toma_inventario?: string | Date | null;
+
+  // obligatorio para saber qué detalle e inventario actualizar
+  location_id: number;
+}
+
+// ─── Update Stock ─────────────────────────────────────────────
+export interface UpdateStockInsumoDto {
+  cantidad: number;
+  location_id: number;
   updated_by?: number | null;
 }
 
@@ -171,3 +206,25 @@ export const INVENTARIABLE_OPTIONS = [
   { label: 'Yes', value: true },
   { label: 'No', value: false },
 ];
+
+// ─── Responses ────────────────────────────────────────────────
+export type CreateInsumoResponse = {
+  insumo: Insumo;
+  detalles: InsumoDetalle[];
+  inventarios: InsumoInventario[];
+};
+
+export type UpdateInsumoResponse = {
+  insumo: Insumo;
+  detalle: InsumoDetalle | null;
+  inventario: InsumoInventario | null;
+};
+
+// ─── Query params ─────────────────────────────────────────────
+export interface GetInsumosParams {
+  text?: string;
+  bGrupo?: number;
+  dia_inventario?: string;
+  frecuencia_inventario?: string;
+  location_id?: number;
+}

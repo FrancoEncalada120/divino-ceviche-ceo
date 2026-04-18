@@ -1,17 +1,12 @@
-<!-- Backdrop -->
 <div class="modal-backdrop-custom" (click)="onClose()"></div>
 
-<!-- Modal -->
 <div class="modal-custom" role="dialog" aria-modal="true">
   <div class="modal-card">
     <div class="modal-header">
       <div>
-        <h5>
-          {{ mode === "create" ? "Add Supply" : "Edit Supply" }}
-        </h5>
+        <h5>{{ mode === "create" ? "Add Supply" : "Edit Supply" }}</h5>
         <small class="text-muted">Configure supply information</small>
       </div>
-
       <div class="header-right">
         <button
           type="button"
@@ -26,10 +21,9 @@
     <div class="modal-body">
       <form [formGroup]="form" (ngSubmit)="onSubmit()">
         <p-tabView>
-          <!-- PESTAÑA: DATOS GENERALES -->
+          <!-- ─── DATOS GENERALES (rec_insumos) ─────────────── -->
           <p-tabPanel header="Datos generales">
             <div class="row g-2">
-              <!-- Name -->
               <div class="col-12 col-md-4">
                 <label class="form-label">Name *</label>
                 <input
@@ -46,46 +40,8 @@
                 </div>
               </div>
 
-              <!-- Estación -->
               <div class="col-12 col-md-4">
-                <label class="form-label">Estación *</label>
-                <p-dropdown
-                  formControlName="estacion_id"
-                  [options]="estacionesOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Seleccione estación"
-                  [filter]="true"
-                  filterBy="label"
-                  appendTo="body"
-                  class="w-100"
-                ></p-dropdown>
-                <small
-                  class="text-danger"
-                  *ngIf="submitted && f['estacion_id'].invalid"
-                >
-                  La estación es obligatoria
-                </small>
-              </div>
-
-              <!-- Supplier -->
-              <div class="col-12 col-md-4">
-                <label class="form-label">Supplier</label>
-                <p-dropdown
-                  formControlName="proveedor_id"
-                  [options]="proveedoresOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Select supplier"
-                  [filter]="true"
-                  appendTo="body"
-                  class="w-100"
-                ></p-dropdown>
-              </div>
-
-              <!-- Group -->
-              <div class="col-12 col-md-4">
-                <label class="form-label">Unit Group *</label>
+                <label class="form-label">Group *</label>
                 <p-dropdown
                   formControlName="grupo"
                   [options]="gruposOptions"
@@ -94,7 +50,8 @@
                   placeholder="Select group"
                   appendTo="body"
                   class="w-100"
-                ></p-dropdown>
+                >
+                </p-dropdown>
                 <div
                   class="field-error"
                   *ngIf="submitted && f['grupo'].invalid"
@@ -103,7 +60,6 @@
                 </div>
               </div>
 
-              <!-- Unit -->
               <div class="col-12 col-md-4">
                 <label class="form-label">Unit</label>
                 <p-dropdown
@@ -115,10 +71,10 @@
                   [filter]="true"
                   appendTo="body"
                   class="w-100"
-                ></p-dropdown>
+                >
+                </p-dropdown>
               </div>
 
-              <!-- Work Unit -->
               <div class="col-12 col-md-4">
                 <label class="form-label">Work Unit</label>
                 <p-dropdown
@@ -130,22 +86,17 @@
                   [filter]="true"
                   appendTo="body"
                   class="w-100"
-                ></p-dropdown>
+                >
+                </p-dropdown>
               </div>
 
               <div class="col-12 col-md-4">
-                <label class="form-label">Quantity</label>
-                <p-inputNumber
-                  formControlName="cantidad"
-                  [min]="0"
-                  [minFractionDigits]="0"
-                  [maxFractionDigits]="4"
-                  mode="decimal"
-                  [useGrouping]="false"
-                  inputStyleClass="w-100"
-                  styleClass="w-100"
-                  placeholder="Enter quantity"
-                ></p-inputNumber>
+                <label class="form-label d-block mb-2">Inventory Item?</label>
+                <div class="pt-2">
+                  <p-inputSwitch
+                    formControlName="es_inventariable"
+                  ></p-inputSwitch>
+                </div>
               </div>
 
               <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
@@ -158,8 +109,8 @@
                   placeholder="Select status"
                   appendTo="body"
                   class="w-100"
-                ></p-dropdown>
-
+                >
+                </p-dropdown>
                 <div
                   class="field-error"
                   *ngIf="submitted && f['estado'].invalid"
@@ -168,7 +119,6 @@
                 </div>
               </div>
 
-              <!-- Description -->
               <div class="col-12">
                 <label class="form-label">Description *</label>
                 <input
@@ -184,19 +134,94 @@
                   Description is required.
                 </div>
               </div>
-
-              <!-- Status solo edit -->
             </div>
           </p-tabPanel>
 
-          <!-- PESTAÑA SOLO EDIT -->
+          <!-- ─── DETALLE (rec_insumos_detalle) ─────────────── -->
+          <p-tabPanel header="Detalle">
+            <div class="row g-2">
+              <div class="col-12 col-md-4">
+                <label class="form-label">Location *</label>
+                <p-dropdown
+                  formControlName="location_id"
+                  [options]="locationsOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione restaurante"
+                  [filter]="true"
+                  appendTo="body"
+                  styleClass="w-100"
+                  [autoZIndex]="true"
+                  [baseZIndex]="10000"
+                >
+                </p-dropdown>
+                <small
+                  class="text-danger"
+                  *ngIf="submitted && f['location_id'].invalid"
+                >
+                  La location es obligatoria
+                </small>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label class="form-label">Estación *</label>
+                <p-dropdown
+                  formControlName="estacion_id"
+                  [options]="estacionesOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione estación"
+                  [filter]="true"
+                  appendTo="body"
+                  class="w-100"
+                >
+                </p-dropdown>
+                <small
+                  class="text-danger"
+                  *ngIf="submitted && f['estacion_id'].invalid"
+                >
+                  La estación es obligatoria
+                </small>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label class="form-label">Supplier</label>
+                <p-dropdown
+                  formControlName="proveedor_id"
+                  [options]="proveedoresOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select supplier"
+                  [filter]="true"
+                  appendTo="body"
+                  class="w-100"
+                >
+                </p-dropdown>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label class="form-label">Receta</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  formControlName="id_receta"
+                  placeholder="ID de receta"
+                />
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <!-- ─── INVENTARIO (rec_insumos_inventario) ────────── -->
           <p-tabPanel header="Inventory">
             <div class="row g-3">
               <div class="col-12 col-md-6" *ngIf="mode === 'edit'">
                 <div class="summary-card">
                   <span class="summary-label">Final Price</span>
                   <strong class="summary-value">
-                    {{ insumo?.precio_final ?? 0 | number: "1.2-2" }}
+                    {{
+                      insumo?.insumos_inventarios?.[0]?.precio_final ?? 0
+                        | number: "1.2-2"
+                    }}
                   </strong>
                 </div>
               </div>
@@ -205,12 +230,30 @@
                 <div class="summary-card">
                   <span class="summary-label">Current Stock</span>
                   <strong class="summary-value">
-                    {{ insumo?.stock ?? 0 | number: "1.2-2" }}
+                    {{
+                      insumo?.insumos_inventarios?.[0]?.stock ?? 0
+                        | number: "1.2-2"
+                    }}
                   </strong>
                 </div>
               </div>
 
-              <!-- Ideal Stock -->
+              <div class="col-12 col-md-4">
+                <label class="form-label">Final Price</label>
+                <p-inputNumber
+                  formControlName="precio_final"
+                  [min]="0"
+                  [minFractionDigits]="0"
+                  [maxFractionDigits]="2"
+                  mode="decimal"
+                  [useGrouping]="false"
+                  inputStyleClass="w-100"
+                  styleClass="w-100"
+                  placeholder="Enter final price"
+                >
+                </p-inputNumber>
+              </div>
+
               <div class="col-12 col-md-4">
                 <label class="form-label">Ideal Stock</label>
                 <p-inputNumber
@@ -223,9 +266,10 @@
                   inputStyleClass="w-100"
                   styleClass="w-100"
                   placeholder="Enter ideal stock"
-                ></p-inputNumber>
+                >
+                </p-inputNumber>
               </div>
-              <!-- Frecuencia Inventario -->
+
               <div class="col-12 col-md-4">
                 <label class="form-label">Inventory Frequency</label>
                 <p-dropdown
@@ -238,10 +282,10 @@
                   appendTo="body"
                   [autoZIndex]="true"
                   [baseZIndex]="10000"
-                ></p-dropdown>
+                >
+                </p-dropdown>
               </div>
 
-              <!-- Día Inventario -->
               <div class="col-12 col-md-4">
                 <label class="form-label">Inventory Day</label>
                 <p-dropdown
@@ -254,10 +298,10 @@
                   appendTo="body"
                   [autoZIndex]="true"
                   [baseZIndex]="10000"
-                ></p-dropdown>
+                >
+                </p-dropdown>
               </div>
 
-              <!-- Última toma inventario -->
               <div class="col-12 col-md-4">
                 <label class="form-label">Last Inventory Count</label>
                 <p-calendar
@@ -269,50 +313,26 @@
                   placeholder="Seleccione fecha"
                   appendTo="body"
                   [baseZIndex]="10000"
-                ></p-calendar>
-              </div>
-
-              <!-- Es inventariable -->
-              <div class="col-12 col-md-4">
-                <label class="form-label d-block mb-2">Inventory Item?</label>
-                <div class="pt-2">
-                  <p-inputSwitch
-                    formControlName="es_inventariable"
-                  ></p-inputSwitch>
-                </div>
-              </div>
-
-              <!-- Restaurante / Location -->
-              <div class="col-12 col-md-4">
-                <label class="form-label">Location</label>
-                <p-dropdown
-                  formControlName="location_id"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Seleccione restaurante"
-                  styleClass="w-100"
-                  [filter]="true"
-                  appendTo="body"
-                  [autoZIndex]="true"
-                  [baseZIndex]="10000"
-                  [options]="locationsOptions"
-                ></p-dropdown>
+                >
+                </p-calendar>
               </div>
             </div>
           </p-tabPanel>
 
+          <!-- ─── KARDEX ─────────────────────────────────────── -->
           <p-tabPanel header="Kardex" *ngIf="mode === 'edit'">
             <app-inventory-pri
               [inventoryList]="inventoryList"
               [insumo]="insumoInventory"
-            ></app-inventory-pri>
+            >
+            </app-inventory-pri>
           </p-tabPanel>
 
+          <!-- ─── RECETAS ────────────────────────────────────── -->
           <p-tabPanel header="Recepys" *ngIf="mode === 'edit'">
             <div class="row g-3">
-              <app-insumos-receta
-                [insumoId]="insumo?.insumo_id ?? null"
-              ></app-insumos-receta>
+              <app-insumos-receta [insumoId]="insumo?.insumo_id ?? null">
+              </app-insumos-receta>
             </div>
           </p-tabPanel>
         </p-tabView>
@@ -325,7 +345,6 @@
           >
             Cancel
           </button>
-
           <button type="submit" class="btn btn-primary btn-sm">
             {{ mode === "create" ? "Save Supply" : "Update Supply" }}
           </button>
