@@ -9,6 +9,7 @@ export interface Compra {
   total: number;
 
   detalles: CompraDetalle[];
+  order_detalles: CompraDetalle[];
 
   created_at?: string | null;
   created_by?: number | null;

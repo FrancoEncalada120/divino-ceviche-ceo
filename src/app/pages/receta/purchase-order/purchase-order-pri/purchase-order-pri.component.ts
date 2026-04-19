@@ -21,19 +21,24 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { forkJoin, Subject, switchMap } from 'rxjs';
 import { CartService } from '../../../../core/services/cart.service';
 import { debounceTime } from 'rxjs/operators';
+import { PurchaseUpdInsComponent } from "../../purchase/purchase-upd-ins/purchase-upd-ins.component";
+import { PurchaseConfirmationComponent } from "../../purchase/purchase-confirmation/purchase-confirmation.component";
 
 @Component({
   selector: 'app-order-purchase-pri',
   imports: [FormsModule, PurchaseOrderUpdInsComponent, PurchaseOrderListComponent, NgIf,
-    DatePickerModule, ButtonModule, PurchaseOrderConfirmationComponent, DropdownModule, MultiSelectModule],
+    DatePickerModule, ButtonModule, PurchaseOrderConfirmationComponent, DropdownModule, MultiSelectModule, PurchaseUpdInsComponent, PurchaseConfirmationComponent],
   templateUrl: './purchase-order-pri.component.html',
   styleUrl: './purchase-order-pri.component.scss'
 })
 export class PurchaseOrderPriComponent {
 
-  modalMode: 'create' | 'edit' = 'create';
   showAddLocationModal = false;
   showConfirmanModal = false;
+
+  showAddPurchaseModal = false;
+  showConfirmanPurchaseModal = false;
+
   txtDetail: string = '';
   txtSummary: string = '';
 
@@ -154,9 +159,15 @@ export class PurchaseOrderPriComponent {
     this.showConfirmanModal = false;
   }
 
-  handleSubmit(compra: Compra) {
+  closeModalPurchaseAdd() {
+    this.showAddPurchaseModal = false;
+  }
 
-    const isCreate = this.modalMode === 'create';
+  closeModalPurchaseConfirm() {
+    this.showConfirmanPurchaseModal = false;
+  }
+
+  handleSubmitOrder(compra: Compra) {
 
     const CompraFullCreate: CompraFullCreate = {
       compra: compra,
@@ -174,17 +185,67 @@ export class PurchaseOrderPriComponent {
     action$.subscribe({
       next: (savedLocation: CompraFullResponse) => {
 
-        if (isCreate) {
-          // ➕ CREATE → agregar al array
-          //this.compras.push(savedLocation.compra);
-          this.load(false); // recargar para mostrar la nueva compra
+        // ➕ CREATE → agregar al array
+        //this.compras.push(savedLocation.compra);
+        this.load(false); // recargar para mostrar la nueva compra
 
-          this.recetas_impactadas = [];
-          this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
-          this.txtSummary = 'Purchase created successfully';
-          this.showConfirmanModal = true;
+        this.recetas_impactadas = [];
+        this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
+        this.txtSummary = 'Purchase created successfully';
+        this.showConfirmanModal = true;
 
-        }
+
+
+        this.cartService.clearCart();
+
+        this.closeModal();
+      },
+      error: (err) => {
+
+        //console.error('[Locations] save error:', err);
+
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: err.error?.message
+        });
+
+
+      }
+    });
+
+  }
+
+
+  handleSubmit(compra: Compra) {
+
+
+
+    const CompraFullCreate: CompraFullCreate = {
+      compra: compra,
+      detalles: compra.detalles?.map(d => ({
+        insumo_id: d.insumo_id,
+        unidad_id: d.unidad_id,
+        cantidad: d.cantidad,
+        precio: d.precio,
+        grupo_id: d.grupo_id,
+      })) ?? []
+    };
+
+    const action$ = this.service.createFull(CompraFullCreate, compra.created_by ?? undefined)
+
+    action$.subscribe({
+      next: (savedLocation: CompraFullResponse) => {
+
+
+        // ➕ CREATE → agregar al array
+        //this.compras.push(savedLocation.compra);
+        this.load(false); // recargar para mostrar la nueva compra
+
+        this.recetas_impactadas = savedLocation.receta_impactada;
+        this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
+        this.txtSummary = 'Purchase created successfully';
+        this.showConfirmanModal = true;
 
         this.cartService.clearCart();
 
@@ -207,7 +268,6 @@ export class PurchaseOrderPriComponent {
   }
 
   openCreate() {
-    this.modalMode = 'create';
     this.selectedItem = null;
     this.showAddLocationModal = true;
   }
@@ -252,6 +312,19 @@ export class PurchaseOrderPriComponent {
         });
       }
     });
+  }
+
+  complete(deltalle: CompraDetalle) {
+
+    this.cartService.clearCart();
+
+    deltalle.compra_order!.order_detalles.forEach(det => {
+      this.cartService.addToCart(det);
+    });
+
+
+    this.showAddPurchaseModal = true;
+
   }
 
   private SupplyChange$ = new Subject<void>();

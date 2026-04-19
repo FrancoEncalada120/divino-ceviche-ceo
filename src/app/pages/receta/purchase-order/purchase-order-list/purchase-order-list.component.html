@@ -30,7 +30,7 @@
           </ng-template>
 
           <!-- Body -->
-          <ng-template pTemplate="body" let-row>
+          <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
             <tr>
               <td class="col-date">{{ row.compra_order_id }}</td>
 
@@ -68,8 +68,8 @@
               </td>
 
 
-              <td *ngIf="row.compra_order.compra_order_estado == 1" class="col-actions text-end">
-                <button class="btn btn-sm btn-secondary m-1">
+              <td  *ngIf="mostrarBotones(row, rowIndex)"  class="col-actions text-end">
+                <button class="btn btn-sm btn-secondary m-1" (click)="onComplete(row)"  >
                   Add Purchase
                 </button>
                 <button class="btn btn-sm btn-danger m-1" (click)="onDelete(row)">

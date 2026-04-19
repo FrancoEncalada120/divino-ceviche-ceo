@@ -21,7 +21,7 @@ import { User } from '../../../../core/models/user.models';
 import { CartService } from '../../../../core/services/cart.service';
 
 @Component({
-  selector: 'app-purchase-upd-ins',
+  selector: 'app-purchase-order-upd-ins',
   imports: [
     CommonModule,
     ReactiveFormsModule,
@@ -46,6 +46,8 @@ export class PurchaseOrderUpdInsComponent {
   user: User | null = null;
   fechaHoy: string = new Date().toISOString().split('T')[0]; // Formato YYYY-MM-DD
 
+   showAddLocationModal = false;
+
   constructor(
     private service: InsumoService,
     private locationService: LocationService,
@@ -66,8 +68,8 @@ export class PurchaseOrderUpdInsComponent {
           compra_order_id: 0,
           cantidad: item.cantidad,
           insumo_id: item.insumo_id,
-          precio: 0,
-          total: 0,
+          precio: item.precio,
+          total: item.insumo_id * item.precio,
           unidad_id: item.unidad_id,
           grupo_id: item.grupo_id,
         });

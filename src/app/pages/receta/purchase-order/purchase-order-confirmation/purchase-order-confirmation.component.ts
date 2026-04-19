@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Receta } from '../../../../core/models/receta.model';
 import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
-import { DecimalPipe, NgFor, NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-purchase-order-confirmation',
@@ -21,10 +21,6 @@ export class PurchaseOrderConfirmationComponent {
 
   @Input()
   txtDetail: string = '';
-
-  @Input()
-  isOrder: boolean = false;
-
 
   onClose() {
     console.log('Closing modal');

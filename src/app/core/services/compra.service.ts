@@ -45,6 +45,7 @@ export class CompraService {
     return this.http.get<ApiResponse<CompraDetalle[]>>(this.apiUrl + "/order", { params: params as any }).pipe(
       map((res) => {
         const arr = res?.data;
+        console.log("getComprasOrderAll", arr);
         return Array.isArray(arr) ? arr : [];
       }),
     );

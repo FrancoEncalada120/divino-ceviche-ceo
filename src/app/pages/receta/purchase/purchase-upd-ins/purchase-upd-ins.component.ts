@@ -66,8 +66,8 @@ export class PurchaseUpdInsComponent {
           compra_order_id: 0,
           cantidad: item.cantidad,
           insumo_id: item.insumo_id,
-          precio: 0,
-          total: 0,
+          precio: item.precio,
+          total: item.precio * item.cantidad,
           unidad_id: item.unidad_id,
           grupo_id: item.grupo_id,
         });

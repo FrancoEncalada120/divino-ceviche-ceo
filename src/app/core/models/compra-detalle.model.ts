@@ -18,4 +18,5 @@ export interface CompraDetalle {
   insumo?: Insumo;
   unidad?: Unidad;
   compra?: Compra;
+  compra_order?: Compra;
 }

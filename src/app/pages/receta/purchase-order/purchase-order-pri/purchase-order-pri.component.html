@@ -80,13 +80,19 @@
   </div>
 
 
-  <app-purchase-upd-ins *ngIf="showAddLocationModal" (close)="closeModal()"
-    (submit)="handleSubmit($event)"></app-purchase-upd-ins>
+  <app-purchase-order-upd-ins *ngIf="showAddLocationModal" (close)="closeModal()"
+    (submit)="handleSubmitOrder($event)"></app-purchase-order-upd-ins>
 
-  <app-purchase-order-list (delete)="delete($event)" [compraDetalle]="compraDetalle"></app-purchase-order-list>
+  <app-purchase-order-list (delete)="delete($event)" (complete)="complete($event)"  [compraDetalle]="compraDetalle"></app-purchase-order-list>
 
-  <app-purchase-order-confirmation *ngIf="showConfirmanModal" [recetas_impactadas]="recetas_impactadas"
+  <app-purchase-order-confirmation *ngIf="showConfirmanModal"
     [txtDetail]="txtDetail" [txtSummary]="txtSummary" (close)="closeModalConfirm()"></app-purchase-order-confirmation>
 
 
 </div>
+
+<app-purchase-upd-ins *ngIf="showAddPurchaseModal" (close)="closeModalPurchaseAdd()"
+  (submit)="handleSubmit($event)"></app-purchase-upd-ins>
+
+<app-purchase-confirmation *ngIf="showConfirmanPurchaseModal" [recetas_impactadas]="recetas_impactadas"
+  [txtDetail]="txtDetail" [txtSummary]="txtSummary" (close)="closeModalPurchaseConfirm()"></app-purchase-confirmation>

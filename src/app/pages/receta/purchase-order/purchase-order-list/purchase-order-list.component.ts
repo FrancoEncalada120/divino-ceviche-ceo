@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-purchase-order-list',
-  imports: [TableModule, TabViewModule, TxtsignoPipe, ButtonModule,NgIf],
+  imports: [TableModule, TabViewModule, TxtsignoPipe, ButtonModule, NgIf],
   providers: [
     DecimalPipe
   ],
@@ -23,9 +23,31 @@ export class PurchaseOrderListComponent {
   compraDetalle: CompraDetalle[] = [];
 
   @Output() delete = new EventEmitter<Compra>();
+  @Output() complete = new EventEmitter<CompraDetalle>();
 
   onDelete(comp: Compra) {
     this.delete.emit(comp);
+  }
+
+  onComplete(comp: CompraDetalle) {
+    this.complete.emit(comp);
+  }
+
+  mostrarBotones(row: CompraDetalle, rowIndex: number) {
+
+    if (rowIndex - 1 < 0)
+      return true;
+
+
+
+    if (row.compra_order!.compra_order_estado == 1) {
+      if (row.compra_order!.compra_order_id != this.compraDetalle[rowIndex - 1].compra_order_id)
+        return true;
+
+    }
+
+    return false;
+
   }
 
   exportToExcel() {

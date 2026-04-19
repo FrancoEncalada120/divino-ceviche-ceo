@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CompraDetalle } from '../models/compra-detalle.model';
+import { Insumo, InsumoDetalle } from '../models/insumo.model';
 
 @Injectable({
   providedIn: 'root',
@@ -19,27 +20,23 @@ export class CartService {
 
   // -------------
 
-  addToCart(item: any) {
-    const cant = item.stock - item.stock_ideal;
+  addToCart(detalle: CompraDetalle) {
 
-    this.cart.push({
-      ...item,
-      cantidad: cant > 0 ? cant : cant * -1, // 🔥 solo agrega si hay stock disponibl e
-    });
 
+    this.cart.push(detalle);
     this.saveCart();
   }
 
-  isInCart(item: any): boolean {
+  isInCart(item: CompraDetalle): boolean {
     return this.cart.some((i) => i.insumo_id === item.insumo_id);
   }
 
-  getQty(item: any): number {
+  getQty(item: CompraDetalle): number {
     const found = this.cart.find((i) => i.insumo_id === item.insumo_id);
     return found?.cantidad || 0;
   }
 
-  increaseQty(item: any) {
+  increaseQty(item: CompraDetalle) {
     const found = this.cart.find((i) => i.insumo_id === item.insumo_id);
     if (found) {
       found.cantidad++;
@@ -47,7 +44,7 @@ export class CartService {
     }
   }
 
-  decreaseQty(item: any) {
+  decreaseQty(item: Insumo) {
     const index = this.cart.findIndex((i) => i.insumo_id === item.insumo_id);
 
     if (index !== -1) {
