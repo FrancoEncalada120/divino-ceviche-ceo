@@ -10,11 +10,7 @@
       </div>
 
       <div class="col-md-4 text-end">
-        <button
-          class="btn btn-primary"
-          (click)="openCreate()"
-          *ngIf="source === 'stock'"
-        >
+        <button class="btn btn-primary" (click)="openCreate()" *ngIf="source === 'stock'">
           <i class="pi pi-plus me-2"></i>
           Add New Purchase
         </button>
@@ -24,60 +20,35 @@
     <!-- ROW 2 -->
     <div class="row">
       <div class="col-md-6">
-        <p-multiSelect
-          [options]="locations"
-          [(ngModel)]="selectedLocation"
-          optionLabel="location_name"
-          placeholder="Select locations"
-          display="chip"
-          styleClass="w-100"
-          (onChange)="loadData()"
-        >
-        </p-multiSelect>
+        <!-- <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select locations" display="chip" styleClass="w-100" (onChange)="loadData()">
+        </p-multiSelect> -->
+
+        <p-dropdown [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select location" class="w-100" (onChange)="loadData()">
+        </p-dropdown>
+
+
       </div>
 
       <div class="col-md-6">
         <span class="p-input-icon-left w-100">
-          <input
-            pInputText
-            type="text"
-            placeholder="Search items..."
-            class="w-100"
-            [(ngModel)]="searchText"
-            (ngModelChange)="onSearch($event)"
-          />
+          <input pInputText type="text" placeholder="Search items..." class="w-100" [(ngModel)]="searchText"
+            (ngModelChange)="onSearch($event)" />
         </span>
       </div>
 
       <div class="col-12 col-md-6 pt-3" *ngIf="source === 'inventory'">
-        <p-dropdown
-          [options]="frecuenciaInventarioOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Seleccione frecuencia"
-          styleClass="w-100"
-          appendTo="body"
-          [autoZIndex]="true"
-          [baseZIndex]="10000"
-          [(ngModel)]="frecuenciaInventario"
-          (onChange)="loadData()"
-        ></p-dropdown>
+        <p-dropdown [options]="frecuenciaInventarioOptions" optionLabel="label" optionValue="value"
+          placeholder="Seleccione frecuencia" styleClass="w-100" appendTo="body" [autoZIndex]="true"
+          [baseZIndex]="10000" [(ngModel)]="frecuenciaInventario" (onChange)="loadData()"></p-dropdown>
       </div>
 
       <!-- Día Inventario -->
       <div class="col-12 col-md-6 pt-3" *ngIf="source === 'inventory'">
-        <p-dropdown
-          [options]="diaInventarioOptions"
-          optionLabel="label"
-          optionValue="value"
-          placeholder="Seleccione día"
-          styleClass="w-100"
-          appendTo="body"
-          [autoZIndex]="true"
-          [baseZIndex]="10000"
-          [(ngModel)]="diaInventario"
-          (onChange)="loadData()"
-        ></p-dropdown>
+        <p-dropdown [options]="diaInventarioOptions" optionLabel="label" optionValue="value"
+          placeholder="Seleccione día" styleClass="w-100" appendTo="body" [autoZIndex]="true" [baseZIndex]="10000"
+          [(ngModel)]="diaInventario" (onChange)="loadData()"></p-dropdown>
       </div>
     </div>
   </p-card>
@@ -86,13 +57,8 @@
 
   <p-card styleClass="invoice-header-card">
     <div class="row">
-      <p-table
-        [value]="insumos"
-        styleClass="p-datatable-sm w-100"
-        [paginator]="true"
-        [rows]="10"
-        [rowsPerPageOptions]="[10, 20, 50]"
-      >
+      <p-table [value]="insumos" styleClass="p-datatable-sm w-100" [paginator]="true" [rows]="10"
+        [rowsPerPageOptions]="[10, 20, 50]">
         <ng-template pTemplate="header">
           <tr>
             <!-- <th>#</th> -->
@@ -119,14 +85,11 @@
           <tr>
             <td>
               <div class="item-name">
-                <i
-                  class="pi"
-                  [ngClass]="
+                <i class="pi" [ngClass]="
                     item.stock < item.stock_ideal
                       ? 'pi-times-circle text-danger'
                       : 'pi-check-circle text-success'
-                  "
-                >
+                  ">
                 </i>
                 {{ item.nombre }} ({{ item.unidad?.abreviatura }})
               </div>
@@ -148,20 +111,16 @@
                 </div>
 
                 <div class="stock-bar">
-                  <div
-                    class="stock-bar-fill"
-                    [style.width.%]="
+                  <div class="stock-bar-fill" [style.width.%]="
                       item.stock_ideal
                         ? (item.stock / item.stock_ideal) * 100
                         : 0
-                    "
-                    [ngClass]="{
+                    " [ngClass]="{
                       'stock-zero': item.stock === 0,
                       'stock-low':
                         item.stock > 0 && item.stock < item.stock_ideal * 0.5,
                       'stock-ok': item.stock >= item.stock_ideal * 0.5,
-                    }"
-                  ></div>
+                    }"></div>
                 </div>
               </div>
             </td>
@@ -169,63 +128,36 @@
             <td class="text-center" *ngIf="source === 'stock'">
               <div class="cart-control">
                 <!-- BOTÓN ADD -->
-                <button
-                  *ngIf="!isInCart(item)"
-                  pButton
-                  label="Add"
-                  icon="pi pi-plus"
-                  class="p-button-primary p-button-outlined p-button-sm add-btn"
-                  (click)="addToCart(item)"
-                ></button>
+                <button *ngIf="!isInCart(item)" pButton label="Add" icon="pi pi-plus"
+                  class="p-button-primary p-button-outlined p-button-sm add-btn" (click)="addToCart(item)"></button>
 
                 <!-- CONTROL CANTIDAD -->
                 <div *ngIf="isInCart(item)" class="qty-control">
-                  <button
-                    pButton
-                    icon="pi pi-minus"
-                    class="p-button-text p-button-sm qty-btn"
-                    (click)="decreaseQty(item)"
-                  ></button>
+                  <button pButton icon="pi pi-minus" class="p-button-text p-button-sm qty-btn"
+                    (click)="decreaseQty(item)"></button>
 
-                  <input
-                    type="number"
-                    min="1"
-                    class="qty-input"
-                    [value]="getQty(item)"
-                  />
+                  <input type="number" min="1" class="qty-input" [value]="getQty(item)" />
 
-                  <button
-                    pButton
-                    icon="pi pi-plus"
-                    class="p-button-text p-button-sm qty-btn"
-                    (click)="increaseQty(item)"
-                  ></button>
+                  <button pButton icon="pi pi-plus" class="p-button-text p-button-sm qty-btn"
+                    (click)="increaseQty(item)"></button>
                 </div>
               </div>
             </td>
             <td class="text-center" *ngIf="source === 'inventory'">
-              <input
-                #cantidadInput
-                type="number"
-                min="0"
-                step="1"
+              <input #cantidadInput type="number" min="0" step="1"
                 class="p-inputtext p-component p-inputtext-sm text-center"
-                (input)="onCantidadChange(cantidadInput.value, item)"
-              />
+                (input)="onCantidadChange(cantidadInput.value, item)" />
             </td>
             <td class="text-center" *ngIf="source === 'inventory'">
               <div class="item-name">
-                <i
-                  class="pi pi-calendar"
-                  [ngClass]="
+                <i class="pi pi-calendar" [ngClass]="
                     item.ultima_toma_inventario ? 'text-success' : 'text-danger'
-                  "
-                >
+                  ">
                 </i>
                 {{
-                  item.ultima_toma_inventario
-                    ? (item.ultima_toma_inventario | date: "yyyy-MM-dd")
-                    : ""
+                item.ultima_toma_inventario
+                ? (item.ultima_toma_inventario | date: "yyyy-MM-dd")
+                : ""
                 }}
               </div>
               <div class="item-detail">
@@ -237,19 +169,13 @@
               <div class="item-name">
                 <small>
                   {{ item.frecuencia_inventario || "" }} -
-                  {{ item.dia_inventario || "-" }}</small
-                >
+                  {{ item.dia_inventario || "-" }}</small>
               </div>
             </td>
 
             <td class="text-center">
-              <button
-                pButton
-                label="Kardex"
-                icon="pi pi-history"
-                class="p-button-outlined p-button-sm"
-                (click)="mostrarPopupKardex(item.insumo_id, item)"
-              ></button>
+              <button pButton label="Kardex" icon="pi pi-history" class="p-button-outlined p-button-sm"
+                (click)="mostrarPopupKardex(item.insumo_id, item)"></button>
             </td>
           </tr>
         </ng-template>
@@ -267,23 +193,11 @@
   </p-card>
 </div>
 
-<app-inventory-list
-  *ngIf="showInventoryModal"
-  (close)="closeModal()"
-  [insumo]="insumoInventory"
-  [inventoryList]="inventoryList"
-></app-inventory-list>
+<app-inventory-list *ngIf="showInventoryModal" (close)="closeModal()" [insumo]="insumoInventory"
+  [inventoryList]="inventoryList"></app-inventory-list>
 
-<app-purchase-upd-ins
-  *ngIf="showAddLocationModal"
-  (close)="closeModalAdd()"
-  (submit)="handleSubmit($event)"
-></app-purchase-upd-ins>
+<app-purchase-order-upd-ins *ngIf="showAddLocationModal" (close)="closeModalAdd()"
+  (submit)="handleSubmit($event)"></app-purchase-order-upd-ins>
 
-<app-purchase-confirmation
-  *ngIf="showConfirmanModal"
-  [recetas_impactadas]="recetas_impactadas"
-  [txtDetail]="txtDetail"
-  [txtSummary]="txtSummary"
-  (close)="closeModalConfirm()"
-></app-purchase-confirmation>
+<app-purchase-order-confirmation *ngIf="showConfirmanModal" [recetas_impactadas]="recetas_impactadas"
+  [txtDetail]="txtDetail" [txtSummary]="txtSummary" (close)="closeModalConfirm()"></app-purchase-order-confirmation>

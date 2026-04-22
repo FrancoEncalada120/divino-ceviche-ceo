@@ -58,8 +58,7 @@ export class PurchaseOrderPriComponent {
     private service: CompraService,
     private messageService: MessageService,
     private proveedorService: ProveedorService,
-    private insumoService: InsumoService,
-    private cartService: CartService
+    private insumoService: InsumoService
   ) { }
 
   ngOnInit(): void {
@@ -194,10 +193,6 @@ export class PurchaseOrderPriComponent {
         this.txtSummary = 'Purchase created successfully';
         this.showConfirmanModal = true;
 
-
-
-        this.cartService.clearCart();
-
         this.closeModal();
       },
       error: (err) => {
@@ -246,8 +241,6 @@ export class PurchaseOrderPriComponent {
         this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
         this.txtSummary = 'Purchase created successfully';
         this.showConfirmanModal = true;
-
-        this.cartService.clearCart();
 
         this.closeModal();
       },
@@ -314,14 +307,12 @@ export class PurchaseOrderPriComponent {
     });
   }
 
+  items: CompraDetalle[] = [];
+
   complete(deltalle: CompraDetalle) {
 
-    this.cartService.clearCart();
-
-    deltalle.compra_order!.order_detalles.forEach(det => {
-      this.cartService.addToCart(det);
-    });
-
+    this.items = deltalle.compra_order!.order_detalles.map(det => ({ ...det }));
+    console.log(' this.items', this.items);
 
     this.showAddPurchaseModal = true;
 
