@@ -32,6 +32,7 @@ import { UploadService } from '../../../../core/services/upload.service';
 import { FileUploadModule } from 'primeng/fileupload';
 
 import { CheckboxModule } from 'primeng/checkbox';
+import { Location } from '../../../../core/models/location.model';
 type ModalMode = 'create' | 'edit';
 type UnidadOption = { label: string; value: number };
 type InsumoOption = { label: string; value: number; grupo?: string };
@@ -61,9 +62,13 @@ export class RecipeUpInsComponent implements OnChanges {
   @Input() receta: any | null = null;
   @Input() insumosOptions: InsumoOption[] = [];
   @Input() unidadesOptions: UnidadOption[] = [];
+  @Input() location: Location[] = [];
 
   @Output() close = new EventEmitter<void>();
   @Output() save = new EventEmitter<RecetaFullCreate>();
+
+  locationsOptions: { label: string; value: number }[] = [];
+  submitted = false;
 
   vCosto_total: number = 0;
   vPorcenta_venta: number = 0;
@@ -106,6 +111,7 @@ export class RecipeUpInsComponent implements OnChanges {
       es_insumo: [false],
       unidad_receta: [null, Validators.required],
       cantidad_receta: [null, Validators.required],
+      location_id: [null, Validators.required],
     });
     // arranca con 1 detalle por defecto
     this.addDetalle();
@@ -113,6 +119,17 @@ export class RecipeUpInsComponent implements OnChanges {
 
   ngOnInit() {
     console.log('unidadesOptions =>', this.unidadesOptions);
+
+    if (this.location) {
+      this.locationsOptions = this.location.map((loc) => ({
+        label: loc.location_name,
+        value: loc.location_id,
+      }));
+
+      if (this.locationsOptions.length > 0 && !this.form.get('location_id')?.value) {
+        this.form.patchValue({ location_id: this.locationsOptions[0].value });
+      }
+    }
   }
 
   onFileSelect(event: any): void {
@@ -249,6 +266,10 @@ export class RecipeUpInsComponent implements OnChanges {
     while (this.detallesFA.length) this.detallesFA.removeAt(0);
     this.unidadesOptionsByRow = [];
 
+    const locationFromDetalle = Array.isArray(this.receta.detalles) && this.receta.detalles.length > 0
+      ? this.receta.detalles[0].location_id
+      : this.locationsOptions[0]?.value ?? null;
+
     this.form.patchValue({
       nombre: this.receta.nombre ?? '',
       descripcion: this.receta.descripcion ?? '',
@@ -258,6 +279,7 @@ export class RecipeUpInsComponent implements OnChanges {
       es_insumo: this.receta.es_insumo ?? false,
       unidad_receta: Number(this.receta.unidad_receta ?? null),
       cantidad_receta: this.receta.cantidad_receta ?? 0,
+      location_id: locationFromDetalle,
     });
 
     if (this.receta.imagen_url) {
@@ -457,5 +479,9 @@ export class RecipeUpInsComponent implements OnChanges {
 
     g.get('cantidad')?.markAsUntouched();
     g.get('precio_actual')?.markAsUntouched();
+  }
+
+  get f() {
+    return this.form.controls;
   }
 }

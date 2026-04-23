@@ -7,6 +7,7 @@ export interface DashboardResponse {
   dailyMetrics: DailyMetric[];
   totales: TotalMetric[];
   cashflow: CashFlow[];
+  cashflowMonth: cashflowMonth[];
 }
 
 export interface Invoice {
@@ -109,4 +110,13 @@ export interface CashFlow {
   tips: string;
   taxes: string;
   descuentos: string;
+}
+
+export interface cashflowMonth {
+  year: number;
+  month: number;
+  monthLabel: string;
+  fechaIni: string;
+  fechaFin: string;
+  cashflow: CashFlow[];
 }

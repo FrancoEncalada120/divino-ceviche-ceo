@@ -43,6 +43,7 @@ export class DashboardComponent implements OnInit {
 
   selectedLocation!: Location[];
   movimientos: CashFlow[] = [];
+  cashflowMonths: CashFlow[] = [];
 
   constructor(
     private dashboardSvc: DashboardService,
@@ -50,11 +51,16 @@ export class DashboardComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // 📅 Inicializar con AYER
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    this.dateRange = [new Date(yesterday), new Date(yesterday)];
+    const firstOfMonth = new Date(
+      yesterday.getFullYear(),
+      yesterday.getMonth(),
+      1,
+    );
+
+    this.dateRange = [firstOfMonth, yesterday];
 
     this.loadLocations();
 
@@ -93,6 +99,7 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.dasboard = res;
         this.movimientos = res.cashflow;
+        this.cashflowMonths = res.cashflowMonth.flatMap((m) => m.cashflow);
       },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),

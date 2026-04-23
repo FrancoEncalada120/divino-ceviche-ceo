@@ -12,6 +12,8 @@ import { UnidadService } from '../../../../core/services/unidad.service';
 import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
 import { CreateInsumoDto } from '../../../../core/models/insumo.model';
 import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
+import { LocationService } from '../../../../core/services/location.service';
+import { Location } from '../../../../core/models/location.model';
 
 type ModalMode = 'create' | 'edit';
 @Component({
@@ -40,10 +42,13 @@ export class RecipePriComponent {
   txtDetail: string = '';
   txtSummary: string = '';
   recetas_impactadas: Receta[] = [];
+  locations: Location[] = [];
+  selectedLocation!: Location[];
 
   constructor(
     private recetaService: RecetaService,
     private insumosService: InsumoService,
+    private locationService: LocationService,
     private unidadService: UnidadService,
   ) {}
 
@@ -52,6 +57,7 @@ export class RecipePriComponent {
     this.load();
     this.loadInsumos();
     this.loadUnidades();
+    this.loadLocations();
   }
 
   load(): void {
@@ -69,6 +75,19 @@ export class RecipePriComponent {
         this.loading = false;
       },
       complete: () => console.log('[Recetas] GET complete'),
+    });
+  }
+
+  loadLocations(): void {
+    this.locationService.getLocationAll().subscribe({
+      next: (data) => {
+        this.locations = data ?? [];
+        this.selectedLocation = [...this.locations];
+      },
+      error: (err) => {
+        console.error('[Locations] GET error:', err);
+      },
+      complete: () => console.log('[Locations] GET complete'),
     });
   }
 
@@ -160,11 +179,11 @@ export class RecipePriComponent {
 
         if (payload.receta.es_insumo && recetaId) {
           const cantidad = isEdit
-            ? this.selectedReceta!.cantidad_receta
+            ? this.selectedReceta!.detalles?.[0]?.cantidad_receta
             : res?.receta?.cantidad_receta;
 
           const precio_final = isEdit
-            ? this.selectedReceta!.costo_neto
+            ? this.selectedReceta!.detalles?.[0]?.costo_neto
             : res?.receta?.costo_neto;
 
           const insumoPayload: CreateInsumoDto = {
@@ -172,8 +191,8 @@ export class RecipePriComponent {
             descripcion: payload.receta.descripcion ?? payload.receta.nombre,
             proveedor_id: 24,
             estacion_id: 1,
-            unidad_id: payload.receta.unidad_receta,
-            unidad_trabajo: payload.receta.unidad_receta,
+            unidad_id: payload.receta.unidad_receta ?? null,
+            unidad_trabajo: payload.receta.unidad_receta ?? null,
             // cantidad: cantidad,
             stock_ideal: cantidad,
             created_by: 1,
@@ -202,7 +221,9 @@ export class RecipePriComponent {
           return;
         }
 
-        this.recetas_impactadas = res.receta_impactada;
+        this.recetas_impactadas = res.receta_impactada
+          ? [res.receta_impactada]
+          : [];
         this.txtDetail = `The purchase has been successfully created with code ${recetaId}. The following recipes have been impacted:`;
         this.txtSummary = 'Purchase created successfully';
         this.showConfirmanModal = true;

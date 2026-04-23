@@ -130,6 +130,13 @@ export class InsumosUpdInsComponent implements OnChanges {
         label: loc.location_name,
         value: loc.location_id,
       }));
+
+      if (
+        this.locationsOptions.length > 0 &&
+        !this.form.get('location_id')?.value
+      ) {
+        this.form.patchValue({ location_id: this.locationsOptions[0].value });
+      }
     }
   }
 
@@ -221,7 +228,7 @@ export class InsumosUpdInsComponent implements OnChanges {
         estacion_id: null,
         id_receta: null,
         cantidad_insumo: null,
-        location_id: null,
+        location_id: this.locationsOptions[0]?.value ?? null,
         precio_final: null,
         stock_ideal: null,
         frecuencia_inventario: null,

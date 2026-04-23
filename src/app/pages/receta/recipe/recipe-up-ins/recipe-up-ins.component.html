@@ -201,6 +201,29 @@
                   Description is required
                 </div>
               </div>
+
+              <div class="col-12 col-md-4">
+                <label class="form-label">Location *</label>
+                <p-dropdown
+                  formControlName="location_id"
+                  [options]="locationsOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Seleccione restaurante"
+                  [filter]="true"
+                  appendTo="body"
+                  styleClass="w-100"
+                  [autoZIndex]="true"
+                  [baseZIndex]="10000"
+                >
+                </p-dropdown>
+                <small
+                  class="text-danger"
+                  *ngIf="submitted && f['location_id'].invalid"
+                >
+                  La location es obligatoria
+                </small>
+              </div>
             </div>
           </p-tabPanel>
 

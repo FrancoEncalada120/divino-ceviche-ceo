@@ -95,6 +95,34 @@ export class RecetaService {
     );
   }
 
+  updateFull(
+    id: number,
+    payload: RecetaFullCreate,
+    locationId?: number,
+  ): Observable<any> {
+    const url = `${this.apiUrl}/full/${id}`;
+    let params = new HttpParams();
+
+    if (locationId && locationId !== 0) {
+      params = params.set('location_id', locationId.toString());
+    }
+
+    console.log('[RecetaService] PUT', url);
+    console.log('[RecetaService] data', payload);
+
+    return this.http.put<ApiResponse<any>>(url, payload, { params }).pipe(
+      map((res) => {
+        console.log('[RecetaService] res', res);
+
+        if (!res.success) {
+          throw new Error(res.message || 'Error updating receta full');
+        }
+
+        return res.data;
+      }),
+    );
+  }
+
   getByInsumoId(insumoId: number): Observable<Receta[]> {
     return this.http
       .get<ApiResponse<Receta[]>>(`${this.apiUrl}/insumo/${insumoId}`)
@@ -106,24 +134,5 @@ export class RecetaService {
           return res.data;
         }),
       );
-  }
-
-  updateFull(id: number, payload: RecetaFullCreate): Observable<any> {
-    const url = `${this.apiUrl}/full/${id}`;
-
-    console.log('[RecetaService] PUT', url);
-    console.log('[RecetaService] data', payload);
-
-    return this.http.put<ApiResponse<any>>(url, payload).pipe(
-      map((res) => {
-        console.log('[RecetaService] res', res);
-
-        if (!res.success) {
-          throw new Error(res.message || 'Error updating receta full');
-        }
-
-        return res.data;
-      }),
-    );
   }
 }

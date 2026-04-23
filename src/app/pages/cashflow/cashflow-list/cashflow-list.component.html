@@ -1,20 +1,20 @@
-<div style="width: 100%; height: 300px">
+<div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <p-tabPanel header="Reporte CashFlow">
+      <!-- TAB 1: Chart -->
+      <p-tabPanel
+        [header]="
+          'Monthly Cash Flow Report' +
+          (monthsLabel ? '  |  ' + monthsLabel : '')
+        "
+      >
         <p-chart
           type="bar"
           [data]="chartData"
           [options]="chartOptions"
         ></p-chart>
       </p-tabPanel>
-    </p-tabView>
-  </div>
-</div>
 
-<div class="row g-3 mb-4 bg-white">
-  <div class="card">
-    <p-tabView>
       <p-tabPanel header="CashFlow">
         <div class="container flex">
           <div class="item flex-item">
@@ -27,7 +27,6 @@
               scrollHeight="flex"
               appendTo="body"
             >
-              <!-- HEADER -->
               <ng-template pTemplate="header">
                 <tr>
                   <th [width]="col1">Date / Location</th>
@@ -45,7 +44,6 @@
                 </tr>
               </ng-template>
 
-              <!-- BODY -->
               <ng-template #body let-rowNode let-rowData="rowData">
                 <tr
                   [ttRow]="rowNode"
@@ -54,15 +52,12 @@
                     'row-location': rowData.level === 'location',
                   }"
                 >
-                  <!-- 🔥 COLUMNA DINÁMICA -->
                   <td [width]="col1">
                     <p-treeTableToggler
                       [rowNode]="rowNode"
                     ></p-treeTableToggler>
                     {{ rowData.label }}
                   </td>
-
-                  <!-- 🔢 TODAS LAS COLUMNAS -->
                   <td>{{ rowData.venta_bruta | txtsigno: "$" }}</td>
                   <td>{{ rowData.venta_neta | txtsigno: "$" }}</td>
                   <td>{{ rowData.food_cost | txtsigno: "$" }}</td>
@@ -87,7 +82,27 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <p-tabPanel header="Saldos">
+      <p-tabPanel header="Balance">
+        <div class="row g-3">
+          <div class="col-12 col-lg-6" style="height: 280px">
+            <p-chart
+              type="bar"
+              [data]="saldosChartData"
+              [options]="saldosChartOptions"
+            ></p-chart>
+          </div>
+          <div class="col-12 col-lg-6" style="height: 280px">
+            <p-chart
+              type="bar"
+              [data]="depositsChartData"
+              [options]="depositsChartOptions"
+            ></p-chart>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- TAB 2: TreeTable -->
+      <p-tabPanel header="Balance Details">
         <p-treeTable
           [value]="treeData"
           [paginator]="true"
@@ -97,7 +112,6 @@
           scrollHeight="flex"
           appendTo="body"
         >
-          <!-- HEADER -->
           <ng-template pTemplate="header">
             <tr>
               <th [width]="colSaldos">Date / Location</th>
@@ -109,7 +123,6 @@
             </tr>
           </ng-template>
 
-          <!-- BODY -->
           <ng-template #body let-rowNode let-rowData="rowData">
             <tr
               [ttRow]="rowNode"
@@ -118,13 +131,10 @@
                 'row-location': rowData.level === 'location',
               }"
             >
-              <!-- 🔥 COLUMNA DINÁMICA -->
               <td [width]="colSaldos">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 {{ rowData.label }}
               </td>
-
-              <!-- 🔢 TODAS LAS COLUMNAS -->
               <td>{{ rowData.saldo_inicial | txtsigno: "$" }}</td>
               <td>{{ rowData.saldo_final | txtsigno: "$" }}</td>
               <td>{{ rowData.diferencia | txtsigno: "$" }}</td>
@@ -141,7 +151,28 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <p-tabPanel header="Apps and tips">
+      <!-- TAB 1: Charts -->
+      <p-tabPanel header="Apps and Tips">
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-lg-6" style="height: 280px">
+            <p-chart
+              type="bar"
+              [data]="appsBarData"
+              [options]="appsBarOptions"
+            ></p-chart>
+          </div>
+          <div class="col-12 col-lg-6" style="height: 280px">
+            <p-chart
+              type="doughnut"
+              [data]="appsDoughnutData"
+              [options]="appsDoughnutOptions"
+            ></p-chart>
+          </div>
+        </div>
+      </p-tabPanel>
+
+      <!-- TAB 2: TreeTable -->
+      <p-tabPanel header="Apps and Tips Details">
         <p-treeTable
           [value]="treeData"
           [paginator]="true"
@@ -151,7 +182,6 @@
           scrollHeight="flex"
           appendTo="body"
         >
-          <!-- HEADER -->
           <ng-template pTemplate="header">
             <tr>
               <th [width]="colApps">Date / Location</th>
@@ -166,7 +196,6 @@
             </tr>
           </ng-template>
 
-          <!-- BODY -->
           <ng-template #body let-rowNode let-rowData="rowData">
             <tr
               [ttRow]="rowNode"
@@ -175,14 +204,10 @@
                 'row-location': rowData.level === 'location',
               }"
             >
-              <!-- 🔥 COLUMNA DINÁMICA -->
               <td [width]="colApps">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 {{ rowData.label }}
               </td>
-
-              <!-- 🔢 TODAS LAS COLUMNAS -->
-
               <td>{{ rowData.venta_uber | txtsigno: "$" }}</td>
               <td>{{ rowData.venta_doordash | txtsigno: "$" }}</td>
               <td>{{ rowData.venta_owner | txtsigno: "$" }}</td>
