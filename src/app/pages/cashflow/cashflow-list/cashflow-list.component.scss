@@ -36,7 +36,6 @@
   vertical-align: middle;
 }
 
-
 /* Flex */
 .flex {
   display: flex;
@@ -48,22 +47,57 @@
   flex: 0 0 auto;
 }
 
-
 /* Fecha (nivel 1) → limpio */
-:host ::ng-deep .p-treetable .p-treetable-tbody>tr.row-date {
+:host ::ng-deep .p-treetable .p-treetable-tbody > tr.row-date {
   background-color: #ffffff !important;
   font-weight: 600;
 }
 
 /* Location (nivel 2) → gris muy suave */
-:host ::ng-deep .p-treetable .p-treetable-tbody>tr.row-location {
+:host ::ng-deep .p-treetable .p-treetable-tbody > tr.row-location {
   background-color: #f8fafc !important;
   /* gris ultra light */
 }
 
 /* Detail (nivel 3) → leve diferencia */
-:host ::ng-deep .p-treetable .p-treetable-tbody>tr.row-detail {
+:host ::ng-deep .p-treetable .p-treetable-tbody > tr.row-detail {
   background-color: #fdfefe !important;
   /* casi blanco */
 }
 
+.chart-card {
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  padding: 1.25rem 1.5rem;
+  height: 100%;
+  border: 1px solid #f0f0f0;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  &__title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    letter-spacing: 0.01em;
+  }
+
+  &__badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: #3b82f6;
+    background: #eff6ff;
+    border-radius: 20px;
+    padding: 2px 10px;
+
+    &--accent {
+      color: #10b981;
+      background: #ecfdf5;
+    }
+  }
+}

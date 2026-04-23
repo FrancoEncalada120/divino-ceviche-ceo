@@ -99,7 +99,6 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         this.dasboard = res;
         this.movimientos = res.cashflow;
-        this.cashflowMonths = res.cashflowMonth.flatMap((m) => m.cashflow);
       },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),

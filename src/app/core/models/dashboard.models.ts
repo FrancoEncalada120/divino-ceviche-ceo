@@ -7,7 +7,6 @@ export interface DashboardResponse {
   dailyMetrics: DailyMetric[];
   totales: TotalMetric[];
   cashflow: CashFlow[];
-  cashflowMonth: cashflowMonth[];
 }
 
 export interface Invoice {

@@ -1,16 +1,40 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { TreeTableModule } from 'primeng/treetable';
 import { CashFlow } from '../../../core/models/dashboard.models';
 import { NgClass } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
-import { UIChart } from 'primeng/chart';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 interface TreeNode {
   data: any;
   children?: TreeNode[];
 }
+
+type Opts = {
+  series?: any;
+  chart?: any;
+  xaxis?: any;
+  yaxis?: any;
+  colors?: any[];
+  plotOptions?: any;
+  dataLabels?: any;
+  legend?: any;
+  tooltip?: any;
+  fill?: any;
+  stroke?: any;
+  labels?: any[];
+  markers?: any;
+  annotations?: any;
+  grid?: any;
+};
 
 @Component({
   selector: 'app-cashflow-list',
@@ -20,14 +44,13 @@ interface TreeNode {
     NgClass,
     TableModule,
     TabViewModule,
-    UIChart,
+    NgApexchartsModule,
   ],
   templateUrl: './cashflow-list.component.html',
   styleUrl: './cashflow-list.component.scss',
 })
-export class CashflowListComponent implements OnChanges {
+export class CashflowListComponent implements OnChanges, OnInit {
   @Input() movimientos: CashFlow[] = [];
-  @Input() movimientosMonth: CashFlow[] = [];
 
   treeData: any[] = [];
 
@@ -35,16 +58,14 @@ export class CashflowListComponent implements OnChanges {
   colSaldos = '23%';
   colApps = '23%';
 
-  chartData: any;
-  chartOptions: any;
-  saldosChartData: any;
-  saldosChartOptions: any;
-  depositsChartData: any;
-  depositsChartOptions: any;
-  appsBarData: any;
-  appsBarOptions: any;
-  appsDoughnutData: any;
-  appsDoughnutOptions: any;
+  netMarginOpts: Opts = {};
+  saldosOpts: Opts = {};
+  depositsOpts: Opts = {};
+  appsBarOpts: Opts = {};
+  appsDonOpts: Opts = {};
+  salesOpts: Opts = {};
+  expenseOpts: Opts = {};
+  trendOpts: Opts = {};
 
   get monthsLabel(): string {
     if (!this.movimientos?.length) return '';
@@ -63,19 +84,25 @@ export class CashflowListComponent implements OnChanges {
       .join(' · ');
   }
 
+  ngOnInit() {
+    this.buildNetMarginChart();
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (changes['movimientos'] && this.movimientos) {
       this.buildTreeTable();
     }
-    if (changes['movimientosMonth'] || changes['movimientos']) {
+    if (changes['movimientos'] || changes['movimientos']) {
       this.buildNetMarginChart();
       this.buildSaldosChart();
       this.buildAppsChart();
+      this.buildSalesChart();
+      this.buildExpenseChart();
+      this.buildTrendChart();
     }
   }
 
   buildTreeTable() {
-    // 🔥 columnas numéricas
     const numericFields = [
       'venta_bruta',
       'venta_neta',
@@ -102,291 +129,222 @@ export class CashflowListComponent implements OnChanges {
       'descuentos',
     ];
 
-    // 🔥 inicializador de totales
     const initTotals = () => {
       const obj: any = {};
       numericFields.forEach((f) => (obj[f] = 0));
-      obj['net_margin'] = 0; // se calcula luego
+      obj['net_margin'] = 0;
       return obj;
     };
 
-    // 🔹 Agrupar por fecha y location
     const groupedByDate: any = {};
 
     this.movimientos.forEach((item) => {
-      if (!groupedByDate[item.fecha]) {
-        groupedByDate[item.fecha] = {};
-      }
-
-      if (!groupedByDate[item.fecha][item.location_id]) {
+      if (!groupedByDate[item.fecha]) groupedByDate[item.fecha] = {};
+      if (!groupedByDate[item.fecha][item.location_id])
         groupedByDate[item.fecha][item.location_id] = [];
-      }
-
       groupedByDate[item.fecha][item.location_id].push(item);
     });
 
     const tree: TreeNode[] = [];
 
-    // 🔹 recorrer fechas
     Object.keys(groupedByDate).forEach((fecha) => {
       let totalFecha = initTotals();
 
       const dateNode: TreeNode = {
-        data: {
-          label: fecha,
-          level: 'date',
-          ...initTotals(),
-        },
+        data: { label: fecha, level: 'date', ...initTotals() },
         children: [],
       };
 
-      // 🔹 recorrer locations
       Object.keys(groupedByDate[fecha]).forEach((locId) => {
         const items = groupedByDate[fecha][locId];
-
         let totalLoc = initTotals();
 
-        // 🔥 sumar dinámicamente
         items.forEach((i: any) => {
           numericFields.forEach((field) => {
             totalLoc[field] += Number(i[field] || 0);
           });
         });
 
-        // 🔥 recalcular net_margin correctamente
         if (totalLoc.venta_neta > 0) {
           totalLoc.net_margin =
             (totalLoc.ganancia_neta / totalLoc.venta_neta) * 100;
         }
 
-        // 🔥 acumular a fecha
         numericFields.forEach((field) => {
           totalFecha[field] += totalLoc[field];
         });
 
-        // 🔹 nodo location
-        const locationNode: TreeNode = {
+        dateNode.children?.push({
           data: {
             label: items[0].location_name,
             level: 'location',
             ...totalLoc,
           },
-        };
-
-        dateNode.children?.push(locationNode);
+        });
       });
 
-      // 🔥 recalcular net_margin en fecha
       if (totalFecha.venta_neta > 0) {
         totalFecha.net_margin =
           (totalFecha.ganancia_neta / totalFecha.venta_neta) * 100;
       }
 
-      // 🔹 setear totales en fecha
-      dateNode.data = {
-        label: fecha,
-        level: 'date',
-        ...totalFecha,
-      };
-
+      dateNode.data = { label: fecha, level: 'date', ...totalFecha };
       tree.push(dateNode);
     });
 
     this.treeData = tree;
   }
 
-  ngOnInit() {
-    this.buildNetMarginChart();
+  private fmtDate(iso: string): string {
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  private fmtUsd(v: number): string {
+    if (Math.abs(v) >= 1000) return '$' + (v / 1000).toFixed(1) + 'k';
+    return '$' + v.toFixed(0);
+  }
+
+  private get xaxisBase() {
+    return {
+      labels: {
+        style: { fontSize: '11px', colors: '#9aa3af' },
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    };
+  }
+
+  private yaxisBase(formatter: (v: number) => string) {
+    return {
+      labels: {
+        formatter,
+        style: { fontSize: '11px', colors: '#9aa3af' },
+      },
+      axisBorder: { show: false },
+      axisTicks: { show: false },
+    };
+  }
+
+  private get gridBase() {
+    return { borderColor: '#f0f0f0', strokeDashArray: 3 };
   }
 
   buildNetMarginChart() {
-    const source = this.movimientosMonth?.length ? this.movimientosMonth : null;
-
-    const dayMap = new Map<
-      string,
-      { ventaNeta: number; gananciaNeta: number }
-    >();
-
-    (source ?? []).forEach((cf) => {
-      if (!dayMap.has(cf.fecha)) {
+    const dayMap = new Map<string, { ventaNeta: number; gananciaNeta: number }>();
+    (this.movimientos ?? []).forEach((cf) => {
+      if (!dayMap.has(cf.fecha))
         dayMap.set(cf.fecha, { ventaNeta: 0, gananciaNeta: 0 });
-      }
-      const entry = dayMap.get(cf.fecha)!;
-      entry.ventaNeta += Number(cf.venta_neta || 0);
-      entry.gananciaNeta += Number(cf.ganancia_neta || 0);
+      const e = dayMap.get(cf.fecha)!;
+      e.ventaNeta += Number(cf.venta_neta || 0);
+      e.gananciaNeta += Number(cf.ganancia_neta || 0);
     });
 
     const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
-    const labels = source
-      ? sorted.map(([fecha]) => fecha)
-      : this.treeData.map((n) => n.data.label);
-    const netMarginData = source
-      ? sorted.map(([, v]) =>
-          v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0,
-        )
-      : this.treeData.map((n) => n.data.net_margin);
+    const labels = sorted.map(([f]) => this.fmtDate(f));
+    const data = sorted.map(([, v]) =>
+      +(v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0).toFixed(2),
+    );
 
-    this.chartData = {
-      labels,
-      datasets: [
-        {
-          label: 'Net Margin %',
-          data: netMarginData,
-          backgroundColor: netMarginData.map((val) =>
-            val >= 0 ? '#66BB6A' : '#EF5350',
-          ),
-        },
-      ],
-    };
-
-    this.chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: true,
-        },
+    this.netMarginOpts = {
+      series: [{ name: 'Net Margin %', data }],
+      chart: {
+        type: 'bar',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Net Margin %',
-          },
-        },
-        x: {
-          title: {
-            display: true,
-            text: 'Fecha',
-          },
-        },
-      },
+      plotOptions: { bar: { columnWidth: '60%', distributed: true } },
+      colors: data.map((v: number) => (v >= 0 ? '#66BB6A' : '#EF5350')),
+      dataLabels: { enabled: false },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase((v) => v.toFixed(1) + '%'),
+      grid: this.gridBase,
+      legend: { show: false },
+      tooltip: { y: { formatter: (v: number) => v.toFixed(2) + '%' } },
     };
   }
 
   buildSaldosChart() {
-    const source = this.movimientosMonth?.length ? this.movimientosMonth : null;
-
     const dayMap = new Map<
       string,
-      {
-        depositos: number;
-        debitos: number;
-        saldoInicial: number;
-        saldoFinal: number;
-      }
+      { depositos: number; debitos: number; saldoInicial: number; saldoFinal: number }
     >();
 
-    (source ?? []).forEach((cf) => {
-      if (!dayMap.has(cf.fecha)) {
-        dayMap.set(cf.fecha, {
-          depositos: 0,
-          debitos: 0,
-          saldoInicial: 0,
-          saldoFinal: 0,
-        });
-      }
-      const entry = dayMap.get(cf.fecha)!;
-      entry.depositos += Number(cf.depositos_banco || 0);
-      entry.debitos += Number(cf.debitos_banco || 0);
-      entry.saldoInicial += Number(cf.saldo_inicial || 0);
-      entry.saldoFinal += Number(cf.saldo_final || 0);
+    (this.movimientos ?? []).forEach((cf) => {
+      if (!dayMap.has(cf.fecha))
+        dayMap.set(cf.fecha, { depositos: 0, debitos: 0, saldoInicial: 0, saldoFinal: 0 });
+      const e = dayMap.get(cf.fecha)!;
+      e.depositos += Number(cf.depositos_banco || 0);
+      e.debitos += Number(cf.debitos_banco || 0);
+      e.saldoInicial += Number(cf.saldo_inicial || 0);
+      e.saldoFinal += Number(cf.saldo_final || 0);
     });
 
     const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
-    const labels = sorted.map(([fecha]) => fecha);
-    const saldoInicial = sorted.map(([, v]) => v.saldoInicial);
-    const saldoFinal = sorted.map(([, v]) => v.saldoFinal);
+    const labels = sorted.map(([f]) => this.fmtDate(f));
+    const saldoInicial = sorted.map(([, v]) => +v.saldoInicial.toFixed(2));
+    const saldoFinal = sorted.map(([, v]) => +v.saldoFinal.toFixed(2));
+    const depositos = sorted.map(([, v]) => +v.depositos.toFixed(2));
+    const debitos = sorted.map(([, v]) => +v.debitos.toFixed(2));
 
-    // ── Chart 1: Opening vs Closing Balance ──────────────────────────────
-    this.saldosChartData = {
-      labels,
-      datasets: [
-        {
-          type: 'bar',
-          label: 'Opening Balance',
-          data: saldoInicial,
-          backgroundColor: '#378ADD',
-          order: 2,
-        },
-        {
-          type: 'bar',
-          label: 'Closing Balance',
-          data: saldoFinal,
-          backgroundColor: '#1D9E75',
-          order: 2,
-        },
+    this.saldosOpts = {
+      series: [
+        { name: 'Opening Balance', data: saldoInicial },
+        { name: 'Closing Balance', data: saldoFinal },
       ],
+      chart: {
+        type: 'bar',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
+      },
+      plotOptions: { bar: { columnWidth: '65%' } },
+      colors: ['#378ADD', '#1D9E75'],
+      dataLabels: { enabled: false },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase(this.fmtUsd.bind(this)),
+      grid: this.gridBase,
+      legend: { position: 'top' },
+      tooltip: { y: { formatter: this.fmtUsd.bind(this) } },
     };
 
-    this.saldosChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: true, position: 'top' },
-        tooltip: { mode: 'index' },
-      },
-      scales: {
-        y: { beginAtZero: false, title: { display: true, text: 'USD' } },
-        x: { title: { display: true, text: 'Date' } },
-      },
-    };
-
-    // ── Chart 2: Deposits vs Debits ──────────────────────────────────────
-    const depositos = sorted.map(([, v]) => v.depositos);
-    const debitos = sorted.map(([, v]) => -Math.abs(v.debitos));
-
-    this.depositsChartData = {
-      labels,
-      datasets: [
+    this.depositsOpts = {
+      series: [
+        { name: 'Bank Deposits', type: 'column', data: depositos },
+        { name: 'Bank Debits', type: 'column', data: debitos.map((v) => -v) },
         {
-          type: 'bar',
-          label: 'Bank Deposits',
-          data: depositos,
-          backgroundColor: '#42A5F5',
-          order: 2,
-        },
-        {
-          type: 'bar',
-          label: 'Bank Debits',
-          data: debitos,
-          backgroundColor: '#EF5350',
-          order: 2,
-        },
-        {
+          name: 'Net Flow',
           type: 'line',
-          label: 'Net Flow',
-          data: sorted.map(([, v]) => v.depositos - v.debitos),
-          borderColor: '#FFA726',
-          backgroundColor: 'rgba(255,167,38,0.12)',
-          pointBackgroundColor: '#FFA726',
-          fill: true,
-          tension: 0.3,
-          order: 1,
+          data: sorted.map(([, v]) => +(v.depositos - v.debitos).toFixed(2)),
         },
       ],
-    };
-
-    this.depositsChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: true, position: 'top' },
-        tooltip: { mode: 'index' },
+      chart: {
+        type: 'line',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
       },
-      scales: {
-        y: { beginAtZero: true, title: { display: true, text: 'USD' } },
-        x: { title: { display: true, text: 'Date' } },
-      },
+      plotOptions: { bar: { columnWidth: '55%' } },
+      colors: ['#42A5F5', '#EF5350', '#FFA726'],
+      dataLabels: { enabled: false },
+      stroke: { width: [0, 0, 3], curve: 'smooth' },
+      fill: { opacity: [1, 1, 0.15] },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase(this.fmtUsd.bind(this)),
+      grid: this.gridBase,
+      legend: { position: 'top' },
+      tooltip: { y: { formatter: this.fmtUsd.bind(this) } },
     };
   }
 
   buildAppsChart() {
-    const source = this.movimientosMonth?.length ? this.movimientosMonth : null;
-
     const APPS = [
       { key: 'venta_uber', label: 'Uber', color: '#06C167' },
       { key: 'venta_doordash', label: 'DoorDash', color: '#FF3008' },
@@ -396,126 +354,218 @@ export class CashflowListComponent implements OnChanges {
     ];
 
     const dayMap = new Map<string, Record<string, number>>();
-
-    (source ?? []).forEach((cf: any) => {
+    (this.movimientos ?? []).forEach((cf: any) => {
       if (!dayMap.has(cf.fecha)) {
         const init: Record<string, number> = {};
         APPS.forEach((a) => (init[a.key] = 0));
         dayMap.set(cf.fecha, init);
       }
-      const entry = dayMap.get(cf.fecha)!;
-      APPS.forEach((a) => (entry[a.key] += Number(cf[a.key] || 0)));
+      const e = dayMap.get(cf.fecha)!;
+      APPS.forEach((a) => (e[a.key] += Number(cf[a.key] || 0)));
     });
 
     const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
-    const labels = sorted.map(([fecha]) => fecha);
+    const labels = sorted.map(([f]) => this.fmtDate(f));
 
-    // ── Stacked bar ──────────────────────────────────────────
-    this.appsBarData = {
-      labels,
-      datasets: APPS.map((app) => ({
-        label: app.label,
-        data: sorted.map(([, v]) => v[app.key]),
-        backgroundColor: app.color,
-        stack: 'apps',
+    this.appsBarOpts = {
+      series: APPS.map((app) => ({
+        name: app.label,
+        data: sorted.map(([, v]) => +v[app.key].toFixed(2)),
       })),
+      chart: {
+        type: 'bar',
+        stacked: true,
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
+      },
+      plotOptions: { bar: { columnWidth: '75%' } },
+      colors: APPS.map((a) => a.color),
+      dataLabels: { enabled: false },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase(this.fmtUsd.bind(this)),
+      grid: this.gridBase,
+      legend: { position: 'top' },
+      tooltip: { y: { formatter: this.fmtUsd.bind(this) } },
     };
 
-    this.appsBarOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { display: true, position: 'top' },
-        tooltip: { mode: 'index' },
-      },
-      scales: {
-        x: { stacked: true, title: { display: true, text: 'Date' } },
-        y: {
-          stacked: true,
-          beginAtZero: true,
-          title: { display: true, text: 'USD' },
-        },
-      },
-    };
-
-    // ── Doughnut (totales del período) ───────────────────────
-    const totals = APPS.map((app) =>
-      sorted.reduce((sum, [, v]) => sum + v[app.key], 0),
+    const totals = APPS.map(
+      (app) => +sorted.reduce((sum, [, v]) => sum + v[app.key], 0).toFixed(2),
     );
 
-    this.appsDoughnutData = {
+    this.appsDonOpts = {
+      series: totals,
+      chart: {
+        type: 'donut',
+        height: 280,
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
+      },
       labels: APPS.map((a) => a.label),
-      datasets: [
-        {
-          data: totals,
-          backgroundColor: APPS.map((a) => a.color),
-          hoverOffset: 8,
-        },
-      ],
-    };
-
-    this.appsDoughnutOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true, position: 'right' },
-        tooltip: {
-          callbacks: {
-            label: (ctx: any) => {
-              const total = totals.reduce((a, b) => a + b, 0);
-              const pct =
-                total > 0 ? ((ctx.raw / total) * 100).toFixed(1) : '0';
-              return ` ${ctx.label}: $${ctx.raw.toFixed(0)} (${pct}%)`;
-            },
+      colors: APPS.map((a) => a.color),
+      legend: { position: 'bottom' },
+      dataLabels: {
+        enabled: true,
+        formatter: (val: number) => val.toFixed(1) + '%',
+      },
+      tooltip: {
+        y: {
+          formatter: (v: number) => {
+            const total = totals.reduce((a, b) => a + b, 0);
+            return `$${v.toFixed(0)} (${total > 0 ? ((v / total) * 100).toFixed(1) : 0}%)`;
           },
         },
       },
     };
   }
 
-  // mostrarImporte(row: Concepto[], concepto_id: number): number {
+  buildSalesChart() {
+    const dayMap = new Map<
+      string,
+      { ventaBruta: number; ventaNeta: number; gananciaNeta: number }
+    >();
 
-  //   const movimiento = row.find(mov => mov.concepto_id === concepto_id)?.total;
+    (this.movimientos ?? []).forEach((cf) => {
+      if (!dayMap.has(cf.fecha))
+        dayMap.set(cf.fecha, { ventaBruta: 0, ventaNeta: 0, gananciaNeta: 0 });
+      const e = dayMap.get(cf.fecha)!;
+      e.ventaBruta += Number(cf.venta_bruta || 0);
+      e.ventaNeta += Number(cf.venta_neta || 0);
+      e.gananciaNeta += Number(cf.ganancia_neta || 0);
+    });
 
-  //   return movimiento ? movimiento : 0;
-  // }
+    const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
+    const labels = sorted.map(([f]) => this.fmtDate(f));
 
-  // SaldoFinal(row: Concepto[]): number {
+    this.salesOpts = {
+      series: [
+        {
+          name: 'Gross Sales',
+          type: 'column',
+          data: sorted.map(([, v]) => +v.ventaBruta.toFixed(2)),
+        },
+        {
+          name: 'Net Sales',
+          type: 'column',
+          data: sorted.map(([, v]) => +v.ventaNeta.toFixed(2)),
+        },
+        {
+          name: 'Net Profit',
+          type: 'line',
+          data: sorted.map(([, v]) => +v.gananciaNeta.toFixed(2)),
+        },
+      ],
+      chart: {
+        type: 'line',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
+      },
+      plotOptions: { bar: { columnWidth: '50%' } },
+      colors: ['#42A5F5', '#1D9E75', '#FFA726'],
+      dataLabels: { enabled: false },
+      stroke: { width: [0, 0, 3], curve: 'smooth' },
+      fill: { opacity: [0.85, 0.85, 0.2] },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase(this.fmtUsd.bind(this)),
+      grid: this.gridBase,
+      legend: { position: 'top' },
+      tooltip: { y: { formatter: this.fmtUsd.bind(this) } },
+    };
+  }
 
-  //   let saldoFinal: number = 0;
-  //   for (let i = 0; i < row.length; i++) {
+  buildExpenseChart() {
+    const EXPENSES = [
+      { key: 'food_cost', label: 'Food Cost', color: '#EF5350' },
+      { key: 'labor', label: 'Labor', color: '#AB47BC' },
+      { key: 'renta', label: 'Rent', color: '#FFA726' },
+      { key: 'gastos_operacionales', label: 'Op. Expenses', color: '#26C6DA' },
+      { key: 'fees_apps', label: 'App Fees', color: '#66BB6A' },
+      { key: 'gastos_varios', label: 'Others', color: '#8D6E63' },
+    ];
 
-  //     if (row[i].concepto_accion === '+') {
-  //       saldoFinal += Number(row[i].total);
-  //     } else if (row[i].concepto_accion === '-') {
-  //       saldoFinal -= Number(row[i].total);
-  //     }
+    const dayMap = new Map<string, Record<string, number>>();
+    (this.movimientos ?? []).forEach((cf: any) => {
+      if (!dayMap.has(cf.fecha)) {
+        const init: Record<string, number> = {};
+        EXPENSES.forEach((e) => (init[e.key] = 0));
+        dayMap.set(cf.fecha, init);
+      }
+      const entry = dayMap.get(cf.fecha)!;
+      EXPENSES.forEach((e) => (entry[e.key] += Number(cf[e.key] || 0)));
+    });
 
-  //   }
+    const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
+    const labels = sorted.map(([f]) => this.fmtDate(f));
 
-  //   return saldoFinal;
-  // }
+    this.expenseOpts = {
+      series: EXPENSES.map((exp) => ({
+        name: exp.label,
+        data: sorted.map(([, v]) => +v[exp.key].toFixed(2)),
+      })),
+      chart: {
+        type: 'bar',
+        stacked: true,
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
+      },
+      plotOptions: { bar: { columnWidth: '70%' } },
+      colors: EXPENSES.map((e) => e.color),
+      dataLabels: { enabled: false },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase(this.fmtUsd.bind(this)),
+      grid: this.gridBase,
+      legend: { position: 'top' },
+      tooltip: { y: { formatter: this.fmtUsd.bind(this) } },
+    };
+  }
 
-  // getIconClassPrice(row: Concepto[], concepto_id: number): string {
+  buildTrendChart() {
+    const dayMap = new Map<string, { ventaNeta: number; gananciaNeta: number }>();
 
-  //   if (!row) return 'text-green-500';
+    (this.movimientos ?? []).forEach((cf) => {
+      if (!dayMap.has(cf.fecha))
+        dayMap.set(cf.fecha, { ventaNeta: 0, gananciaNeta: 0 });
+      const e = dayMap.get(cf.fecha)!;
+      e.ventaNeta += Number(cf.venta_neta || 0);
+      e.gananciaNeta += Number(cf.ganancia_neta || 0);
+    });
 
-  //   const accion = row.find(mov => mov.concepto_id === concepto_id)?.concepto_accion;
+    const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
+    const labels = sorted.map(([f]) => this.fmtDate(f));
+    const data = sorted.map(([, v]) =>
+      +(v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0).toFixed(2),
+    );
 
-  //   if (accion === '+') return `pi pi-plus ${this.getColorPrice(row, concepto_id)}`;
-  //   else if (accion === '-') return `pi pi-minus ${this.getColorPrice(row, concepto_id)}`;
-  //   else return `${this.getColorPrice(row, concepto_id)}`;
-  // }
-
-  // getColorPrice(row: Concepto[], concepto_id: number): string {
-
-  //   if (!row) return 'text-gray-500';
-
-  //   const accion = row.find(mov => mov.concepto_id === concepto_id)?.concepto_accion;
-
-  //   if (accion === '+') return `text-green-500`;
-  //   else if (accion === '-') return `text-red-500`;
-  //   else return 'text-gray-500';
-  // }
+    this.trendOpts = {
+      series: [{ name: 'Net Margin %', data }],
+      chart: {
+        type: 'line',
+        height: 280,
+        toolbar: { show: false },
+        fontFamily: 'inherit',
+        parentHeightOffset: 0,
+      },
+      colors: ['#1D9E75'],
+      dataLabels: { enabled: false },
+      stroke: { width: 3, curve: 'smooth' },
+      markers: {
+        size: 5,
+        colors: data.map((v: number) => (v >= 0 ? '#1D9E75' : '#EF5350')),
+        strokeWidth: 0,
+      },
+      xaxis: { ...this.xaxisBase, categories: labels },
+      yaxis: this.yaxisBase((v) => v.toFixed(1) + '%'),
+      grid: this.gridBase,
+      legend: { show: false },
+      tooltip: { y: { formatter: (v: number) => v.toFixed(2) + '%' } },
+      annotations: {
+        yaxis: [{ y: 0, borderColor: '#EF5350', borderWidth: 1, strokeDashArray: 4 }],
+      },
+    };
+  }
 }

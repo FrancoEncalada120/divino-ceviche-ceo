@@ -1,18 +1,81 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <!-- TAB 1: Chart -->
       <p-tabPanel
         [header]="
-          'Monthly Cash Flow Report' +
-          (monthsLabel ? '  |  ' + monthsLabel : '')
+          'Cash Flow Report' + (monthsLabel ? '  |  ' + monthsLabel : '')
         "
       >
-        <p-chart
-          type="bar"
-          [data]="chartData"
-          [options]="chartOptions"
-        ></p-chart>
+        <div class="row g-3">
+          <!-- Sales & Net Profit -->
+          <div class="col-12 col-lg-6">
+            <div class="chart-card">
+              <!-- <div class="chart-card__header">
+                <span class="chart-card__title">Sales & Net Profit</span>
+                <span class="chart-card__badge">Monthly</span>
+              </div> -->
+              <apx-chart
+                [series]="salesOpts.series"
+                [chart]="salesOpts.chart"
+                [plotOptions]="salesOpts.plotOptions"
+                [colors]="salesOpts.colors ?? []"
+                [dataLabels]="salesOpts.dataLabels"
+                [stroke]="salesOpts.stroke"
+                [fill]="salesOpts.fill"
+                [xaxis]="salesOpts.xaxis"
+                [yaxis]="salesOpts.yaxis"
+                [legend]="salesOpts.legend"
+                [tooltip]="salesOpts.tooltip"
+              ></apx-chart>
+            </div>
+          </div>
+
+          <!-- Expense Breakdown -->
+          <div class="col-12 col-lg-6">
+            <div class="chart-card">
+              <!-- <div class="chart-card__header">
+                <span class="chart-card__title">Expense Breakdown</span>
+                <span class="chart-card__badge">Monthly</span>
+              </div> -->
+              <apx-chart
+                [series]="expenseOpts.series"
+                [chart]="expenseOpts.chart"
+                [plotOptions]="expenseOpts.plotOptions"
+                [colors]="expenseOpts.colors ?? []"
+                [dataLabels]="expenseOpts.dataLabels"
+                [xaxis]="expenseOpts.xaxis"
+                [yaxis]="expenseOpts.yaxis"
+                [legend]="expenseOpts.legend"
+                [tooltip]="expenseOpts.tooltip"
+              ></apx-chart>
+            </div>
+          </div>
+
+          <!-- Net Margin Trend -->
+          <div class="col-12">
+            <div class="chart-card">
+              <!-- <div class="chart-card__header">
+                <span class="chart-card__title">Net Margin Trend</span>
+                <span class="chart-card__badge chart-card__badge--accent"
+                  >Trend</span
+                >
+              </div> -->
+              <apx-chart
+                [series]="trendOpts.series"
+                [chart]="trendOpts.chart"
+                [colors]="trendOpts.colors ?? []"
+                [dataLabels]="trendOpts.dataLabels"
+                [stroke]="trendOpts.stroke"
+                [markers]="trendOpts.markers"
+                [xaxis]="trendOpts.xaxis"
+                [yaxis]="trendOpts.yaxis"
+                [legend]="trendOpts.legend"
+                [tooltip]="trendOpts.tooltip"
+                [annotations]="trendOpts.annotations"
+              ></apx-chart>
+            </div>
+          </div>
+        </div>
       </p-tabPanel>
 
       <p-tabPanel header="CashFlow">
@@ -83,25 +146,52 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Balance">
-        <div class="row g-3">
-          <div class="col-12 col-lg-6" style="height: 280px">
-            <p-chart
-              type="bar"
-              [data]="saldosChartData"
-              [options]="saldosChartOptions"
-            ></p-chart>
+        <div class="row g-3 mb-3">
+          <div class="col-12 col-lg-6">
+            <div class="chart-card">
+              <div class="chart-card__header">
+                <span class="chart-card__title"
+                  >Opening vs Closing Balance</span
+                >
+                <span class="chart-card__badge">Balance</span>
+              </div>
+              <apx-chart
+                [series]="saldosOpts.series"
+                [chart]="saldosOpts.chart"
+                [plotOptions]="saldosOpts.plotOptions"
+                [colors]="saldosOpts.colors ?? []"
+                [dataLabels]="saldosOpts.dataLabels"
+                [xaxis]="saldosOpts.xaxis"
+                [yaxis]="saldosOpts.yaxis"
+                [legend]="saldosOpts.legend"
+                [tooltip]="saldosOpts.tooltip"
+              ></apx-chart>
+            </div>
           </div>
-          <div class="col-12 col-lg-6" style="height: 280px">
-            <p-chart
-              type="bar"
-              [data]="depositsChartData"
-              [options]="depositsChartOptions"
-            ></p-chart>
+          <div class="col-12 col-lg-6">
+            <div class="chart-card">
+              <div class="chart-card__header">
+                <span class="chart-card__title">Bank Flow</span>
+                <span class="chart-card__badge">Deposits</span>
+              </div>
+              <apx-chart
+                [series]="depositsOpts.series"
+                [chart]="depositsOpts.chart"
+                [plotOptions]="depositsOpts.plotOptions"
+                [colors]="depositsOpts.colors ?? []"
+                [dataLabels]="depositsOpts.dataLabels"
+                [stroke]="depositsOpts.stroke"
+                [fill]="depositsOpts.fill"
+                [xaxis]="depositsOpts.xaxis"
+                [yaxis]="depositsOpts.yaxis"
+                [legend]="depositsOpts.legend"
+                [tooltip]="depositsOpts.tooltip"
+              ></apx-chart>
+            </div>
           </div>
         </div>
       </p-tabPanel>
 
-      <!-- TAB 2: TreeTable -->
       <p-tabPanel header="Balance Details">
         <p-treeTable
           [value]="treeData"
@@ -151,27 +241,49 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <!-- TAB 1: Charts -->
       <p-tabPanel header="Apps and Tips">
         <div class="row g-3 mb-3">
-          <div class="col-12 col-lg-6" style="height: 280px">
-            <p-chart
-              type="bar"
-              [data]="appsBarData"
-              [options]="appsBarOptions"
-            ></p-chart>
+          <div class="col-12 col-lg-8">
+            <div class="chart-card">
+              <div class="chart-card__header">
+                <span class="chart-card__title">Sales by App</span>
+                <span class="chart-card__badge">Daily</span>
+              </div>
+              <apx-chart
+                [series]="appsBarOpts.series"
+                [chart]="appsBarOpts.chart"
+                [plotOptions]="appsBarOpts.plotOptions"
+                [colors]="appsBarOpts.colors ?? []"
+                [dataLabels]="appsBarOpts.dataLabels"
+                [xaxis]="appsBarOpts.xaxis"
+                [yaxis]="appsBarOpts.yaxis"
+                [legend]="appsBarOpts.legend"
+                [tooltip]="appsBarOpts.tooltip"
+              ></apx-chart>
+            </div>
           </div>
-          <div class="col-12 col-lg-6" style="height: 280px">
-            <p-chart
-              type="doughnut"
-              [data]="appsDoughnutData"
-              [options]="appsDoughnutOptions"
-            ></p-chart>
+          <div class="col-12 col-lg-4">
+            <div class="chart-card">
+              <div class="chart-card__header">
+                <span class="chart-card__title">App Share</span>
+                <span class="chart-card__badge chart-card__badge--accent"
+                  >Total</span
+                >
+              </div>
+              <apx-chart
+                [series]="appsDonOpts.series"
+                [chart]="appsDonOpts.chart"
+                [labels]="appsDonOpts.labels ?? []"
+                [colors]="appsDonOpts.colors ?? []"
+                [legend]="appsDonOpts.legend"
+                [dataLabels]="appsDonOpts.dataLabels"
+                [tooltip]="appsDonOpts.tooltip"
+              ></apx-chart>
+            </div>
           </div>
         </div>
       </p-tabPanel>
 
-      <!-- TAB 2: TreeTable -->
       <p-tabPanel header="Apps and Tips Details">
         <p-treeTable
           [value]="treeData"
