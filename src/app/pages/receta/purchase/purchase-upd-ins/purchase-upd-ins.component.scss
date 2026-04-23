@@ -163,3 +163,44 @@
     gap: 12px;
   }
 }
+
+
+/* Header distinto */
+.confirm-header {
+  background: linear-gradient(90deg, #ff9800, #f44336);
+  color: white;
+}
+
+/* Mensaje de alerta */
+.confirm-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+/* Título */
+.confirm-title {
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+/* Botón principal */
+.confirm-btn {
+  background: #28a745;
+  border: none;
+  font-weight: bold;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+/* Fondo más fuerte */
+.modal-backdrop.confirm-mode {
+  background: rgba(0, 0, 0, 0.7);
+}

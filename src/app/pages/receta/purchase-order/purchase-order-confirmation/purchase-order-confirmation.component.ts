@@ -1,11 +1,9 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Receta } from '../../../../core/models/receta.model';
-import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
-import { NgFor, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-purchase-order-confirmation',
-  imports: [NgFor, NgIf, TxtsignoPipe],
+  imports: [],
   templateUrl: './purchase-order-confirmation.component.html',
   styleUrl: './purchase-order-confirmation.component.scss'
 })

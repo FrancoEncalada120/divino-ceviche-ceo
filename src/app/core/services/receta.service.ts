@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
@@ -18,10 +18,16 @@ export class RecetaService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Receta[]> {
-    console.log('[RecetaService] GET', this.apiUrl);
+  getAll(locationId?: number): Observable<Receta[]> {
+    let params = new HttpParams();
 
-    return this.http.get<ApiResponse<Receta[]>>(this.apiUrl).pipe(
+    if (locationId && locationId !== 0) {
+      params = params.set('location_id', locationId.toString());
+    }
+
+    console.log('[RecetaService] GET', this.apiUrl, params.toString());
+
+    return this.http.get<ApiResponse<Receta[]>>(this.apiUrl, { params }).pipe(
       map((res) => {
         const arr = res?.data;
         return Array.isArray(arr) ? arr : [];

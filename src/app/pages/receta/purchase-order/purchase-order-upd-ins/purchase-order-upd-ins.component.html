@@ -2,7 +2,7 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h2>{{ 'Add New Purchase' }}</h2>
+      <h2>{{ 'Add New Order Purchase' }}</h2>
       <button class="close-btn" (click)="onClose()">✕</button>
     </div>
 
@@ -100,7 +100,6 @@
                 [baseZIndex]="10000" [(ngModel)]="row.insumo_id" placeholder="Select Product" class="w-100"
                 styleClass="w-100" appendTo="body" [filter]="true" (onChange)="onInsumoChange($event.value, row)">
               </p-dropdown>
-
             </td>
             <td>
               <div class="d-flex gap-2 align-items-center">

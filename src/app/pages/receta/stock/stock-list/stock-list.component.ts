@@ -17,8 +17,6 @@ import { FormsModule } from '@angular/forms';
 import { InventoryListComponent } from '../../inventory/inventory-list/inventory-list.component';
 import { InventoryService } from '../../../../core/services/inventory.service';
 import { ButtonModule } from 'primeng/button';
-import { PurchaseUpdInsComponent } from '../../purchase/purchase-upd-ins/purchase-upd-ins.component';
-import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
 import { Compra } from '../../../../core/models/compra.model';
 import { Receta } from '../../../../core/models/receta.model';
 import { CompraFullCreate } from '../../../../core/models/compra-full-create.model';
@@ -35,6 +33,10 @@ import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.models';
 import { DropdownModule } from 'primeng/dropdown';
 import { TimeAgoPipe } from '../../../../core/pipes/timeAgo';
+import { PurchaseOrderConfirmationComponent } from "../../purchase-order/purchase-order-confirmation/purchase-order-confirmation.component";
+import { PurchaseOrderUpdInsComponent } from "../../purchase-order/purchase-order-upd-ins/purchase-order-upd-ins.component";
+import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
+import { Grupo } from '../../../../core/models/grupos.model';
 
 @Component({
   selector: 'app-stock-list',
@@ -47,25 +49,28 @@ import { TimeAgoPipe } from '../../../../core/pipes/timeAgo';
     InventoryListComponent,
     NgIf,
     ButtonModule,
-    PurchaseUpdInsComponent,
-    PurchaseConfirmationComponent,
     MultiSelectModule,
     InputTextModule,
     DatePipe,
     DropdownModule,
     TimeAgoPipe,
+    PurchaseOrderConfirmationComponent,
+    PurchaseOrderUpdInsComponent
   ],
   templateUrl: './stock-list.component.html',
   styleUrl: './stock-list.component.scss',
 })
 export class StockListComponent implements OnInit {
+
   insumos: Insumo[] = [];
+  grupo: Grupo[] = [];
+
   insumoInventory: Insumo | null = null;
 
   private searchSubject = new Subject<string>();
   private locationChange$ = new Subject<void>();
   locations: Location[] = [];
-  selectedLocation!: Location[];
+  selectedLocation!: Location;
   searchText: string = '';
   source!: string;
   title!: string;
@@ -87,7 +92,7 @@ export class StockListComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private locationService: LocationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.source = this.route.snapshot.data['source'];
@@ -124,7 +129,7 @@ export class StockListComponent implements OnInit {
   }
 
   load(): void {
-    const auditUserId = this.userService.getUser()?.location_id;
+
 
     this.insumoService
       .getInsumoAll({
@@ -135,6 +140,9 @@ export class StockListComponent implements OnInit {
       })
       .subscribe({
         next: (data) => {
+
+
+          this.grupo = data.grupos;
           this.insumos = (data.insumos ?? []).sort((a, b) => {
             const invA = a.insumos_detalles?.[0];
             const invB = b.insumos_detalles?.[0];
@@ -157,12 +165,14 @@ export class StockListComponent implements OnInit {
       next: (data) => {
         this.locations = data ?? [];
 
-        this.selectedLocation = [...this.locations];
+        const location_id = this.userService.getUser()?.location_id;
+        this.selectedLocation = this.locations.find(x => x.location_id === location_id)!;
+
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 
@@ -266,8 +276,43 @@ export class StockListComponent implements OnInit {
     this.showConfirmanModal = false;
   }
 
-  addToCart(item: any) {
-    this.cartService.addToCart(item);
+  addToCart(item: Insumo) {
+
+    if (!item)
+      return;
+
+    //console.log('this.selectedLocation', this.selectedLocation);
+    const location_id: number = this.selectedLocation.location_id || 0;
+
+    const insumoDet = item.insumos_detalles?.find(x => x.location_id == location_id);
+    //console.log('insumoDet', insumoDet);
+    console.log('item', item);
+
+    let cant = (insumoDet?.stock_ideal || 0) - (insumoDet?.stock || 0);
+    if (cant <= 0)
+      cant = 1;
+
+
+    let grupoId = 0;
+    if (item.grupo_detalle && item.grupo_detalle?.length > 0)
+      grupoId = item.grupo_detalle![0].grupo_id
+
+    const det: CompraDetalle = {
+      cantidad: cant,
+      compra_id: 0,
+      compra_order_id: 0,
+      detalle_id: 0,
+      grupo_id: grupoId,
+      insumo_id: item.insumo_id,
+      precio: insumoDet?.precio_final || 0,
+      total: cant * (insumoDet?.precio_final || 0),
+      unidad_id: item?.unidad_id || 0
+    };
+
+    console.log(det);
+
+    this.cartService.addToCart(det);
+
   }
 
   isInCart(item: any): boolean {

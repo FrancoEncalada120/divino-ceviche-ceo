@@ -2,7 +2,7 @@
   <div class="modal-container" (click)="$event.stopPropagation()">
 
     <div class="modal-header">
-      <h2>{{ 'Add New Purchase' }}</h2>
+      <h2>Confirm New Purchase</h2>
       <button class="close-btn" (click)="onClose()">✕</button>
     </div>
 
@@ -57,7 +57,15 @@
       </div>
 
 
-      <h3>Datails</h3>
+
+      <h3 class="confirm-title">Review & Confirm Details</h3>
+        <div class="confirm-warning">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>
+          Please review all items carefully. You can still edit quantities and prices before confirming.
+        </span>
+      </div>
+
       <hr>
       <p-table [value]="items" editMode="row" styleClass="w-100" [tableStyle]="{'table-layout':'fixed'}">
         <ng-template pTemplate="header">
@@ -137,7 +145,7 @@
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
       <button class="btn btn-primary" (click)="onSubmit()">
-        {{ 'Create' }}
+        Confirm Purchase
       </button>
     </div>
 

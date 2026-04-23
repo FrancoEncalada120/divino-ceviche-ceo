@@ -9,8 +9,12 @@
         </div>
       </div>
 
-      <div class="col-md-4 text-end" *ngIf="source === 'stock'">
-        <button class="btn btn-primary" (click)="openCreate()">
+      <div class="col-md-4 text-end">
+        <button
+          class="btn btn-primary"
+          (click)="openCreate()"
+          *ngIf="source === 'stock'"
+        >
           <i class="pi pi-plus me-2"></i>
           Add New Purchase
         </button>
@@ -33,16 +37,19 @@
     <!-- ROW 2 -->
     <div class="row">
       <div class="col-md-6">
-        <p-multiSelect
+        <!-- <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select locations" display="chip" styleClass="w-100" (onChange)="loadData()">
+        </p-multiSelect> -->
+
+        <p-dropdown
           [options]="locations"
           [(ngModel)]="selectedLocation"
           optionLabel="location_name"
-          placeholder="Select locations"
-          display="chip"
-          styleClass="w-100"
+          placeholder="Select location"
+          class="w-100"
           (onChange)="loadData()"
         >
-        </p-multiSelect>
+        </p-dropdown>
       </div>
 
       <div class="col-md-6">
@@ -264,6 +271,8 @@
                   {{ item.insumos_detalles[0]?.frecuencia_inventario || "" }} -
                   {{ item.insumos_detalles[0]?.dia_inventario || "-" }}</small
                 >
+
+                {{ item.frecuencia_inventario || "" }} -
               </div>
             </td>
 
@@ -299,16 +308,16 @@
   [inventoryList]="inventoryList"
 ></app-inventory-list>
 
-<app-purchase-upd-ins
+<app-purchase-order-upd-ins
   *ngIf="showAddLocationModal"
   (close)="closeModalAdd()"
   (submit)="handleSubmit($event)"
-></app-purchase-upd-ins>
+></app-purchase-order-upd-ins>
 
-<app-purchase-confirmation
+<app-purchase-order-confirmation
   *ngIf="showConfirmanModal"
   [recetas_impactadas]="recetas_impactadas"
   [txtDetail]="txtDetail"
   [txtSummary]="txtSummary"
   (close)="closeModalConfirm()"
-></app-purchase-confirmation>
+></app-purchase-order-confirmation>

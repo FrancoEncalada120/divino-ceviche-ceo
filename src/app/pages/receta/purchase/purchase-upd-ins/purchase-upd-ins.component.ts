@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { DatePickerModule } from 'primeng/datepicker';
 import { TableModule } from 'primeng/table';
@@ -36,9 +36,10 @@ import { CartService } from '../../../../core/services/cart.service';
   templateUrl: './purchase-upd-ins.component.html',
   styleUrl: './purchase-upd-ins.component.scss',
 })
-export class PurchaseUpdInsComponent {
+export class PurchaseUpdInsComponent  {
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<Compra>();
+  @Input() items: CompraDetalle[] = [];
 
   cInsumo: Insumo[] = [];
   cUnidad: Unidad[] = [];
@@ -50,30 +51,24 @@ export class PurchaseUpdInsComponent {
     private service: InsumoService,
     private locationService: LocationService,
     private sUnid: UnidadService,
-    private userService: UserService,
-    private cartService: CartService,
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {
     this.load();
     this.user = this.userService.getUser();
 
-    if (this.cartService.getCart() && this.cartService.getCart().length > 0) {
-      for (const item of this.cartService.getCart()) {
-        this.items.push({
-          detalle_id: 0,
-          compra_id: 0,
-          compra_order_id: 0,
-          cantidad: item.cantidad,
-          insumo_id: item.insumo_id,
-          precio: item.precio,
-          total: item.precio * item.cantidad,
-          unidad_id: item.unidad_id,
-          grupo_id: item.grupo_id,
-        });
-      }
-    } else this.addRow();
+    console.log('!this.items', !this.items, this.items);
+
+    if (!this.items)
+      this.addRow();
   }
+
+  // ngOnChanges(changes: SimpleChanges) {
+  //   if (changes['items']) {
+  //     console.log('items cambiaron:', this.items);
+  //   }
+  // }
 
   load(): void {
     this.locationService.getLocationAll().subscribe({
@@ -158,7 +153,6 @@ export class PurchaseUpdInsComponent {
 
   // ================
 
-  items: CompraDetalle[] = [];
 
   addRow() {
     this.items.push({
