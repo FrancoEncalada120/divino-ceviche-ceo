@@ -9,14 +9,23 @@
         </div>
       </div>
 
-      <div class="col-md-4 text-end">
-        <button
-          class="btn btn-primary"
-          (click)="openCreate()"
-          *ngIf="source === 'stock'"
-        >
+      <div class="col-md-4 text-end" *ngIf="source === 'stock'">
+        <button class="btn btn-primary" (click)="openCreate()">
           <i class="pi pi-plus me-2"></i>
           Add New Purchase
+        </button>
+      </div>
+      <div
+        class="col-md-4 text-end"
+        *ngIf="source === 'inventory' && pendingUpdates.size > 0"
+      >
+        <button class="btn btn-primary" (click)="SaveAllInventory()">
+          <i class="pi pi-save me-2"></i>
+          Update Inventory
+          <span class="badge bg-light text-primary ms-2">
+            {{ pendingUpdates.size }} items ·
+            {{ getTotalPendingQuantity() }} units
+          </span>
         </button>
       </div>
     </div>
@@ -142,7 +151,10 @@
                 <div class="stock-values">
                   {{ item.insumos_detalles[0]?.stock }} /
                   {{ item.insumos_detalles[0]?.stock_ideal }}
-                  <span *ngIf="+item.stock === 0" class="stock-alert">
+                  <span
+                    *ngIf="+item.insumos_detalles[0]?.stock === 0"
+                    class="stock-alert"
+                  >
                     <small>Out of stock</small>
                   </span>
                 </div>
@@ -151,15 +163,21 @@
                   <div
                     class="stock-bar-fill"
                     [style.width.%]="
-                      item.stock_ideal
-                        ? (item.stock / item.stock_ideal) * 100
+                      item.insumos_detalles[0]?.stock_ideal
+                        ? (item.insumos_detalles[0]?.stock /
+                            item.insumos_detalles[0]?.stock_ideal) *
+                          100
                         : 0
                     "
                     [ngClass]="{
-                      'stock-zero': item.stock === 0,
+                      'stock-zero': item.insumos_detalles[0]?.stock === 0,
                       'stock-low':
-                        item.stock > 0 && item.stock < item.stock_ideal * 0.5,
-                      'stock-ok': item.stock >= item.stock_ideal * 0.5,
+                        item.insumos_detalles[0]?.stock > 0 &&
+                        item.insumos_detalles[0]?.stock <
+                          item.insumos_detalles[0]?.stock_ideal * 0.5,
+                      'stock-ok':
+                        item.insumos_detalles[0]?.stock >=
+                        item.insumos_detalles[0]?.stock_ideal * 0.5,
                     }"
                   ></div>
                 </div>
@@ -218,26 +236,33 @@
                 <i
                   class="pi pi-calendar"
                   [ngClass]="
-                    item.ultima_toma_inventario ? 'text-success' : 'text-danger'
+                    item.insumos_detalles[0]?.ultima_toma_inventario
+                      ? 'text-success'
+                      : 'text-danger'
                   "
                 >
                 </i>
                 {{
-                  item.ultima_toma_inventario
-                    ? (item.ultima_toma_inventario | date: "yyyy-MM-dd")
+                  item.insumos_detalles[0]?.ultima_toma_inventario
+                    ? (item.insumos_detalles[0]?.ultima_toma_inventario
+                      | date: "yyyy-MM-dd")
                     : ""
                 }}
               </div>
               <div class="item-detail">
-                <small> {{ item.ultima_toma_inventario | timeAgo }}</small>
+                <small>
+                  {{
+                    item.insumos_detalles[0]?.ultima_toma_inventario | timeAgo
+                  }}</small
+                >
               </div>
             </td>
 
             <td class="text-center" *ngIf="source === 'inventory'">
               <div class="item-name">
                 <small>
-                  {{ item.frecuencia_inventario || "" }} -
-                  {{ item.dia_inventario || "-" }}</small
+                  {{ item.insumos_detalles[0]?.frecuencia_inventario || "" }} -
+                  {{ item.insumos_detalles[0]?.dia_inventario || "-" }}</small
                 >
               </div>
             </td>

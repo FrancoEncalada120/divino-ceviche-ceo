@@ -299,29 +299,6 @@ export class StockListComponent implements OnInit {
 
   pendingUpdates = new Map<number, UpdateStockInsumoDto>();
 
-  actualizarInventario(cantidad: number, item: any) {
-    const auditUserId = this.userService.getUser()?.user_id;
-
-    const payload: UpdateStockInsumoDto = {
-      cantidad: cantidad,
-      location_id: item.insumos_detalles[0].location_id,
-      updated_by: auditUserId || 1,
-    };
-
-    // Validar si ya existe
-    if (this.pendingUpdates.has(item.insumo_id)) {
-      // Solo actualiza la cantidad
-      const existing = this.pendingUpdates.get(item.insumo_id)!;
-      existing.cantidad = cantidad;
-    } else {
-      this.pendingUpdates.set(item.insumo_id, payload);
-    }
-
-    // Opcional: actualizar UI
-    item.stock = cantidad;
-    item.ultima_toma_inventario = new Date();
-  }
-
   onCantidadChange(valor: string, item: any) {
     const cantidad = Number(valor);
 
@@ -336,13 +313,35 @@ export class StockListComponent implements OnInit {
     this.timers.set(item.insumo_id, timer);
   }
 
-  guardarTodo() {
+  actualizarInventario(cantidad: number, item: any) {
+    const auditUserId = this.userService.getUser()?.user_id;
+
+    const payload: UpdateStockInsumoDto = {
+      cantidad: cantidad,
+      location_id: item.insumos_detalles[0].location_id,
+      updated_by: auditUserId || 1,
+    };
+
+    if (this.pendingUpdates.has(item.insumo_id)) {
+      const existing = this.pendingUpdates.get(item.insumo_id)!;
+      existing.cantidad = cantidad;
+    } else {
+      this.pendingUpdates.set(item.insumo_id, payload);
+    }
+
+    // item.stock = cantidad;
+    //item.ultima_toma_inventario = new Date();
+  }
+  SaveAllInventory() {
+    console.log('pendingUpdates', this.pendingUpdates);
     const updatesArray = Array.from(this.pendingUpdates.entries()).map(
       ([insumo_id, payload]) => ({
         insumo_id,
         ...payload,
       }),
     );
+
+    console.log('updatesArray', this.pendingUpdates);
 
     this.insumoService.updateStockBatch(updatesArray).subscribe({
       next: () => {
@@ -353,6 +352,7 @@ export class StockListComponent implements OnInit {
         });
 
         this.pendingUpdates.clear();
+        this.load();
       },
       error: (err) => {
         console.error(err);
@@ -363,5 +363,11 @@ export class StockListComponent implements OnInit {
         });
       },
     });
+  }
+
+  getTotalPendingQuantity(): number {
+    let total = 0;
+    this.pendingUpdates.forEach((update) => (total += update.cantidad));
+    return total;
   }
 }
