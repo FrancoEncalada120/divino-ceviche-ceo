@@ -3,8 +3,10 @@ export interface RecetaFullCreate {
     nombre: string;
     descripcion?: string | null;
     estado?: string;
-    created_by?: number | null;
-    updated_by?: number | null;
+    // ─── campos de location ───────────────────
+    location_id?: number | null;
+    todoslocales?: boolean; // si true, crea en todos los locales activos
+    // ─── campos de rec_recetas_totales ────────
     porcenta_venta?: number;
     costo_preparacion?: number;
     costo_neto?: number;
@@ -12,24 +14,15 @@ export interface RecetaFullCreate {
     porciones?: number;
     imagen_url?: string | null;
     es_insumo?: boolean;
-    unidad_receta?: number;
-    cantidad_receta?: number;
+    // ─── auditoría ────────────────────────────
+    created_by?: number | null;
+    updated_by?: number | null;
   };
   detalles: {
     insumo_id: number;
     unidad_id: number;
-    location_id: number;
     cantidad: number;
     precio_actual: number;
-    porcenta_venta?: number;
-    costo_preparacion?: number;
-    costo_neto?: number;
-    costo_total?: number;
-    porcentaje_venta_old?: number;
-    costo_neto_old?: number;
-    costo_total_old?: number;
-    imagen_url?: string | null;
-    es_insumo?: boolean;
     unidad_receta?: number;
     cantidad_receta?: number | null;
     porciones?: number | null;

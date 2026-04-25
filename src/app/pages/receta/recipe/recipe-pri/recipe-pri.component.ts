@@ -161,9 +161,19 @@ export class RecipePriComponent {
 
   handleSubmit(payload: RecetaFullCreate): void {
     console.log('[PADRE] payload recibido =>', payload);
+    console.log('[PADRE] payload.receta =>', payload.receta);
+    console.log('[PADRE] payload.detalles =>', payload.detalles);
+    console.log(
+      '[PADRE] modalMode =>',
+      this.modalMode,
+      '| selectedReceta =>',
+      this.selectedReceta,
+    );
 
     const isEdit =
       this.modalMode === 'edit' && !!this.selectedReceta?.receta_id;
+
+    console.log('[PADRE] isEdit =>', isEdit);
 
     const request$ = isEdit
       ? this.recetaService.updateFull(this.selectedReceta!.receta_id, payload)
@@ -172,10 +182,15 @@ export class RecipePriComponent {
     request$.subscribe({
       next: (res) => {
         console.log('[RECETA] respuesta completa =>', res);
+        console.log('[RECETA] res.receta =>', res?.receta);
+        console.log('[RECETA] res.detalles =>', res?.detalles);
+        console.log('[RECETA] res.receta_impactada =>', res?.receta_impactada);
 
         const recetaId = isEdit
           ? this.selectedReceta!.receta_id
           : res?.receta?.receta_id;
+
+        console.log('[RECETA] recetaId resuelto =>', recetaId);
 
         if (payload.receta.es_insumo && recetaId) {
           const cantidad = isEdit
@@ -191,9 +206,6 @@ export class RecipePriComponent {
             descripcion: payload.receta.descripcion ?? payload.receta.nombre,
             proveedor_id: 24,
             estacion_id: 1,
-            unidad_id: payload.receta.unidad_receta ?? null,
-            unidad_trabajo: payload.receta.unidad_receta ?? null,
-            // cantidad: cantidad,
             stock_ideal: cantidad,
             created_by: 1,
             id_receta: recetaId,
@@ -213,6 +225,7 @@ export class RecipePriComponent {
               console.error('[INSUMO] error =>', err);
               console.error('[INSUMO] error.error =>', err?.error);
               console.error('[INSUMO] error.message =>', err?.error?.message);
+              console.error('[INSUMO] error.errors =>', err?.error?.errors);
               this.closeModal();
               this.load();
             },
@@ -229,11 +242,15 @@ export class RecipePriComponent {
         this.showConfirmanModal = true;
 
         this.closeModal();
-
         this.load();
       },
       error: (err) => {
         console.error('[RECETAS] error =>', err);
+        console.error('[RECETAS] error.error =>', err?.error);
+        console.error('[RECETAS] error.message =>', err?.error?.message);
+        // ─── detalle del validation error de Sequelize ───────
+        console.error('[RECETAS] error.errors =>', err?.error?.errors);
+        console.error('[RECETAS] error.sql =>', err?.error?.sql);
       },
     });
   }

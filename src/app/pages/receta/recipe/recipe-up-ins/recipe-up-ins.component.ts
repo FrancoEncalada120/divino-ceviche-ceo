@@ -92,7 +92,7 @@ export class RecipeUpInsComponent implements OnChanges {
     private insumoService: InsumoService,
     private messageService: MessageService,
     private uploadService: UploadService,
-    private usuarioService: UserService
+    private usuarioService: UserService,
   ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
@@ -128,7 +128,10 @@ export class RecipeUpInsComponent implements OnChanges {
         value: loc.location_id,
       }));
 
-      if (this.locationsOptions.length > 0 && !this.form.get('location_id')?.value) {
+      if (
+        this.locationsOptions.length > 0 &&
+        !this.form.get('location_id')?.value
+      ) {
         this.form.patchValue({ location_id: this.locationsOptions[0].value });
       }
     }
@@ -268,9 +271,10 @@ export class RecipeUpInsComponent implements OnChanges {
     while (this.detallesFA.length) this.detallesFA.removeAt(0);
     this.unidadesOptionsByRow = [];
 
-    const locationFromDetalle = Array.isArray(this.receta.detalles) && this.receta.detalles.length > 0
-      ? this.receta.detalles[0].location_id
-      : this.locationsOptions[0]?.value ?? null;
+    const locationFromDetalle =
+      Array.isArray(this.receta.detalles) && this.receta.detalles.length > 0
+        ? this.receta.detalles[0].location_id
+        : (this.locationsOptions[0]?.value ?? null);
 
     this.form.patchValue({
       nombre: this.receta.nombre ?? '',
@@ -351,12 +355,18 @@ export class RecipeUpInsComponent implements OnChanges {
 
     if (this.form.invalid) return;
 
+    const currentUser = this.usuarioService.getUser()?.user_id;
     const v = this.form.getRawValue();
+
+    console.log('[RecipeUpInsComponent] form raw value =>', v);
+    console.log('[RecipeUpInsComponent] currentUser =>', currentUser);
 
     const payload: RecetaFullCreate = {
       receta: {
         nombre: (v.nombre ?? '').trim(),
         descripcion: v.descripcion?.trim() || null,
+        location_id: Number(v.location_id ?? null),
+        todoslocales: !!v.todoslocales,
         porcenta_venta: Number(this.vPorcenta_venta ?? 0),
         costo_preparacion: Number(this.vCosto_preparacion ?? 0),
         costo_neto: Number(this.vCosto_neto ?? 0),
@@ -364,17 +374,42 @@ export class RecipeUpInsComponent implements OnChanges {
         porciones: Number(this.form.get('porciones')?.value ?? 1),
         imagen_url: v.imagen_url ?? null,
         es_insumo: !!v.es_insumo,
-        unidad_receta: Number(v.unidad_receta ?? 0),
-        //  id_insumo: : Number(v.id_insumo ?? 0),
-        cantidad_receta: Number(v.cantidad_receta ?? 0),
+        created_by: currentUser ?? 0,
       },
       detalles: (v.detalles ?? []).map((d: any) => ({
         insumo_id: Number(d.insumo_id),
         unidad_id: Number(d.unidad_id),
         cantidad: Number(d.cantidad),
         precio_actual: Number(d.precio_actual),
+        unidad_receta: Number(d.unidad_receta ?? 1),
+        cantidad_receta: d.cantidad_receta ? Number(d.cantidad_receta) : null,
+        porciones: d.porciones ? Number(d.porciones) : null,
+        created_by: currentUser ?? 0,
       })),
     };
+
+    console.log('[RecipeUpInsComponent] payload.receta =>', payload.receta);
+    console.log('[RecipeUpInsComponent] payload.detalles =>', payload.detalles);
+    console.log(
+      '[RecipeUpInsComponent] payload.detalles COUNT =>',
+      payload.detalles.length,
+    );
+
+    // ─── validación campos críticos ───────────────────────────
+    console.log(
+      '[RecipeUpInsComponent] location_id =>',
+      payload.receta.location_id,
+      '| todoslocales =>',
+      payload.receta.todoslocales,
+    );
+    payload.detalles.forEach((d, i) => {
+      console.log(`[RecipeUpInsComponent] detalle[${i}] =>`, {
+        insumo_id: d.insumo_id,
+        unidad_id: d.unidad_id,
+        cantidad: d.cantidad,
+        precio_actual: d.precio_actual,
+      });
+    });
 
     if (!payload.detalles.length) return;
 
@@ -419,7 +454,7 @@ export class RecipeUpInsComponent implements OnChanges {
         precio: 0,
         unidad_id: 0,
         cantidad: 0,
-        location_id: this.usuarioService.getUser()?.location_id || 0
+        location_id: this.usuarioService.getUser()?.location_id || 0,
       })
       .subscribe({
         next: (precio) => {
@@ -464,7 +499,7 @@ export class RecipeUpInsComponent implements OnChanges {
         precio: 0, // precio compra
         unidad_id: unidad_receta,
         cantidad: 1,
-        location_id: this.usuarioService.getUser()?.location_id || 0
+        location_id: this.usuarioService.getUser()?.location_id || 0,
       })
       .subscribe((precioCalculado) => {
         g.get('precio_actual')?.setValue(precioCalculado);
