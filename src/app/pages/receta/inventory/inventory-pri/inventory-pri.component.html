@@ -1,21 +1,28 @@
 <div class="modal-body">
-  <div class="d-flex justify-content-between align-items-center mb-3 m-5">
-    <!-- Título -->
-    <h5>{{ insumo?.nombre }}</h5>
+  <h5 class="mb-3 m-5">{{ insumo?.nombre }}</h5>
 
-    <!-- Botón -->
-    <button
-      pButton
-      type="button"
-      label="Export"
-      icon="pi pi-file-excel"
-      class="p-button-success p-button-sm"
-      (click)="exportToExcel()"
-    ></button>
-  </div>
   <p-tabView>
     <p-tabPanel header="Kardex Table">
+      <div class="d-flex align-items-center gap-2 mb-3">
+        <input
+          #searchInput
+          type="text"
+          class="form-control form-control-sm"
+          placeholder="Search..."
+          (input)="dt.filterGlobal(searchInput.value, 'contains')"
+        />
+        <button
+          pButton
+          type="button"
+          icon="pi pi-file-excel"
+          label="Excel"
+          class="p-button-success p-button-sm text-nowrap"
+          (click)="exportToExcel()"
+        ></button>
+      </div>
+
       <p-table
+        #dt
         [value]="inventoryList"
         styleClass="p-datatable-sm w-100"
         [paginator]="true"
@@ -23,6 +30,12 @@
         [rowsPerPageOptions]="[10, 20, 50]"
         [scrollable]="true"
         scrollHeight="300px"
+        [globalFilterFields]="[
+          'inventario_fecha',
+          'precio',
+          'stock',
+          'inventario_desc',
+        ]"
       >
         <!-- HEADER -->
         <ng-template pTemplate="header">
@@ -42,41 +55,74 @@
           <tr>
             <!-- Fecha -->
             <td>
-              {{ item.inventario_fecha | date: "yyyy-MM-dd" }} <br />
-              <small class="text-muted">
-                {{ item.inventario_fecha | timeAgo }}
-              </small>
+              <span class="fw-semibold">{{
+                item.inventario_fecha | date: "yyyy-MM-dd"
+              }}</span
+              ><br />
+              <small class="text-muted">{{
+                item.inventario_fecha | timeAgo
+              }}</small>
             </td>
 
             <!-- Cantidad -->
             <td>
-              <span
-                [ngClass]="{
-                  'text-success': item.inventario_desc == 1,
-                  'text-danger': item.inventario_desc == 2,
-                }"
-              >
-                {{ item.inventario_desc == 1 ? "+" : "-" }}
-                {{ item.cantidad | number: "1.2-2" }}
-              </span>
+              <div class="d-flex align-items-center gap-1">
+                <i
+                  class="pi"
+                  [ngClass]="
+                    item.inventario_desc == 1
+                      ? 'pi-arrow-up text-success'
+                      : 'pi-arrow-down text-danger'
+                  "
+                ></i>
+                <span
+                  class="fw-bold"
+                  [ngClass]="
+                    item.inventario_desc == 1 ? 'text-success' : 'text-danger'
+                  "
+                >
+                  {{ item.inventario_desc == 1 ? "+" : "-"
+                  }}{{ item.cantidad | number: "1.2-2" }}
+                </span>
+              </div>
             </td>
 
             <!-- Stock -->
             <td>
-              <span class="fw-bold">
-                {{ item.stock | number: "1.2-2" }}
-              </span>
+              <div class="d-flex align-items-center gap-1">
+                <span class="fw-bold">{{ item.stock | number: "1.2-2" }}</span>
+                <ng-container *ngIf="stockTrend(rowIndex) as trend">
+                  <i
+                    class="pi small"
+                    [ngClass]="{
+                      'pi-arrow-up text-success': trend === 'up',
+                      'pi-arrow-down text-danger': trend === 'down',
+                      'pi-minus text-muted': trend === 'same',
+                    }"
+                  ></i>
+                </ng-container>
+              </div>
             </td>
 
             <!-- Precio -->
             <td>
-              {{ item.precio | number: "1.2-2" }}
+              <div class="d-flex align-items-center gap-1">
+                <span>{{ item.precio | number: "1.2-2" }}</span>
+                <ng-container *ngIf="priceTrend(rowIndex) as trend">
+                  <i
+                    class="pi small"
+                    [ngClass]="{
+                      'pi-arrow-up text-success': trend === 'up',
+                      'pi-arrow-down text-danger': trend === 'down',
+                      'pi-minus text-muted': trend === 'same',
+                    }"
+                  ></i>
+                </ng-container>
+              </div>
             </td>
 
             <!-- Total -->
-            <td>
-              {{ item.total | number: "1.2-2" }}
-            </td>
+            <td>{{ item.total | number: "1.2-2" }}</td>
 
             <!-- Descripción -->
             <td>

@@ -38,15 +38,33 @@ export class InventoryPriComponent {
     this.buildChart();
   }
 
+  getTrend(curr: number, prev: number): 'up' | 'down' | 'same' {
+    if (curr > prev) return 'up';
+    if (curr < prev) return 'down';
+    return 'same';
+  }
+
+  priceTrend(i: number): 'up' | 'down' | 'same' | null {
+    if (i === 0) return null;
+    return this.getTrend(this.inventoryList[i].precio, this.inventoryList[i - 1].precio);
+  }
+
+  stockTrend(i: number): 'up' | 'down' | 'same' | null {
+    if (i === 0) return null;
+    return this.getTrend(this.inventoryList[i].stock, this.inventoryList[i - 1].stock);
+  }
+
+  prevPrice(i: number): number | null {
+    return i > 0 ? this.inventoryList[i - 1].precio : null;
+  }
+
+  prevStock(i: number): number | null {
+    return i > 0 ? this.inventoryList[i - 1].stock : null;
+  }
+
   getColorPrice(i: number): string {
     if (i == 0) return '';
-
-    //console.log('Comparando precios para index:', i);
-
-    let insumo1 = this.inventoryList[i];
-    let insumo2 = this.inventoryList[i - 1];
-    let diff = insumo1.precio - insumo2.precio;
-
+    let diff = this.inventoryList[i].precio - this.inventoryList[i - 1].precio;
     if (diff > 0) return 'text-green-500';
     else if (diff < 0) return 'text-red-500';
     else return '';
@@ -54,13 +72,7 @@ export class InventoryPriComponent {
 
   getIconClassPrice(i: number): string {
     if (i == 0) return 'text-green-500';
-
-    // console.log('Comparando precios para index:', i);
-
-    let insumo1 = this.inventoryList[i];
-    let insumo2 = this.inventoryList[i - 1];
-    let diff = insumo1.precio - insumo2.precio;
-
+    let diff = this.inventoryList[i].precio - this.inventoryList[i - 1].precio;
     if (diff > 0) return `pi pi-arrow-up ${this.getColorPrice(i)}`;
     else if (diff < 0) return `pi pi-arrow-down ${this.getColorPrice(i)}`;
     else return 'pi pi-arrows-h';
@@ -115,7 +127,7 @@ export class InventoryPriComponent {
     if (!this.inventoryList || this.inventoryList.length === 0) return;
 
     // Mapear data a columnas planas en inglés
-    const data = this.inventoryList.map((i, idx) => ({
+    const data = this.inventoryList.map((i) => ({
       Date: i.inventario_fecha,
       //Insumo: `${this.insumo?.nombre} ${this.insumo?.cantidad || 0} x ${this.insumo?.unidad?.abreviatura || ''}`,
       // Cantidad: i.cantidad,

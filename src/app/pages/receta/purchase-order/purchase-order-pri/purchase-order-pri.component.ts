@@ -11,7 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Receta } from '../../../../core/models/receta.model';
-import { PurchaseOrderConfirmationComponent } from "../purchase-order-confirmation/purchase-order-confirmation.component";
+import { PurchaseOrderConfirmationComponent } from '../purchase-order-confirmation/purchase-order-confirmation.component';
 import { ProveedorService } from '../../../../core/services/ProveedorService';
 import { Insumo, Proveedor } from '../../../../core/models/insumo.model';
 import { DropdownModule } from 'primeng/dropdown';
@@ -21,18 +21,30 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { forkJoin, Subject, switchMap } from 'rxjs';
 import { CartService } from '../../../../core/services/cart.service';
 import { debounceTime } from 'rxjs/operators';
-import { PurchaseUpdInsComponent } from "../../purchase/purchase-upd-ins/purchase-upd-ins.component";
-import { PurchaseConfirmationComponent } from "../../purchase/purchase-confirmation/purchase-confirmation.component";
+import { PurchaseUpdInsComponent } from '../../purchase/purchase-upd-ins/purchase-upd-ins.component';
+import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
+import { Card } from 'primeng/card';
 
 @Component({
   selector: 'app-order-purchase-pri',
-  imports: [FormsModule, PurchaseOrderUpdInsComponent, PurchaseOrderListComponent, NgIf,
-    DatePickerModule, ButtonModule, PurchaseOrderConfirmationComponent, DropdownModule, MultiSelectModule, PurchaseUpdInsComponent, PurchaseConfirmationComponent],
+  imports: [
+    FormsModule,
+    PurchaseOrderUpdInsComponent,
+    PurchaseOrderListComponent,
+    NgIf,
+    DatePickerModule,
+    ButtonModule,
+    PurchaseOrderConfirmationComponent,
+    DropdownModule,
+    MultiSelectModule,
+    PurchaseUpdInsComponent,
+    PurchaseConfirmationComponent,
+    Card,
+  ],
   templateUrl: './purchase-order-pri.component.html',
-  styleUrl: './purchase-order-pri.component.scss'
+  styleUrl: './purchase-order-pri.component.scss',
 })
 export class PurchaseOrderPriComponent {
-
   showAddLocationModal = false;
   showConfirmanModal = false;
 
@@ -58,11 +70,10 @@ export class PurchaseOrderPriComponent {
     private service: CompraService,
     private messageService: MessageService,
     private proveedorService: ProveedorService,
-    private insumoService: InsumoService
-  ) { }
+    private insumoService: InsumoService,
+  ) {}
 
   ngOnInit(): void {
-
     // 📅 Inicializar con AYER
     const today = new Date();
     const yesterday = new Date();
@@ -75,11 +86,9 @@ export class PurchaseOrderPriComponent {
     this.SupplyChange$.pipe(debounceTime(2000)).subscribe(() => {
       this.load(false);
     });
-
   }
 
   load(bIncial: boolean): void {
-
     this.loading = true;
 
     if (!this.dateRange || this.dateRange.length < 2) {
@@ -93,54 +102,58 @@ export class PurchaseOrderPriComponent {
 
     forkJoin({
       proveedores: this.proveedorService.getAll(),
-      insumosResp: this.insumoService.getInsumoAll()
-    }).pipe(
+      insumosResp: this.insumoService.getInsumoAll(),
+    })
+      .pipe(
+        // 🔥 aquí encadenas la segunda llamada
+        switchMap(({ proveedores, insumosResp }) => {
+          if (bIncial) {
+            // ✅ proveedores
+            this.proveedores = proveedores;
+            this.selectedProveedor = this.proveedores;
 
-      // 🔥 aquí encadenas la segunda llamada
-      switchMap(({ proveedores, insumosResp }) => {
+            // ✅ insumos
+            this.insumos = insumosResp.insumos;
+            this.selectedInsumos = this.insumos;
+          }
 
-        if (bIncial) {
-          // ✅ proveedores
-          this.proveedores = proveedores;
-          this.selectedProveedor = this.proveedores;
+          // 🔥 construir parámetros
+          let insumos = '';
+          if (
+            this.selectedInsumos &&
+            this.selectedInsumos.length != this.insumos.length
+          )
+            insumos = this.selectedInsumos.map((c) => c.insumo_id).join(',');
 
-          // ✅ insumos
-          this.insumos = insumosResp.insumos;
-          this.selectedInsumos = this.insumos;
-        }
+          let provedores = '';
+          if (
+            this.selectedProveedor &&
+            this.selectedProveedor.length != this.proveedores.length
+          )
+            provedores = this.selectedProveedor
+              .map((c) => c.proveedor_id)
+              .join(',');
 
-        // 🔥 construir parámetros
-        let insumos = "";
-        if (this.selectedInsumos && this.selectedInsumos.length != this.insumos.length)
-          insumos = this.selectedInsumos.map((c) => c.insumo_id).join(',');
+          // 🚀 segunda llamada (retornas observable)
+          return this.service.getComprasOrderAll({
+            fechaIni: startDate,
+            fechaFin: endDate,
+            lstProveedor: provedores,
+            lstInsumo: insumos,
+          });
+        }),
+      )
+      .subscribe({
+        next: (data) => {
+          this.compraDetalle = data ?? [];
+          this.loading = false;
+        },
 
-        let provedores = "";
-        if (this.selectedProveedor && this.selectedProveedor.length != this.proveedores.length)
-          provedores = this.selectedProveedor.map((c) => c.proveedor_id).join(',');
-
-        // 🚀 segunda llamada (retornas observable)
-        return this.service.getComprasOrderAll({
-          fechaIni: startDate,
-          fechaFin: endDate,
-          lstProveedor: provedores,
-          lstInsumo: insumos,
-        });
-      })
-
-    ).subscribe({
-
-      next: (data) => {
-        this.compraDetalle = data ?? [];
-        this.loading = false;
-      },
-
-      error: (err) => {
-        console.error('Error loading data:', err);
-        this.loading = false;
-      }
-
-    });
-
+        error: (err) => {
+          console.error('Error loading data:', err);
+          this.loading = false;
+        },
+      });
   }
 
   formatDate(date: Date): string {
@@ -167,23 +180,25 @@ export class PurchaseOrderPriComponent {
   }
 
   handleSubmitOrder(compra: Compra) {
-
     const CompraFullCreate: CompraFullCreate = {
       compra: compra,
-      detalles: compra.detalles?.map(d => ({
-        insumo_id: d.insumo_id,
-        unidad_id: d.unidad_id,
-        cantidad: d.cantidad,
-        precio: d.precio,
-        grupo_id: d.grupo_id,
-      })) ?? []
+      detalles:
+        compra.detalles?.map((d) => ({
+          insumo_id: d.insumo_id,
+          unidad_id: d.unidad_id,
+          cantidad: d.cantidad,
+          precio: d.precio,
+          grupo_id: d.grupo_id,
+        })) ?? [],
     };
 
-    const action$ = this.service.createFullOrder(CompraFullCreate, compra.created_by ?? undefined)
+    const action$ = this.service.createFullOrder(
+      CompraFullCreate,
+      compra.created_by ?? undefined,
+    );
 
     action$.subscribe({
       next: (savedLocation: CompraFullResponse) => {
-
         // ➕ CREATE → agregar al array
         //this.compras.push(savedLocation.compra);
         this.load(false); // recargar para mostrar la nueva compra
@@ -196,43 +211,37 @@ export class PurchaseOrderPriComponent {
         this.closeModal();
       },
       error: (err) => {
-
         //console.error('[Locations] save error:', err);
 
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: err.error?.message
+          detail: err.error?.message,
         });
-
-
-      }
+      },
     });
-
   }
 
-
   handleSubmit(compra: Compra) {
-
-
-
     const CompraFullCreate: CompraFullCreate = {
       compra: compra,
-      detalles: compra.detalles?.map(d => ({
-        insumo_id: d.insumo_id,
-        unidad_id: d.unidad_id,
-        cantidad: d.cantidad,
-        precio: d.precio,
-        grupo_id: d.grupo_id,
-      })) ?? []
+      detalles:
+        compra.detalles?.map((d) => ({
+          insumo_id: d.insumo_id,
+          unidad_id: d.unidad_id,
+          cantidad: d.cantidad,
+          precio: d.precio,
+          grupo_id: d.grupo_id,
+        })) ?? [],
     };
 
-    const action$ = this.service.createFull(CompraFullCreate, compra.created_by ?? undefined)
+    const action$ = this.service.createFull(
+      CompraFullCreate,
+      compra.created_by ?? undefined,
+    );
 
     action$.subscribe({
       next: (savedLocation: CompraFullResponse) => {
-
-
         // ➕ CREATE → agregar al array
         //this.compras.push(savedLocation.compra);
         this.load(false); // recargar para mostrar la nueva compra
@@ -245,19 +254,15 @@ export class PurchaseOrderPriComponent {
         this.closeModalPurchaseAdd();
       },
       error: (err) => {
-
         //console.error('[Locations] save error:', err);
 
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: err.error?.message
+          detail: err.error?.message,
         });
-
-
-      }
+      },
     });
-
   }
 
   openCreate() {
@@ -266,24 +271,22 @@ export class PurchaseOrderPriComponent {
   }
 
   delete(compra: Compra) {
-
     this.selectedItem = compra;
     this.showAddLocationModal = false;
 
     if (!compra?.compra_order_id) return;
 
     const confirmDelete = confirm(
-      `¿Seguro que deseas eliminar la compra ${compra.compra_order_id}?`
+      `¿Seguro que deseas eliminar la compra ${compra.compra_order_id}?`,
     );
 
     if (!confirmDelete) return;
 
     this.service.deleteCompraOrder(compra.compra_order_id).subscribe({
       next: () => {
-
         // 🔥 eliminar del array local (UX rápida)
         this.compraDetalle = this.compraDetalle.filter(
-          c => c.compra_order_id !== compra.compra_order_id
+          (c) => c.compra_order_id !== compra.compra_order_id,
         );
 
         this.messageService.add({
@@ -293,7 +296,6 @@ export class PurchaseOrderPriComponent {
         });
 
         this.load(false); // recargar para actualizar la lista
-
       },
       error: (err) => {
         console.error('[Compras] delete error:', err);
@@ -303,19 +305,19 @@ export class PurchaseOrderPriComponent {
           summary: 'Error',
           detail: err.message || 'Error eliminando compra',
         });
-      }
+      },
     });
   }
 
   items: CompraDetalle[] = [];
 
   complete(deltalle: CompraDetalle) {
-
-    this.items = deltalle.compra_order!.order_detalles.map(det => ({ ...det }));
+    this.items = deltalle.compra_order!.order_detalles.map((det) => ({
+      ...det,
+    }));
     console.log(' this.items', this.items);
 
     this.showAddPurchaseModal = true;
-
   }
 
   private SupplyChange$ = new Subject<void>();
@@ -329,7 +331,6 @@ export class PurchaseOrderPriComponent {
   }
 
   get selectedProveedorNames(): string {
-
     if (!this.selectedProveedor?.length) {
       return 'None';
     }
@@ -342,7 +343,6 @@ export class PurchaseOrderPriComponent {
   }
 
   get selectedInsumosNames(): string {
-
     if (!this.selectedInsumos?.length) {
       return 'None';
     }
@@ -368,5 +368,4 @@ export class PurchaseOrderPriComponent {
 
     return `${format(this.dateRange[0])} - ${format(this.dateRange[1])}`;
   }
-
 }

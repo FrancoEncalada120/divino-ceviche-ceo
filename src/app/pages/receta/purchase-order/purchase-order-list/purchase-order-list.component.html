@@ -1,17 +1,45 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
-
     <p-tabView>
       <p-tabPanel header="Purchase List">
-
-        <div class="card-body d-flex justify-content-end">
-          <button pButton type="button" label="Export to Excel" icon="pi pi-file-excel"
-            (click)="exportToExcel()"></button>
+        <div class="d-flex align-items-center gap-2 mb-3 mt-2">
+          <input
+            #searchInput
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Search..."
+            (input)="dt.filterGlobal(searchInput.value, 'contains')"
+          />
+          <button
+            pButton
+            type="button"
+            icon="pi pi-file-excel"
+            label="Excel"
+            class="p-button-success p-button-sm text-nowrap"
+            (click)="exportToExcel()"
+          ></button>
         </div>
 
-        <p-table [value]="compraDetalle" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+        <p-table
+          #dt
+          [value]="compraDetalle"
+          [paginator]="true"
+          [rows]="10"
+          [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'"
+          breakpoint="768px"
+          sortMode="multiple"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+          styleClass="p-datatable-sm"
+          [globalFilterFields]="[
+            'compra_order.compra_orden_referencia',
+            'compra_order.fecha',
+            'insumo.nombreCompleto',
+            'compra_order.created_user_order.user_name',
+            'compra_order.detalle',
+          ]"
+        >
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
@@ -42,7 +70,7 @@
                 {{ row.compra_order.fecha }}
               </td>
 
-              <td> {{ row.insumo.nombreCompleto }} </td>
+              <td>{{ row.insumo.nombreCompleto }}</td>
 
               <td>
                 {{ row.cantidad }}
@@ -64,20 +92,31 @@
               </td>
 
               <td>
-                {{ row.compra_order.compra_order_estado == 1 ? 'Submitted' : 'Completed' }}
+                {{
+                  row.compra_order.compra_order_estado == 1
+                    ? "Submitted"
+                    : "Completed"
+                }}
               </td>
 
-
-              <td  *ngIf="mostrarBotones(row, rowIndex)"  class="col-actions text-end">
-                <button class="btn btn-sm btn-secondary m-1" (click)="onComplete(row)"  >
+              <td
+                *ngIf="mostrarBotones(row, rowIndex)"
+                class="col-actions text-end"
+              >
+                <button
+                  class="btn btn-sm btn-secondary m-1"
+                  (click)="onComplete(row)"
+                >
                   Add Purchase
                 </button>
-                <button class="btn btn-sm btn-danger m-1" (click)="onDelete(row)">
+                <button
+                  class="btn btn-sm btn-danger m-1"
+                  (click)="onDelete(row)"
+                >
                   Delete
                 </button>
               </td>
             </tr>
-
           </ng-template>
 
           <!-- Empty -->
@@ -91,8 +130,5 @@
         </p-table>
       </p-tabPanel>
     </p-tabView>
-
-
   </div>
-
 </div>
