@@ -18,11 +18,15 @@ export class RecetaService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(locationId?: number): Observable<Receta[]> {
+  getAll(locationId?: number, recetaId?: number): Observable<Receta[]> {
     let params = new HttpParams();
 
     if (locationId && locationId !== 0) {
       params = params.set('location_id', locationId.toString());
+    }
+
+    if (recetaId && recetaId !== 0) {
+      params = params.set('receta_id', recetaId.toString());
     }
 
     console.log('[RecetaService] GET', this.apiUrl, params.toString());
