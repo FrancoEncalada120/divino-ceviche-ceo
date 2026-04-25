@@ -41,26 +41,6 @@
               </div>
 
               <div class="col-12 col-md-4">
-                <label class="form-label">Group *</label>
-                <p-dropdown
-                  formControlName="grupo"
-                  [options]="gruposOptions"
-                  optionLabel="label"
-                  optionValue="value"
-                  placeholder="Select group"
-                  appendTo="body"
-                  class="w-100"
-                >
-                </p-dropdown>
-                <div
-                  class="field-error"
-                  *ngIf="submitted && f['grupo'].invalid"
-                >
-                  Group is required.
-                </div>
-              </div>
-
-              <div class="col-12 col-md-4">
                 <label class="form-label">Estación *</label>
                 <p-dropdown
                   formControlName="estacion_id"
@@ -94,6 +74,26 @@
                   class="w-100"
                 >
                 </p-dropdown>
+              </div>
+
+              <div class="col-12 col-md-4">
+                <label class="form-label">Group *</label>
+                <p-dropdown
+                  formControlName="grupo"
+                  [options]="gruposOptions"
+                  optionLabel="label"
+                  optionValue="value"
+                  placeholder="Select group"
+                  appendTo="body"
+                  class="w-100"
+                >
+                </p-dropdown>
+                <div
+                  class="field-error"
+                  *ngIf="submitted && f['grupo'].invalid"
+                >
+                  Group is required.
+                </div>
               </div>
 
               <div class="col-12 col-md-4">
@@ -142,7 +142,7 @@
                 </p-inputNumber>
               </div>
 
-              <div class="col-12 col-md-4">
+              <!-- <div class="col-12 col-md-4">
                 <label class="form-label">Recipe ID</label>
                 <input
                   type="number"
@@ -150,14 +150,21 @@
                   formControlName="id_receta"
                   placeholder="ID de receta"
                 />
-              </div>
+              </div> -->
 
-              <div class="col-12 col-md-4">
-                <label class="form-label d-block mb-2">Inventory Item?</label>
-                <div class="pt-2">
-                  <p-inputSwitch
-                    formControlName="es_inventariable"
-                  ></p-inputSwitch>
+              <div class="col-8">
+                <label class="form-label">Description *</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  formControlName="descripcion"
+                  placeholder="Enter description"
+                />
+                <div
+                  class="field-error"
+                  *ngIf="submitted && f['descripcion'].invalid"
+                >
+                  Description is required.
                 </div>
               </div>
 
@@ -174,28 +181,37 @@
                 >
                 </p-dropdown>
               </div>
-
-              <div class="col-12">
-                <label class="form-label">Description *</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  formControlName="descripcion"
-                  placeholder="Enter description"
-                />
-                <div
-                  class="field-error"
-                  *ngIf="submitted && f['descripcion'].invalid"
-                >
-                  Description is required.
-                </div>
-              </div>
             </div>
           </p-tabPanel>
 
           <!-- ─── INVENTARIO (rec_insumos_detalle) ──────────── -->
           <p-tabPanel header="Inventory">
             <div class="row g-3">
+              <!-- Summary cards solo en edit -->
+              <div class="col-12 col-md-6" *ngIf="mode === 'edit'">
+                <div class="summary-card">
+                  <span class="summary-label">Final Price</span>
+                  <strong class="summary-value">
+                    {{
+                      insumo?.insumos_detalles?.[0]?.precio_final ?? 0
+                        | number: "1.2-2"
+                    }}
+                  </strong>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-6" *ngIf="mode === 'edit'">
+                <div class="summary-card">
+                  <span class="summary-label">Current Stock</span>
+                  <strong class="summary-value">
+                    {{
+                      insumo?.insumos_detalles?.[0]?.stock ?? 0
+                        | number: "1.2-2"
+                    }}
+                  </strong>
+                </div>
+              </div>
+
               <div class="col-12 col-md-4">
                 <label class="form-label">Location *</label>
                 <p-dropdown
@@ -219,49 +235,8 @@
                 </small>
               </div>
 
-              <!-- Summary cards solo en edit -->
-              <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
-                <div class="summary-card">
-                  <span class="summary-label">Final Price</span>
-                  <strong class="summary-value">
-                    {{
-                      insumo?.insumos_detalles?.[0]?.precio_final ?? 0
-                        | number: "1.2-2"
-                    }}
-                  </strong>
-                </div>
-              </div>
-
-              <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
-                <div class="summary-card">
-                  <span class="summary-label">Current Stock</span>
-                  <strong class="summary-value">
-                    {{
-                      insumo?.insumos_detalles?.[0]?.stock ?? 0
-                        | number: "1.2-2"
-                    }}
-                  </strong>
-                </div>
-              </div>
-
               <div class="col-12 col-md-4">
-                <label class="form-label">Final Price</label>
-                <p-inputNumber
-                  formControlName="precio_final"
-                  [min]="0"
-                  [minFractionDigits]="0"
-                  [maxFractionDigits]="2"
-                  mode="decimal"
-                  [useGrouping]="false"
-                  inputStyleClass="w-100"
-                  styleClass="w-100"
-                  placeholder="Enter final price"
-                >
-                </p-inputNumber>
-              </div>
-
-              <div class="col-12 col-md-4">
-                <label class="form-label">Ideal Stock</label>
+                <label class="form-label">Ideal Stock * </label>
                 <p-inputNumber
                   formControlName="stock_ideal"
                   [min]="0"
@@ -308,7 +283,7 @@
                 </p-dropdown>
               </div>
 
-              <div class="col-12 col-md-4">
+              <div class="col-12 col-md-4" *ngIf="mode === 'edit'">
                 <label class="form-label">Last Inventory Count</label>
                 <p-calendar
                   formControlName="ultima_toma_inventario"
@@ -316,11 +291,21 @@
                   [showIcon]="true"
                   styleClass="w-100"
                   inputStyleClass="w-100"
-                  placeholder="Seleccione fecha"
+                  placeholder="Select date"
                   appendTo="body"
                   [baseZIndex]="10000"
+                  [disabled]="true"
                 >
+                  >
                 </p-calendar>
+              </div>
+              <div class="col-12 col-md-4">
+                <label class="form-label d-block mb-2">Inventory Item?</label>
+                <div class="pt-2">
+                  <p-inputSwitch
+                    formControlName="es_inventariable"
+                  ></p-inputSwitch>
+                </div>
               </div>
             </div>
           </p-tabPanel>

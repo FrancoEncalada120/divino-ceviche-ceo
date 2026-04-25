@@ -123,15 +123,19 @@ export class InsumosPriComponent {
         insumo_id: this.selectedInsunmos.insumo_id,
       };
 
-      // this.insumoService.update(1,insumoToUpdate).subscribe({
-      //   next: () => {
-      //     this.closeModal();
-      //     this.load();
-      //   },
-      //   error: (err) => {
-      //     console.error('[Insumos] UPDATE error:', err);
-      //   },
-      // });
+      // 1. Descomentar esta sección
+      // 2. Cambiar el "1" quemado por el ID dinámico: this.selectedInsunmos.insumo_id
+      this.insumoService
+        .update(this.selectedInsunmos.insumo_id, payload)
+        .subscribe({
+          next: () => {
+            this.closeModal(); // Cierra el modal al terminar
+            this.load(); // Refresca la tabla
+          },
+          error: (err) => {
+            console.error('[Insumos] UPDATE error:', err);
+          },
+        });
     }
   }
 }

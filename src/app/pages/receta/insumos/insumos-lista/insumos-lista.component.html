@@ -85,7 +85,7 @@
 
       <!-- Stock -->
       <td class="text-end">
-        {{ item.cantidad ?? 0 }}
+        {{ item?.insumos_detalles?.[0]?.stock ?? 0 }}
       </td>
 
       <!-- Actions -->
