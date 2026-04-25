@@ -2,7 +2,18 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Recipe List">
+        <div class="mb-3 mt-2 px-1">
+          <input
+            #searchInput
+            type="text"
+            class="form-control form-control-sm"
+            placeholder="Search by name..."
+            (input)="dt.filterGlobal(searchInput.value, 'contains')"
+          />
+        </div>
+
         <p-table
+          #dt
           [value]="recetas"
           [paginator]="true"
           [rows]="10"
@@ -13,18 +24,18 @@
           [showCurrentPageReport]="true"
           currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
           styleClass="p-datatable-sm"
+          [globalFilterFields]="['nombre', 'receta_id']"
         >
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
               <th>Id</th>
               <th>Name</th>
-              <th class="text-end">Costo total</th>
-              <th class="text-end">% Venta</th>
-              <th class="text-end">Costo preparación</th>
-              <th class="text-end">Costo neto</th>
+              <th class="text-end">Total cost</th>
+              <th class="text-end">Sale %</th>
+              <th class="text-end">Preparation cost</th>
+              <th class="text-end">Net cost</th>
               <th>Status</th>
-
               <th class="col-actions"></th>
             </tr>
           </ng-template>
@@ -37,14 +48,18 @@
               <td>
                 {{ row.nombre }}
               </td>
-              <td class="text-end">{{ row.costo_total | number: "1.2-4" }}</td>
               <td class="text-end">
-                {{ row.porcenta_venta | number: "1.0-2" }}
+                {{ row.totales[0]?.costo_total | number: "1.2-4" }}
               </td>
               <td class="text-end">
-                {{ row.costo_preparacion | number: "1.2-4" }}
+                {{ row.totales[0]?.porcenta_venta | number: "1.0-2" }}
               </td>
-              <td class="text-end">{{ row.costo_neto | number: "1.2-4" }}</td>
+              <td class="text-end">
+                {{ row.totales[0]?.costo_preparacion | number: "1.2-4" }}
+              </td>
+              <td class="text-end">
+                {{ row.totales[0]?.costo_neto | number: "1.2-4" }}
+              </td>
 
               <td>
                 <span

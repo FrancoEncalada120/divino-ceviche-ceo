@@ -114,7 +114,7 @@
 
               <div class="col-12 col-md-3">
                 <label for="es_insumo" class="block mb-2 font-medium">
-                  ¿Es insumo?
+                  Is ingredient?
                 </label>
 
                 <div class="flex align-items-center gap-2">
@@ -127,7 +127,7 @@
                   <label for="es_insumo" class="mb-0">
                     {{
                       form.get("es_insumo")?.value
-                        ? "Esta receta se usará como insumo"
+                        ? "This recipe will be used as an ingredient"
                         : ""
                     }}
                   </label>
@@ -136,7 +136,7 @@
 
               <div class="col-12 col-md-3">
                 <label for="cantidad_receta" class="form-label">
-                  Cantidad Receta*
+                  Recipe Quantity *
                 </label>
 
                 <p-inputNumber
@@ -221,7 +221,7 @@
                   class="text-danger"
                   *ngIf="submitted && f['location_id'].invalid"
                 >
-                  La location es obligatoria
+                  Location is required
                 </small>
               </div>
             </div>

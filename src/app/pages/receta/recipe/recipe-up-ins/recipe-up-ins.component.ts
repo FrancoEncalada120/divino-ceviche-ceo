@@ -27,7 +27,7 @@ import { UnidadService } from '../../../../core/services/unidad.service';
 import { RecetaFullCreate } from '../../../../core/models/receta-full-create.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { TabViewModule } from 'primeng/tabview';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { UploadService } from '../../../../core/services/upload.service';
 import { FileUploadModule } from 'primeng/fileupload';
 
@@ -93,6 +93,7 @@ export class RecipeUpInsComponent implements OnChanges {
     private messageService: MessageService,
     private uploadService: UploadService,
     private usuarioService: UserService,
+    private confirmationService: ConfirmationService,
   ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
@@ -345,80 +346,6 @@ export class RecipeUpInsComponent implements OnChanges {
     this.close.emit();
   }
 
-  onSubmit(): void {
-    this.form.markAllAsTouched();
-
-    if (this.detallesFA.length === 0) {
-      this.addDetalle();
-      return;
-    }
-
-    if (this.form.invalid) return;
-
-    const currentUser = this.usuarioService.getUser()?.user_id;
-    const v = this.form.getRawValue();
-
-    console.log('[RecipeUpInsComponent] form raw value =>', v);
-    console.log('[RecipeUpInsComponent] currentUser =>', currentUser);
-
-    const payload: RecetaFullCreate = {
-      receta: {
-        nombre: (v.nombre ?? '').trim(),
-        descripcion: v.descripcion?.trim() || null,
-        location_id: Number(v.location_id ?? null),
-        todoslocales: !!v.todoslocales,
-        porcenta_venta: Number(this.vPorcenta_venta ?? 0),
-        costo_preparacion: Number(this.vCosto_preparacion ?? 0),
-        costo_neto: Number(this.vCosto_neto ?? 0),
-        costo_total: Number(this.vCosto_total ?? 0),
-        porciones: Number(this.form.get('porciones')?.value ?? 1),
-        imagen_url: v.imagen_url ?? null,
-        es_insumo: !!v.es_insumo,
-        created_by: currentUser ?? 0,
-      },
-      detalles: (v.detalles ?? []).map((d: any) => ({
-        insumo_id: Number(d.insumo_id),
-        unidad_id: Number(d.unidad_id),
-        cantidad: Number(d.cantidad),
-        precio_actual: Number(d.precio_actual),
-        unidad_receta: Number(d.unidad_receta ?? 1),
-        cantidad_receta: d.cantidad_receta ? Number(d.cantidad_receta) : null,
-        porciones: d.porciones ? Number(d.porciones) : null,
-        created_by: currentUser ?? 0,
-      })),
-    };
-
-    console.log('[RecipeUpInsComponent] payload.receta =>', payload.receta);
-    console.log('[RecipeUpInsComponent] payload.detalles =>', payload.detalles);
-    console.log(
-      '[RecipeUpInsComponent] payload.detalles COUNT =>',
-      payload.detalles.length,
-    );
-
-    // ─── validación campos críticos ───────────────────────────
-    console.log(
-      '[RecipeUpInsComponent] location_id =>',
-      payload.receta.location_id,
-      '| todoslocales =>',
-      payload.receta.todoslocales,
-    );
-    payload.detalles.forEach((d, i) => {
-      console.log(`[RecipeUpInsComponent] detalle[${i}] =>`, {
-        insumo_id: d.insumo_id,
-        unidad_id: d.unidad_id,
-        cantidad: d.cantidad,
-        precio_actual: d.precio_actual,
-      });
-    });
-
-    if (!payload.detalles.length) return;
-
-    console.log('[RecipeUpInsComponent] mode =>', this.mode);
-    console.log('[RecipeUpInsComponent] submit payload =>', payload);
-
-    this.save.emit(payload);
-  }
-
   onCantidadChange(i: number): void {
     const g = this.detallesFA.at(i) as FormGroup;
 
@@ -522,5 +449,72 @@ export class RecipeUpInsComponent implements OnChanges {
 
   get f() {
     return this.form.controls;
+  }
+
+  onSubmit(): void {
+    this.form.markAllAsTouched();
+
+    if (this.detallesFA.length === 0) {
+      this.addDetalle();
+      return;
+    }
+
+    if (this.form.invalid) return;
+
+    if (this.mode === 'create') {
+      this.confirmationService.confirm({
+        message: 'Do you want to save this recipe for all locations?',
+        header: 'Confirmation',
+        icon: 'pi pi-question-circle',
+        acceptLabel: 'Yes, all locations',
+        rejectLabel: 'No, only this location',
+        accept: () => this.buildAndEmit(true),
+        reject: () => this.buildAndEmit(false),
+      });
+      return;
+    }
+
+    // ─── edit siempre por local ───────────────────────────────
+    this.buildAndEmit(false);
+  }
+
+  private buildAndEmit(todoslocales: boolean): void {
+    const currentUser = this.usuarioService.getUser()?.user_id;
+    const v = this.form.getRawValue();
+
+    const payload: RecetaFullCreate = {
+      receta: {
+        nombre: (v.nombre ?? '').trim(),
+        descripcion: v.descripcion?.trim() || null,
+        location_id: Number(v.location_id ?? null),
+        todoslocales,
+        porcenta_venta: Number(this.vPorcenta_venta ?? 0),
+        costo_preparacion: Number(this.vCosto_preparacion ?? 0),
+        costo_neto: Number(this.vCosto_neto ?? 0),
+        costo_total: Number(this.vCosto_total ?? 0),
+        porciones: Number(this.form.get('porciones')?.value ?? 1),
+        imagen_url: v.imagen_url ?? null,
+        es_insumo: !!v.es_insumo,
+        created_by: currentUser ?? 0,
+      },
+      detalles: (v.detalles ?? []).map((d: any) => ({
+        insumo_id: Number(d.insumo_id),
+        unidad_id: Number(d.unidad_id),
+        cantidad: Number(d.cantidad),
+        precio_actual: Number(d.precio_actual),
+        unidad_receta: Number(d.unidad_receta ?? 1),
+        cantidad_receta: d.cantidad_receta ? Number(d.cantidad_receta) : null,
+        porciones: d.porciones ? Number(d.porciones) : null,
+        created_by: currentUser ?? 0,
+      })),
+    };
+
+    if (!payload.detalles.length) return;
+
+    console.log('[RecipeUpInsComponent] mode =>', this.mode);
+    console.log('[RecipeUpInsComponent] todoslocales =>', todoslocales);
+    console.log('[RecipeUpInsComponent] submit payload =>', payload);
+
+    this.save.emit(payload);
   }
 }

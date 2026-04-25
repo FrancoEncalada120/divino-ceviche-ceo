@@ -14,6 +14,7 @@ import { CreateInsumoDto } from '../../../../core/models/insumo.model';
 import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
 import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
+import { UserService } from '../../../../core/services/user.service';
 
 type ModalMode = 'create' | 'edit';
 @Component({
@@ -50,6 +51,7 @@ export class RecipePriComponent {
     private insumosService: InsumoService,
     private locationService: LocationService,
     private unidadService: UnidadService,
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +66,9 @@ export class RecipePriComponent {
     console.log('[Recetas] load() start');
     this.loading = true;
 
-    this.recetaService.getAll().subscribe({
+    const locationId = this.userService.getUser()?.location_id;
+
+    this.recetaService.getAll(locationId).subscribe({
       next: (data) => {
         console.log('[Recetas] GET ok, items:', data?.length, data);
         this.recetas = data ?? [];
@@ -92,9 +96,12 @@ export class RecipePriComponent {
   }
 
   loadInsumos(): void {
+    const auditUserId = this.userService.getUser()?.location_id;
+
     this.insumosService
       .getInsumoAll({
         bGrupo: 1,
+        location_id: auditUserId, // 👈
       })
       .subscribe({
         next: (data) => {
@@ -160,20 +167,8 @@ export class RecipePriComponent {
   }
 
   handleSubmit(payload: RecetaFullCreate): void {
-    console.log('[PADRE] payload recibido =>', payload);
-    console.log('[PADRE] payload.receta =>', payload.receta);
-    console.log('[PADRE] payload.detalles =>', payload.detalles);
-    console.log(
-      '[PADRE] modalMode =>',
-      this.modalMode,
-      '| selectedReceta =>',
-      this.selectedReceta,
-    );
-
     const isEdit =
       this.modalMode === 'edit' && !!this.selectedReceta?.receta_id;
-
-    console.log('[PADRE] isEdit =>', isEdit);
 
     const request$ = isEdit
       ? this.recetaService.updateFull(this.selectedReceta!.receta_id, payload)
@@ -181,36 +176,34 @@ export class RecipePriComponent {
 
     request$.subscribe({
       next: (res) => {
-        console.log('[RECETA] respuesta completa =>', res);
-        console.log('[RECETA] res.receta =>', res?.receta);
-        console.log('[RECETA] res.detalles =>', res?.detalles);
-        console.log('[RECETA] res.receta_impactada =>', res?.receta_impactada);
-
         const recetaId = isEdit
           ? this.selectedReceta!.receta_id
-          : res?.receta?.receta_id;
+          : res?.receta?.[0]?.receta_id;
 
-        console.log('[RECETA] recetaId resuelto =>', recetaId);
-
-        if (payload.receta.es_insumo && recetaId) {
-          const cantidad = isEdit
-            ? this.selectedReceta!.detalles?.[0]?.cantidad_receta
-            : res?.receta?.cantidad_receta;
-
-          const precio_final = isEdit
-            ? this.selectedReceta!.totales?.[0]?.costo_neto
-            : res?.receta?.costo_neto;
-
+        // ─── solo en create y si es_insumo ────────────────────
+        if (!isEdit && payload.receta.es_insumo && recetaId) {
           const insumoPayload: CreateInsumoDto = {
+            // ─── rec_insumos ──────────────────────────────────
             nombre: payload.receta.nombre,
             descripcion: payload.receta.descripcion ?? payload.receta.nombre,
-            proveedor_id: 24,
-            estacion_id: 1,
-            stock_ideal: cantidad,
-            created_by: 1,
+            grupo: null,
+            unidad_id: null,
+            unidad_trabajo: null,
+            es_inventariable: true,
+            proveedor_id: null,
+            estacion_id: null,
             id_receta: recetaId,
-            stock: cantidad,
-            precio_final: precio_final,
+            cantidad_insumo: null,
+            created_by: payload.receta.created_by ?? null,
+            // ─── rec_insumos_detalle ──────────────────────────
+            location_id: payload.receta.location_id ?? null,
+            stock: 0,
+            precio_final: payload.receta.costo_neto ?? null,
+            stock_ideal: null,
+            frecuencia_inventario: null,
+            dia_inventario: null,
+            ultima_toma_inventario: null,
+            todoslocales: payload.receta.todoslocales ?? false,
           };
 
           console.log('[INSUMO] payload enviado =>', insumoPayload);
@@ -224,8 +217,6 @@ export class RecipePriComponent {
             error: (err) => {
               console.error('[INSUMO] error =>', err);
               console.error('[INSUMO] error.error =>', err?.error);
-              console.error('[INSUMO] error.message =>', err?.error?.message);
-              console.error('[INSUMO] error.errors =>', err?.error?.errors);
               this.closeModal();
               this.load();
             },
@@ -234,23 +225,13 @@ export class RecipePriComponent {
           return;
         }
 
-        this.recetas_impactadas = res.receta_impactada
-          ? [res.receta_impactada]
-          : [];
-        this.txtDetail = `The purchase has been successfully created with code ${recetaId}. The following recipes have been impacted:`;
-        this.txtSummary = 'Purchase created successfully';
-        this.showConfirmanModal = true;
-
         this.closeModal();
         this.load();
       },
       error: (err) => {
         console.error('[RECETAS] error =>', err);
         console.error('[RECETAS] error.error =>', err?.error);
-        console.error('[RECETAS] error.message =>', err?.error?.message);
-        // ─── detalle del validation error de Sequelize ───────
         console.error('[RECETAS] error.errors =>', err?.error?.errors);
-        console.error('[RECETAS] error.sql =>', err?.error?.sql);
       },
     });
   }
