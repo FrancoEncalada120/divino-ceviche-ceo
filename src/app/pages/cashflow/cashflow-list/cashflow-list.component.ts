@@ -36,6 +36,20 @@ type Opts = {
   grid?: any;
 };
 
+// ─── Paleta unificada ────────────────────────────────────────────────────────
+// Familia teal/verde en 6 tonos (oscuro → claro) + rojo solo para negativos
+const P = {
+  t0: '#0d2d4a', // más oscuro
+  t1: '#1a4a6e',
+  t2: '#2563a8', // tono base
+  t3: '#4682c4',
+  t4: '#7aadd9',
+  t5: '#b3d2ee', // más claro
+  neg: '#b03a2e', // rojo apagado — solo para valores negativos
+  negLight: '#d4695f',
+};
+// ─────────────────────────────────────────────────────────────────────────────
+
 @Component({
   selector: 'app-cashflow-list',
   imports: [
@@ -233,8 +247,12 @@ export class CashflowListComponent implements OnChanges, OnInit {
     return { borderColor: '#f0f0f0', strokeDashArray: 3 };
   }
 
+  // ─── Net Margin — barras teal (positivo) / rojo apagado (negativo) ─────────
   buildNetMarginChart() {
-    const dayMap = new Map<string, { ventaNeta: number; gananciaNeta: number }>();
+    const dayMap = new Map<
+      string,
+      { ventaNeta: number; gananciaNeta: number }
+    >();
     (this.movimientos ?? []).forEach((cf) => {
       if (!dayMap.has(cf.fecha))
         dayMap.set(cf.fecha, { ventaNeta: 0, gananciaNeta: 0 });
@@ -245,8 +263,11 @@ export class CashflowListComponent implements OnChanges, OnInit {
 
     const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
     const labels = sorted.map(([f]) => this.fmtDate(f));
-    const data = sorted.map(([, v]) =>
-      +(v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0).toFixed(2),
+    const data = sorted.map(
+      ([, v]) =>
+        +(v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0).toFixed(
+          2,
+        ),
     );
 
     this.netMarginOpts = {
@@ -259,7 +280,8 @@ export class CashflowListComponent implements OnChanges, OnInit {
         parentHeightOffset: 0,
       },
       plotOptions: { bar: { columnWidth: '60%', distributed: true } },
-      colors: data.map((v: number) => (v >= 0 ? '#66BB6A' : '#EF5350')),
+      // Tono base para positivos, rojo apagado para negativos
+      colors: data.map((v: number) => (v >= 0 ? P.t2 : P.neg)),
       dataLabels: { enabled: false },
       xaxis: { ...this.xaxisBase, categories: labels },
       yaxis: this.yaxisBase((v) => v.toFixed(1) + '%'),
@@ -269,15 +291,26 @@ export class CashflowListComponent implements OnChanges, OnInit {
     };
   }
 
+  // ─── Saldos — Opening oscuro / Closing más claro ───────────────────────────
   buildSaldosChart() {
     const dayMap = new Map<
       string,
-      { depositos: number; debitos: number; saldoInicial: number; saldoFinal: number }
+      {
+        depositos: number;
+        debitos: number;
+        saldoInicial: number;
+        saldoFinal: number;
+      }
     >();
 
     (this.movimientos ?? []).forEach((cf) => {
       if (!dayMap.has(cf.fecha))
-        dayMap.set(cf.fecha, { depositos: 0, debitos: 0, saldoInicial: 0, saldoFinal: 0 });
+        dayMap.set(cf.fecha, {
+          depositos: 0,
+          debitos: 0,
+          saldoInicial: 0,
+          saldoFinal: 0,
+        });
       const e = dayMap.get(cf.fecha)!;
       e.depositos += Number(cf.depositos_banco || 0);
       e.debitos += Number(cf.debitos_banco || 0);
@@ -305,7 +338,8 @@ export class CashflowListComponent implements OnChanges, OnInit {
         parentHeightOffset: 0,
       },
       plotOptions: { bar: { columnWidth: '65%' } },
-      colors: ['#378ADD', '#1D9E75'],
+      // Oscuro para opening, intermedio para closing
+      colors: [P.t0, P.t3],
       dataLabels: { enabled: false },
       xaxis: { ...this.xaxisBase, categories: labels },
       yaxis: this.yaxisBase(this.fmtUsd.bind(this)),
@@ -332,7 +366,8 @@ export class CashflowListComponent implements OnChanges, OnInit {
         parentHeightOffset: 0,
       },
       plotOptions: { bar: { columnWidth: '55%' } },
-      colors: ['#42A5F5', '#EF5350', '#FFA726'],
+      // Deposits = teal medio, Debits = rojo apagado, Net Flow = teal claro
+      colors: [P.t2, P.neg, P.t4],
       dataLabels: { enabled: false },
       stroke: { width: [0, 0, 3], curve: 'smooth' },
       fill: { opacity: [1, 1, 0.15] },
@@ -344,13 +379,14 @@ export class CashflowListComponent implements OnChanges, OnInit {
     };
   }
 
+  // ─── Apps — 5 tonos de la misma familia teal ──────────────────────────────
   buildAppsChart() {
     const APPS = [
-      { key: 'venta_uber', label: 'Uber', color: '#06C167' },
-      { key: 'venta_doordash', label: 'DoorDash', color: '#FF3008' },
-      { key: 'venta_owner', label: 'Owner', color: '#5B5EA6' },
-      { key: 'venta_grubhub', label: 'Grubhub', color: '#F26722' },
-      { key: 'venta_inkdind', label: 'Inkind', color: '#00AEEF' },
+      { key: 'venta_uber', label: 'Uber', color: P.t0 },
+      { key: 'venta_doordash', label: 'DoorDash', color: P.t1 },
+      { key: 'venta_owner', label: 'Owner', color: P.t2 },
+      { key: 'venta_grubhub', label: 'Grubhub', color: P.t3 },
+      { key: 'venta_inkdind', label: 'Inkind', color: P.t4 },
     ];
 
     const dayMap = new Map<string, Record<string, number>>();
@@ -420,6 +456,7 @@ export class CashflowListComponent implements OnChanges, OnInit {
     };
   }
 
+  // ─── Sales — Gross oscuro, Net medio, Profit línea clara ──────────────────
   buildSalesChart() {
     const dayMap = new Map<
       string,
@@ -464,7 +501,8 @@ export class CashflowListComponent implements OnChanges, OnInit {
         parentHeightOffset: 0,
       },
       plotOptions: { bar: { columnWidth: '50%' } },
-      colors: ['#42A5F5', '#1D9E75', '#FFA726'],
+      // Gross oscuro, Net medio, Profit línea teal claro
+      colors: [P.t1, P.t3, P.t5],
       dataLabels: { enabled: false },
       stroke: { width: [0, 0, 3], curve: 'smooth' },
       fill: { opacity: [0.85, 0.85, 0.2] },
@@ -476,14 +514,15 @@ export class CashflowListComponent implements OnChanges, OnInit {
     };
   }
 
+  // ─── Expenses — 6 tonos teal de oscuro a claro ────────────────────────────
   buildExpenseChart() {
     const EXPENSES = [
-      { key: 'food_cost', label: 'Food Cost', color: '#EF5350' },
-      { key: 'labor', label: 'Labor', color: '#AB47BC' },
-      { key: 'renta', label: 'Rent', color: '#FFA726' },
-      { key: 'gastos_operacionales', label: 'Op. Expenses', color: '#26C6DA' },
-      { key: 'fees_apps', label: 'App Fees', color: '#66BB6A' },
-      { key: 'gastos_varios', label: 'Others', color: '#8D6E63' },
+      { key: 'food_cost', label: 'Food Cost', color: P.t0 },
+      { key: 'labor', label: 'Labor', color: P.t1 },
+      { key: 'renta', label: 'Rent', color: P.t2 },
+      { key: 'gastos_operacionales', label: 'Op. Expenses', color: P.t3 },
+      { key: 'fees_apps', label: 'App Fees', color: P.t4 },
+      { key: 'gastos_varios', label: 'Others', color: P.t5 },
     ];
 
     const dayMap = new Map<string, Record<string, number>>();
@@ -524,8 +563,12 @@ export class CashflowListComponent implements OnChanges, OnInit {
     };
   }
 
+  // ─── Trend — línea teal base, marcadores rojo si negativo ─────────────────
   buildTrendChart() {
-    const dayMap = new Map<string, { ventaNeta: number; gananciaNeta: number }>();
+    const dayMap = new Map<
+      string,
+      { ventaNeta: number; gananciaNeta: number }
+    >();
 
     (this.movimientos ?? []).forEach((cf) => {
       if (!dayMap.has(cf.fecha))
@@ -537,8 +580,11 @@ export class CashflowListComponent implements OnChanges, OnInit {
 
     const sorted = [...dayMap.entries()].sort(([a], [b]) => a.localeCompare(b));
     const labels = sorted.map(([f]) => this.fmtDate(f));
-    const data = sorted.map(([, v]) =>
-      +(v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0).toFixed(2),
+    const data = sorted.map(
+      ([, v]) =>
+        +(v.ventaNeta > 0 ? (v.gananciaNeta / v.ventaNeta) * 100 : 0).toFixed(
+          2,
+        ),
     );
 
     this.trendOpts = {
@@ -550,12 +596,13 @@ export class CashflowListComponent implements OnChanges, OnInit {
         fontFamily: 'inherit',
         parentHeightOffset: 0,
       },
-      colors: ['#1D9E75'],
+      colors: [P.t2],
       dataLabels: { enabled: false },
       stroke: { width: 3, curve: 'smooth' },
       markers: {
         size: 5,
-        colors: data.map((v: number) => (v >= 0 ? '#1D9E75' : '#EF5350')),
+        // Marcador rojo solo cuando el margen es negativo
+        colors: data.map((v: number) => (v >= 0 ? P.t2 : P.neg)),
         strokeWidth: 0,
       },
       xaxis: { ...this.xaxisBase, categories: labels },
@@ -564,7 +611,9 @@ export class CashflowListComponent implements OnChanges, OnInit {
       legend: { show: false },
       tooltip: { y: { formatter: (v: number) => v.toFixed(2) + '%' } },
       annotations: {
-        yaxis: [{ y: 0, borderColor: '#EF5350', borderWidth: 1, strokeDashArray: 4 }],
+        yaxis: [
+          { y: 0, borderColor: P.negLight, borderWidth: 1, strokeDashArray: 4 },
+        ],
       },
     };
   }

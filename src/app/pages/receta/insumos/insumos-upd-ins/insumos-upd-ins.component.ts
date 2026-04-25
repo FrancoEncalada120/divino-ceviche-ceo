@@ -116,7 +116,7 @@ export class InsumosUpdInsComponent implements OnChanges {
       // ─── rec_insumos_detalle (stock e inventario) ─────────
       location_id: [null, Validators.required],
       precio_final: [null],
-      stock_ideal: [null],
+      stock_ideal: [null, Validators.required],
       frecuencia_inventario: [null],
       dia_inventario: [null],
       ultima_toma_inventario: [null],
@@ -138,6 +138,8 @@ export class InsumosUpdInsComponent implements OnChanges {
         this.form.patchValue({ location_id: this.locationsOptions[0].value });
       }
     }
+
+    this.form.get('ultima_toma_inventario')?.disable();
   }
 
   load(): void {
@@ -257,11 +259,11 @@ export class InsumosUpdInsComponent implements OnChanges {
 
     if (this.mode === 'create') {
       this.confirmationService.confirm({
-        message: '¿Quieres grabar este insumo para todas las sedes?',
-        header: 'Confirmación de Alcance',
+        message: 'Do you want to save this supply for all locations?',
+        header: 'Confirmation',
         icon: 'pi pi-question-circle',
-        acceptLabel: 'Sí, todos los locales',
-        rejectLabel: 'No, solo este local',
+        acceptLabel: 'Yes, all locations',
+        rejectLabel: 'No, only this location',
         accept: () => this.processCreate(raw, auditUserId, true),
         reject: () => this.processCreate(raw, auditUserId, false),
       });

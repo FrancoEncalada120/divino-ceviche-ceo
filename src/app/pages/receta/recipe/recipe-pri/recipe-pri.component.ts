@@ -183,7 +183,7 @@ export class RecipePriComponent {
             : res?.receta?.cantidad_receta;
 
           const precio_final = isEdit
-            ? this.selectedReceta!.detalles?.[0]?.costo_neto
+            ? this.selectedReceta!.totales?.[0]?.costo_neto
             : res?.receta?.costo_neto;
 
           const insumoPayload: CreateInsumoDto = {
