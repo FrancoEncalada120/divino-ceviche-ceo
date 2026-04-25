@@ -33,6 +33,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 
 import { CheckboxModule } from 'primeng/checkbox';
 import { Location } from '../../../../core/models/location.model';
+import { UserService } from '../../../../core/services/user.service';
 type ModalMode = 'create' | 'edit';
 type UnidadOption = { label: string; value: number };
 type InsumoOption = { label: string; value: number; grupo?: string };
@@ -91,6 +92,7 @@ export class RecipeUpInsComponent implements OnChanges {
     private insumoService: InsumoService,
     private messageService: MessageService,
     private uploadService: UploadService,
+    private usuarioService: UserService
   ) {
     this.form = this.fb.group({
       nombre: new FormControl<string>('', {
@@ -417,6 +419,7 @@ export class RecipeUpInsComponent implements OnChanges {
         precio: 0,
         unidad_id: 0,
         cantidad: 0,
+        location_id: this.usuarioService.getUser()?.location_id || 0
       })
       .subscribe({
         next: (precio) => {
@@ -461,6 +464,7 @@ export class RecipeUpInsComponent implements OnChanges {
         precio: 0, // precio compra
         unidad_id: unidad_receta,
         cantidad: 1,
+        location_id: this.usuarioService.getUser()?.location_id || 0
       })
       .subscribe((precioCalculado) => {
         g.get('precio_actual')?.setValue(precioCalculado);

@@ -165,6 +165,7 @@ export interface CalcularPrecioRequest {
   precio: number;
   unidad_id: number;
   cantidad: number;
+  location_id: number;
 }
 
 export interface CalcularPrecioResponse {

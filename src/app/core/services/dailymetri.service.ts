@@ -37,6 +37,8 @@ export class DailyMetricService {
     if (filters?.fechaIni) params = params.set('fechaIni', filters.fechaIni);
     if (filters?.fechaFin) params = params.set('fechaFin', filters.fechaFin);
 
+    console.log("params", params);
+
     return this.http
       .get<ApiResponse<DailyMetric[]>>(this.apiUrl, { params })
       .pipe(

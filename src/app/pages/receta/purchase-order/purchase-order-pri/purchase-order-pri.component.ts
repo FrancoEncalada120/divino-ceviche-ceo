@@ -242,7 +242,7 @@ export class PurchaseOrderPriComponent {
         this.txtSummary = 'Purchase created successfully';
         this.showConfirmanModal = true;
 
-        this.closeModal();
+        this.closeModalPurchaseAdd();
       },
       error: (err) => {
 
