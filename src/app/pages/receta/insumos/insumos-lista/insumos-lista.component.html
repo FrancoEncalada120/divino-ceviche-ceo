@@ -1,11 +1,19 @@
-<div class="mb-2 d-flex justify-content-end">
+<div class="d-flex align-items-center gap-2 mb-3 mt-2 px-1">
   <input
+    #searchInput
     type="text"
-    pInputText
+    class="form-control form-control-sm"
     placeholder="Search..."
-    (input)="onGlobalFilter($event)"
-    class="form-control w-25"
+    (input)="dt.filterGlobal(searchInput.value, 'contains')"
   />
+  <button
+    pButton
+    type="button"
+    icon="pi pi-file-excel"
+    label="Excel"
+    class="p-button-success p-button-sm text-nowrap"
+    (click)="exportExcel()"
+  ></button>
 </div>
 <p-table
   #dt

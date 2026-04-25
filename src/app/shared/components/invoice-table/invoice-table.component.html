@@ -1,6 +1,34 @@
-<p-table [value]="items" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]" [responsiveLayout]="'stack'"
-  breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}">
+<div class="d-flex align-items-center gap-2 mb-3">
+  <input
+    #searchInput
+    type="text"
+    class="form-control form-control-sm"
+    placeholder="Search..."
+    (input)="dt.filterGlobal(searchInput.value, 'contains')"
+  />
+  <button
+    pButton
+    type="button"
+    icon="pi pi-file-excel"
+    label="Excel"
+    class="p-button-success p-button-sm text-nowrap"
+    (click)="exportExcel()"
+  ></button>
+</div>
+
+<p-table
+  #dt
+  [value]="items"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [responsiveLayout]="'stack'"
+  breakpoint="768px"
+  sortMode="multiple"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+  [globalFilterFields]="['invoice_date', 'invoice_vendor_description', 'invoice_notes', 'category.category_code', 'locations.location_name', 'created_user.user_name']"
+>
   <ng-template pTemplate="header">
     <tr>
 

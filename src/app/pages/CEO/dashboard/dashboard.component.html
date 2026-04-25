@@ -1,60 +1,57 @@
-<!-- ===================== -->
-<!-- FILTERS (RESPONSIVE) -->
-<!-- ===================== -->
-<div class="row g-3 mb-4">
-  <!-- Locations -->
-  <div class="col-12 col-md-6">
-    <label class="filter-label d-block mb-1">
-      <i class="pi pi-map-marker"></i> Locations
-    </label>
+<p-card styleClass="invoice-header-card mb-4">
+  <div class="invoice-header">
+    <div class="invoice-header__title">
+      <h2>Dashboard</h2>
+      <p>Monitor and filter metrics by location and date range.</p>
+    </div>
 
-    <p-multiSelect
-      [options]="locations"
-      [(ngModel)]="selectedLocation"
-      optionLabel="location_name"
-      placeholder="Select locations"
-      display="chip"
-      class="w-100"
-      (onChange)="onLocationsChange()"
-    >
-    </p-multiSelect>
-  </div>
+    <div class="row g-3">
+      <div class="col-12 col-md-6">
+        <label class="invoice-filter__label">
+          <i class="pi pi-map-marker"></i>
+          <span>Locations</span>
+        </label>
 
-  <!-- Date range -->
-  <div class="col-12 col-md-6">
-    <label class="filter-label d-block mb-1">
-      <i class="pi pi-calendar"></i> Date Range
-    </label>
+        <p-multiSelect
+          [options]="locations"
+          [(ngModel)]="selectedLocation"
+          optionLabel="location_name"
+          placeholder="Select locations"
+          display="chip"
+          styleClass="w-full"
+          (onChange)="onLocationsChange()"
+        >
+        </p-multiSelect>
+      </div>
 
-    <p-datepicker
-      [(ngModel)]="dateRange"
-      selectionMode="range"
-      dateFormat="dd/mm/yy"
-      [showIcon]="true"
-      [readonlyInput]="true"
-      class="w-100"
-      (ngModelChange)="onLocationsChangeDate($event)"
-    >
-    </p-datepicker>
-  </div>
-</div>
+      <div class="col-12 col-md-6">
+        <label class="invoice-filter__label">
+          <i class="pi pi-calendar"></i>
+          <span>Date Range</span>
+        </label>
 
-<!-- ===================== -->
-<!-- SUBHEADER -->
-<!-- ===================== -->
-<div class="mb-4">
-  <div class="text-muted small">
-    <ng-container *ngIf="selectedLocation.length; else noneSelected">
-      {{ selectedLocationNames }}
-    </ng-container>
+        <p-datepicker
+          [(ngModel)]="dateRange"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          [readonlyInput]="true"
+          styleClass="w-full"
+          (ngModelChange)="onLocationsChangeDate($event)"
+        >
+        </p-datepicker>
+      </div>
+    </div>
 
-    <ng-template #noneSelected> None </ng-template>
-
-    <div class="small">
-      {{ formattedDateRange }}
+    <div class="text-muted small mt-2">
+      <ng-container *ngIf="selectedLocation.length; else noneSelected">
+        {{ selectedLocationNames }}
+      </ng-container>
+      <ng-template #noneSelected>None</ng-template>
+      &nbsp;·&nbsp;{{ formattedDateRange }}
     </div>
   </div>
-</div>
+</p-card>
 
 <!-- ===================== -->
 <!-- KPI CARDS -->

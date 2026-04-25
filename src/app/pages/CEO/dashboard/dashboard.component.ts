@@ -16,6 +16,7 @@ import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { TabPanel } from 'primeng/tabview';
+import { CardModule } from 'primeng/card';
 import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-list.component';
 
 @Component({
@@ -30,6 +31,7 @@ import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-lis
     CashflowListComponent,
     TableModule,
     TabViewModule,
+    CardModule,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
