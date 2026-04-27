@@ -20,6 +20,56 @@
 }
 
 
+.invoice-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.invoice-header__filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.invoice-filter {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  flex: 1;
+}
+
+.invoice-filter--date {
+  min-width: 220px;
+  flex: 0 0 220px;
+}
+
+.invoice-filter__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+.invoice-filter__label i {
+  font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+  .invoice-header__filters {
+    flex-direction: column;
+  }
+  .invoice-filter,
+  .invoice-filter--date {
+    min-width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
 ::ng-deep .p-multiselect .p-multiselect-label {
   display: flex !important;
   flex-wrap: wrap !important;

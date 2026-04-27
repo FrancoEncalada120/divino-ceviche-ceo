@@ -108,36 +108,74 @@
 }
 
 
-/* ====== Filters ====== */
-.filters-bar {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.25rem;
-  padding: 1rem 1.25rem;
-  border-radius: 14px;
-  background: #ffffff;
-  border: 1px solid #e9ecef;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+/* ====== Invoice-style header / filters ====== */
+.invoice-header-card {
+  margin-bottom: 1.5rem;
 }
 
-.filter-item {
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.invoice-header__title h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.invoice-header__title p {
+  margin: 0.5rem 0 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.invoice-header__filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex: 1;
+  min-width: 500px;
+}
+
+.invoice-filter {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  min-width: 220px;
+  flex: 1;
 }
 
-.filter-label {
-  font-weight: 700;
-  color: #343a40;
-  display: inline-flex;
+.invoice-filter--date {
+  min-width: 220px;
+  flex: 0 0 220px;
+}
+
+.invoice-filter__label {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
 }
 
-/* responsive filtros */
+.invoice-filter__label i {
+  font-size: 0.95rem;
+}
+
 @media (max-width: 900px) {
-  .filters-bar {
-    grid-template-columns: 1fr;
+  .invoice-header__filters {
+    min-width: 100%;
+    flex-direction: column;
+  }
+  .invoice-filter,
+  .invoice-filter--date {
+    min-width: 100%;
+    flex: 1 1 100%;
   }
 }
 
