@@ -26,29 +26,14 @@
 
 .invoice-header {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.invoice-header__title h2 {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
-}
-
-.invoice-header__title p {
-  margin: 0.5rem 0 0 0;
-  color: #6b7280;
-  font-size: 0.95rem;
+  flex-direction: column;
+  gap: 0;
 }
 
 .invoice-header__filters {
   display: flex;
   align-items: flex-end;
   gap: 1rem;
-  flex: 1;
   flex-wrap: wrap;
 }
 

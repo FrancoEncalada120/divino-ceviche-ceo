@@ -1,11 +1,14 @@
-<p-card styleClass="invoice-header-card mb-4">
+<div class="container-fluid py-3 px-0" style="width: 100%">
+  <p-card styleClass="invoice-header-card mb-4">
     <div class="invoice-header">
-      <div class="invoice-header__title">
-        <h2>Purchase Management</h2>
-        <p>Register and manage purchase records, including suppliers, products, quantities, and total amounts.</p>
+      <div class="invoice-header__title d-flex justify-content-between align-items-start">
+        <div>
+          <h2>Purchase Management</h2>
+          <p>Register and manage purchase records, including suppliers, products, quantities, and total amounts.</p>
+        </div>
       </div>
 
-      <div class="invoice-header__filters">
+      <div class="invoice-header__filters pt-3">
         <div class="invoice-filter invoice-filter--date">
           <label class="invoice-filter__label">
             <i class="pi pi-calendar"></i>
@@ -19,7 +22,8 @@
             [readonlyInput]="true"
             styleClass="w-full"
             (ngModelChange)="onLocationsChangeDate($event)"
-          ></p-datepicker>
+          >
+          </p-datepicker>
         </div>
 
         <div class="invoice-filter">
@@ -35,7 +39,8 @@
             display="chip"
             styleClass="w-full"
             (onChange)="onSupplyChange($event)"
-          ></p-multiSelect>
+          >
+          </p-multiSelect>
         </div>
 
         <div class="invoice-filter">
@@ -51,11 +56,12 @@
             display="chip"
             styleClass="w-full"
             (onChange)="onSupplyChange($event)"
-          ></p-multiSelect>
+          >
+          </p-multiSelect>
         </div>
       </div>
 
-      <div class="text-muted small mt-2">
+      <div class="text-muted small mt-2 pt-3">
         {{ formattedDateRange }}
         &nbsp;·&nbsp;
         <ng-container *ngIf="selectedInsumos && selectedInsumos.length; else noneSelected">
@@ -71,11 +77,19 @@
     </div>
   </p-card>
 
+  <app-purchase-upd-ins
+    *ngIf="showAddLocationModal"
+    (close)="closeModal()"
+    (submit)="handleSubmit($event)"
+  ></app-purchase-upd-ins>
 
-<app-purchase-upd-ins *ngIf="showAddLocationModal" (close)="closeModal()"
-  (submit)="handleSubmit($event)"></app-purchase-upd-ins>
+  <app-purchase-list (delete)="delete($event)" [compraDetalle]="compraDetalle"></app-purchase-list>
 
-<app-purchase-list (delete)="delete($event)" [compraDetalle]="compraDetalle"></app-purchase-list>
-
-<app-purchase-confirmation *ngIf="showConfirmanModal" [recetas_impactadas]="recetas_impactadas"
-  [txtDetail]="txtDetail" [txtSummary]="txtSummary" (close)="closeModalConfirm()"></app-purchase-confirmation>
+  <app-purchase-confirmation
+    *ngIf="showConfirmanModal"
+    [recetas_impactadas]="recetas_impactadas"
+    [txtDetail]="txtDetail"
+    [txtSummary]="txtSummary"
+    (close)="closeModalConfirm()"
+  ></app-purchase-confirmation>
+</div>
