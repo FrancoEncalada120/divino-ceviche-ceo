@@ -75,12 +75,12 @@
       <div class="text-muted small mt-2 pt-3">
         {{ formattedDateRange }}
         &nbsp;·&nbsp;
-        <ng-container *ngIf="selectedInsumos.length; else noneInsumos">
+        <ng-container *ngIf="selectedInsumos && selectedInsumos.length; else noneInsumos">
           {{ selectedInsumosNames }}
         </ng-container>
         <ng-template #noneInsumos>None</ng-template>
         &nbsp;·&nbsp;
-        <ng-container *ngIf="selectedProveedor.length; else noneProveedor">
+        <ng-container *ngIf="selectedProveedor && selectedProveedor.length; else noneProveedor">
           {{ selectedProveedorNames }}
         </ng-container>
         <ng-template #noneProveedor>None</ng-template>
@@ -113,6 +113,7 @@
   (close)="closeModalPurchaseAdd()"
   [items]="items"
   (submit)="handleSubmit($event)"
+  [compra_order_id]="compra_order_id"
 ></app-purchase-upd-ins>
 
 <app-purchase-confirmation

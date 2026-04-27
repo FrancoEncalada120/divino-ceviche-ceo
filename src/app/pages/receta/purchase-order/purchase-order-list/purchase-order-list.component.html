@@ -1,134 +1,109 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
-    <p-tabView>
-      <p-tabPanel header="Purchase List">
-        <div class="d-flex align-items-center gap-2 mb-3 mt-2">
-          <input
-            #searchInput
-            type="text"
-            class="form-control form-control-sm"
-            placeholder="Search..."
-            (input)="dt.filterGlobal(searchInput.value, 'contains')"
-          />
-          <button
-            pButton
-            type="button"
-            icon="pi pi-file-excel"
-            label="Excel"
-            class="p-button-success p-button-sm text-nowrap"
-            (click)="exportToExcel()"
-          ></button>
-        </div>
 
-        <p-table
-          #dt
-          [value]="compraDetalle"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-          styleClass="p-datatable-sm"
-          [globalFilterFields]="[
-            'compra_order.compra_orden_referencia',
-            'compra_order.fecha',
-            'insumo.nombreCompleto',
-            'compra_order.created_user_order.user_name',
-            'compra_order.detalle',
-          ]"
-        >
-          <!-- Header -->
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Id</th>
-              <th>Reference Id</th>
-              <th>Date</th>
-              <th>items</th>
-              <th>Quantity</th>
-              <th>Price</th>
-              <th>Total</th>
-              <th>User</th>
-              <th>Notes</th>
-              <th>Status</th>
-              <th class="col-actions"></th>
-            </tr>
-          </ng-template>
+    <p-table [value]="compraDetalle" dataKey="compra_order_id" [tableStyle]="{ 'min-width': '60rem' }"
+      [expandedRowKeys]="expandedRows" (onRowExpand)="onRowExpand($event)" (onRowCollapse)="onRowCollapse($event)">
+      <ng-template #header>
+        <tr>
+          <th style="width: 5rem"></th>
+          <th>Id Order</th>
+          <th>Reference Id</th>
+          <th>Date</th>
+          <th>items</th>
+          <th>Total</th>
+          <th>User</th>
+          <th>Notes</th>
+          <th>Status</th>
+          <th class="col-actions"></th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-product let-expanded="expanded">
+        <tr>
+          <td>
+            <p-button type="button" pRipple [pRowToggler]="product" [text]="true" severity="secondary" [rounded]="true"
+              [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'" />
+          </td>
+          <td class="col-date">{{ product.compra_order_id }}</td>
 
-          <!-- Body -->
-          <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
-            <tr>
-              <td class="col-date">{{ row.compra_order_id }}</td>
+          <td>
+            {{ product.compra_orden_referencia || "---" }}
+          </td>
 
-              <td>
-                {{ row.compra_order.compra_orden_referencia || "---" }}
-              </td>
+          <td>
+            {{ product.fecha }}
+          </td>
 
-              <td>
-                {{ row.compra_order.fecha }}
-              </td>
+          <td>
+            {{ product.precio | txtsigno: "$" }}
+          </td>
+          <td>
+            {{ product.total | txtsigno: "$" }}
+          </td>
 
-              <td>{{ row.insumo.nombreCompleto }}</td>
+          <td>
+            {{ product.created_user_order?.user_name }}
+            {{ product.created_user_order?.user_apellido }}
+          </td>
 
-              <td>
-                {{ row.cantidad }}
-              </td>
-              <td>
-                {{ row.precio | txtsigno: "$" }}
-              </td>
-              <td>
-                {{ row.total | txtsigno: "$" }}
-              </td>
+          <td>
+            {{ product.detalle || "---" }}
+          </td>
 
-              <td>
-                {{ row.compra_order.created_user_order?.user_name }}
-                {{ row.compra_order.created_user_order?.user_apellido }}
-              </td>
+          <td>
+            {{
+            product.compra_order_estado == 1
+            ? "Submitted"
+            : "Completed"
+            }}
+          </td>
 
-              <td>
-                {{ row.compra_order.detalle || "---" }}
-              </td>
-
-              <td>
-                {{
-                  row.compra_order.compra_order_estado == 1
-                    ? "Submitted"
-                    : "Completed"
-                }}
-              </td>
-
-              <td
-                *ngIf="mostrarBotones(row, rowIndex)"
-                class="col-actions text-end"
-              >
-                <button
-                  class="btn btn-sm btn-secondary m-1"
-                  (click)="onComplete(row)"
-                >
-                  Add Purchase
-                </button>
-                <button
-                  class="btn btn-sm btn-danger m-1"
-                  (click)="onDelete(row)"
-                >
-                  Delete
-                </button>
-              </td>
-            </tr>
-          </ng-template>
-
-          <!-- Empty -->
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="6" class="text-center text-muted py-4">
-                No records found
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabPanel>
-    </p-tabView>
+          <td class="col-actions text-end">
+            <button *ngIf=" product.compra_order_estado == 1" class="btn btn-sm btn-secondary m-1"
+              (click)="onComplete(product)">
+              Add Purchase
+            </button>
+            <button *ngIf=" product.compra_order_estado == 1" class="btn btn-sm btn-danger m-1"
+              (click)="onDelete(product)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </ng-template>
+      <ng-template #expandedrow let-product>
+        <tr>
+          <td colspan="9">
+            <div class="p-4">
+              <h5>Orders for {{ product.compra_id }}</h5>
+              <p-table [value]="product.order_detalles" dataKey="id">
+                <ng-template #header>
+        <tr>
+          <th>Nro</th>
+          <th>Item</th>
+          <th>Qt</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-order let-i="rowIndex">
+        <tr>
+          <td>{{ i + 1 }}</td>
+          <td>{{ order.insumo?.nombreCompleto }}</td>
+          <td>{{ order.cantidad }}</td>
+          <td>{{ order.precio | txtsigno: "$" }}</td>
+          <td>{{ order.total | txtsigno: "$" }}</td>
+        </tr>
+      </ng-template>
+      <ng-template #emptymessage>
+        <tr>
+          <td colspan="6">There are no order for this product yet.</td>
+        </tr>
+      </ng-template>
+    </p-table>
   </div>
+  </td>
+  </tr>
+  </ng-template>
+  </p-table>
+
+</div>
 </div>

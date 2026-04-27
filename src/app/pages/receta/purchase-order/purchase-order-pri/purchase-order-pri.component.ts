@@ -19,7 +19,6 @@ import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
 import { InsumoService } from '../../../../core/services/insumo.service';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { forkJoin, Subject, switchMap } from 'rxjs';
-import { CartService } from '../../../../core/services/cart.service';
 import { debounceTime } from 'rxjs/operators';
 import { PurchaseUpdInsComponent } from '../../purchase/purchase-upd-ins/purchase-upd-ins.component';
 import { PurchaseConfirmationComponent } from '../../purchase/purchase-confirmation/purchase-confirmation.component';
@@ -54,7 +53,7 @@ export class PurchaseOrderPriComponent {
   txtDetail: string = '';
   txtSummary: string = '';
 
-  compraDetalle: CompraDetalle[] = [];
+  compraDetalle: Compra[] = [];
   proveedores: Proveedor[] = [];
   insumos: Insumo[] = [];
   recetas_impactadas: Receta[] = [];
@@ -66,12 +65,16 @@ export class PurchaseOrderPriComponent {
   selectedProveedor!: Proveedor[];
   selectedInsumos!: Insumo[];
 
+  items: CompraDetalle[] = [];
+
+  compra_order_id: number = 0;
+
   constructor(
     private service: CompraService,
     private messageService: MessageService,
     private proveedorService: ProveedorService,
     private insumoService: InsumoService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     // 📅 Inicializar con AYER
@@ -309,13 +312,15 @@ export class PurchaseOrderPriComponent {
     });
   }
 
-  items: CompraDetalle[] = [];
 
-  complete(deltalle: CompraDetalle) {
-    this.items = deltalle.compra_order!.order_detalles.map((det) => ({
+
+  complete(deltalle: Compra) {
+
+    this.items = deltalle.order_detalles.map((det) => ({
       ...det,
     }));
-    console.log(' this.items', this.items);
+
+    this.compra_order_id = deltalle.compra_order_id;
 
     this.showAddPurchaseModal = true;
   }

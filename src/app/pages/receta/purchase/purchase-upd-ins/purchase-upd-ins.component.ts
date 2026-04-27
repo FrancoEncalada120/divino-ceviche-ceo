@@ -38,10 +38,11 @@ import { CartService } from '../../../../core/services/cart.service';
   templateUrl: './purchase-upd-ins.component.html',
   styleUrl: './purchase-upd-ins.component.scss',
 })
-export class PurchaseUpdInsComponent  {
+export class PurchaseUpdInsComponent {
   @Output() close = new EventEmitter<void>();
   @Output() submit = new EventEmitter<Compra>();
   @Input() items: CompraDetalle[] = [];
+  @Input() compra_order_id: number = 0;
 
   cInsumo: Insumo[] = [];
   cUnidad: Unidad[] = [];
@@ -119,6 +120,7 @@ export class PurchaseUpdInsComponent  {
     location_id: this.user?.location_id,
     created_by: this.user?.user_id,
     detalles: [],
+    compra_order_id: 0,
   };
 
   onClose() {
@@ -148,6 +150,7 @@ export class PurchaseUpdInsComponent  {
       grupo_id: item.grupo_id,
     }));
 
+    this.formData.compra_order_id = this.compra_order_id;
     this.formData.created_by = this.user?.user_id;
 
     this.submit.emit(this.formData as Compra);

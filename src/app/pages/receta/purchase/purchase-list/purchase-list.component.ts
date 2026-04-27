@@ -1,8 +1,8 @@
-import { DecimalPipe } from '@angular/common';
+import { DecimalPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
 import { Compra } from '../../../../core/models/compra.model';
-import { TableModule } from 'primeng/table';
+import { TableModule, TableRowCollapseEvent, TableRowExpandEvent } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
 import { ButtonModule } from 'primeng/button';
@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-purchase-list',
-  imports: [TableModule, TabViewModule, TxtsignoPipe, ButtonModule],
+  imports: [TableModule, TabViewModule, TxtsignoPipe, ButtonModule, NgIf],
   providers: [
     DecimalPipe
   ],
@@ -23,6 +23,8 @@ export class PurchaseListComponent {
   compraDetalle: CompraDetalle[] = [];
 
   @Output() delete = new EventEmitter<Compra>();
+
+  expandedRows: any = {};
 
   onDelete(comp: Compra) {
     this.delete.emit(comp);
@@ -50,5 +52,14 @@ export class PurchaseListComponent {
     XLSX.writeFile(wb, "purchase-list.xlsx");
   }
 
+
+  onRowExpand(event: TableRowExpandEvent) {
+    this.expandedRows = {
+      [event.data.compra_order_id]: true
+    };
+  }
+  onRowCollapse(event: TableRowCollapseEvent) {
+    this.expandedRows = {};
+  }
 
 }

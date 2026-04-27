@@ -1,7 +1,7 @@
 <div class="modal-backdrop">
   <div class="modal-container" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Confirm New Purchase</h2>
+      <h2>Confirm New Purchase - Order {{compra_order_id}} </h2>
       <button class="close-btn" (click)="onClose()">✕</button>
     </div>
 
@@ -16,24 +16,15 @@
             <div class="field">
               <label>Date</label>
 
-              <p-datepicker
-                [(ngModel)]="formData.fecha"
-                [showIcon]="true"
-                dateFormat="yy-mm-dd"
-                styleClass="w-100"
-                inputStyleClass="w-100"
-              ></p-datepicker>
+              <p-datepicker [(ngModel)]="formData.fecha" [showIcon]="true" dateFormat="yy-mm-dd" styleClass="w-100"
+                inputStyleClass="w-100"></p-datepicker>
             </div>
 
             <div class="field">
               <label>Usuario</label>
-              <input
-                type="text"
-                [value]="
+              <input type="text" [value]="
                   (user?.user_name || '') + ' ' + (user?.user_apellido || '')
-                "
-                disabled="true"
-              />
+                " disabled="true" />
             </div>
 
             <div class="field">
@@ -52,11 +43,7 @@
           <div class="row-inline">
             <div class="field">
               <label>Note</label>
-              <textarea
-                rows="3"
-                [(ngModel)]="formData.detalle"
-                placeholder="Optional notes..."
-              ></textarea>
+              <textarea rows="3" [(ngModel)]="formData.detalle" placeholder="Optional notes..."></textarea>
             </div>
             <div class="field"></div>
           </div>
@@ -65,14 +52,8 @@
 
       <div class="d-flex align-items-center justify-content-between mb-1">
         <h3 class="confirm-title mb-0">Review & Confirm Details</h3>
-        <button
-          pButton
-          type="button"
-          icon="pi pi-file-pdf"
-          label="PDF"
-          class="p-button-danger p-button-sm"
-          (click)="exportToPdf()"
-        ></button>
+        <button pButton type="button" icon="pi pi-file-pdf" label="PDF" class="p-button-danger p-button-sm"
+          (click)="exportToPdf()"></button>
       </div>
       <div class="confirm-warning">
         <i class="pi pi-exclamation-triangle"></i>
@@ -80,12 +61,7 @@
       </div>
 
       <hr />
-      <p-table
-        [value]="items"
-        editMode="row"
-        styleClass="w-100"
-        [tableStyle]="{ 'table-layout': 'fixed' }"
-      >
+      <p-table [value]="items" editMode="row" styleClass="w-100" [tableStyle]="{ 'table-layout': 'fixed' }">
         <ng-template pTemplate="header">
           <tr>
             <th style="width: 5%">Nro</th>
@@ -101,42 +77,18 @@
           <tr>
             <td>{{ i + 1 }}</td>
             <td class="c1">
-              <p-dropdown
-                [options]="cInsumo"
-                optionLabel="nombreCompleto"
-                optionValue="insumo_id"
-                [autoZIndex]="true"
-                [baseZIndex]="10000"
-                [(ngModel)]="row.insumo_id"
-                placeholder="Select Product"
-                class="w-100"
-                styleClass="w-100"
-                appendTo="body"
-                [filter]="true"
-                (onChange)="onInsumoChange($event.value, row)"
-              >
+              <p-dropdown [options]="cInsumo" optionLabel="nombreCompleto" optionValue="insumo_id" [autoZIndex]="true"
+                [baseZIndex]="10000" [(ngModel)]="row.insumo_id" placeholder="Select Product" class="w-100"
+                styleClass="w-100" appendTo="body" [filter]="true" (onChange)="onInsumoChange($event.value, row)">
               </p-dropdown>
             </td>
             <td>
               <div class="d-flex gap-2 align-items-center">
-                <p-inputNumber
-                  [(ngModel)]="row.cantidad"
-                  [showButtons]="true"
-                  mode="decimal"
-                  [minFractionDigits]="0"
-                  [maxFractionDigits]="0"
-                  [min]="1"
-                  [inputStyle]="{ width: '7rem' }"
-                  (onInput)="calcularTotal(row)"
-                >
+                <p-inputNumber [(ngModel)]="row.cantidad" [showButtons]="true" mode="decimal" [minFractionDigits]="0"
+                  [maxFractionDigits]="0" [min]="1" [inputStyle]="{ width: '7rem' }" (onInput)="calcularTotal(row)">
                 </p-inputNumber>
 
-                <input
-                  type="hidden"
-                  [value]="row.unidad_id"
-                  disabled="true"
-                  style="width: 4rem; text-align: center"
-                />
+                <input type="hidden" [value]="row.unidad_id" disabled="true" style="width: 4rem; text-align: center" />
 
                 <!-- <p-dropdown [options]="row.unidadesFiltradas" optionLabel="abreviatura" optionValue="unidad_id"
                   [(ngModel)]="row.unidad_id" placeholder="Select Unid" appendTo="body">
@@ -144,38 +96,17 @@
               </div>
             </td>
             <td>
-              <p-inputNumber
-                [(ngModel)]="row.precio"
-                [showButtons]="true"
-                mode="decimal"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-                [min]="0.01"
-                [inputStyle]="{ width: '7rem' }"
-                (onInput)="calcularTotal(row)"
-              >
+              <p-inputNumber [(ngModel)]="row.precio" [showButtons]="true" mode="decimal" [minFractionDigits]="2"
+                [maxFractionDigits]="2" [min]="0.01" [inputStyle]="{ width: '7rem' }" (onInput)="calcularTotal(row)">
               </p-inputNumber>
             </td>
             <td>
-              <p-inputNumber
-                [(ngModel)]="row.total"
-                [showButtons]="true"
-                mode="decimal"
-                [minFractionDigits]="2"
-                [maxFractionDigits]="2"
-                [disabled]="true"
-                [min]="1"
-                [inputStyle]="{ width: '7rem' }"
-              >
+              <p-inputNumber [(ngModel)]="row.total" [showButtons]="true" mode="decimal" [minFractionDigits]="2"
+                [maxFractionDigits]="2" [disabled]="true" [min]="1" [inputStyle]="{ width: '7rem' }">
               </p-inputNumber>
             </td>
             <td>
-              <button
-                pButton
-                icon="pi pi-trash"
-                class="p-button-danger p-button-sm"
-                (click)="removeRow(i)"
-              ></button>
+              <button pButton icon="pi pi-trash" class="p-button-danger p-button-sm" (click)="removeRow(i)"></button>
             </td>
           </tr>
         </ng-template>
@@ -190,13 +121,7 @@
         </ng-template>
       </p-table>
 
-      <button
-        pButton
-        label="Add Row"
-        icon="pi pi-plus"
-        (click)="addRow()"
-        class="mt-3"
-      ></button>
+      <button pButton label="Add Row" icon="pi pi-plus" (click)="addRow()" class="mt-3"></button>
     </div>
 
     <div class="modal-footer">
