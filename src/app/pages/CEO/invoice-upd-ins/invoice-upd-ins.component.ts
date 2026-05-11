@@ -25,6 +25,7 @@ export class InvoiceUpdInsComponent {
   categories: Category[] = [];
   typeInvoices: Invoicetype[] = [];
   selectedInvoiceTypeId: number | null = null;
+  Unassigned = false;
 
   constructor(
     private locationService: LocationService,
@@ -32,6 +33,10 @@ export class InvoiceUpdInsComponent {
   ) { }
 
   ngOnInit(): void {
+
+    if (this.invoice?.category.invoice_type_id === 4)
+      this.Unassigned = true;
+
     this.load();
 
     if (this.mode === 'edit' && this.invoice) {
@@ -53,12 +58,12 @@ export class InvoiceUpdInsComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
 
     this.categoriaService.getAll().subscribe({
       next: (data) => {
-        console.log('[Categories] GET ok, items:', data?.length, data);
+        //console.log('[Categories] GET ok, items:', data?.length, data);
         this.categories = data ?? [];
 
         this.categories = data.filter(
@@ -115,11 +120,24 @@ export class InvoiceUpdInsComponent {
     this.submit.emit(this.formData as Invoice);
   }
 
+  onCategoryChange() {
+
+    //console.log('Selected category ID:', this.formData.category_id);
+    if (this.formData.category_id == 33) {
+      //this.formData.invoice_vendor_description = "Projected Bank Deposits";
+      this.formData.invoice_notes = "Projected Bank Deposits";
+    } else {
+      //this.formData.invoice_vendor_description = "";
+      this.formData.invoice_notes = "";
+    }
+
+  }
+
   onInvoiceTypeChange() {
 
     this.categoriaService.getAll().subscribe({
       next: (data) => {
-        console.log('[Categories] GET ok, items:', data?.length, data);
+        //console.log('[Categories] GET ok, items:', data?.length, data);
         this.categories = data ?? [];
 
         this.categories = data.filter(

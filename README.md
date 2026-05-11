@@ -71,6 +71,8 @@ For more information on using the Angular CLI, including detailed command refere
 
 ng serve --hmr
 
+ng build --configuration production
+
 COGS Invoice → #14b8a6
 Fixed Expense → #6366f1
 Other Invoice → #d97706

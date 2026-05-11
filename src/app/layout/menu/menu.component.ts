@@ -149,6 +149,13 @@ export class MenuComponent {
           },
         ],
       },
+      { type: 'section', label: 'USER' },
+      {
+        type: 'link',
+        label: 'User Management',
+        icon: 'bi-person',
+        route: 'settings/Profile',
+      }
     ];
   }
 

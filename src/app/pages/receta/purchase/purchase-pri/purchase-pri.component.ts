@@ -21,10 +21,9 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { forkJoin, Subject, switchMap } from 'rxjs';
 import { CartService } from '../../../../core/services/cart.service';
 import { debounceTime } from 'rxjs/operators';
-import { Card } from 'primeng/card';
+import { Card } from "primeng/card";
 
 @Component({
-  selector: 'app-purchase-pri',
   imports: [FormsModule, PurchaseUpdInsComponent, PurchaseListComponent, NgIf,
     DatePickerModule, ButtonModule, PurchaseConfirmationComponent, DropdownModule, MultiSelectModule, Card],
   templateUrl: './purchase-pri.component.html',

@@ -52,7 +52,7 @@ export class InvoiceComponent {
   dateRange: Date[] | null = null;
   dasboard: DashboardResponse | null = null;
   private locationChange$ = new Subject<void>();
-  activeTab: 1 | 2 | 3 | 4 | 5 | 6 = 1; // por defecto pestaña 1
+  activeTab: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1; // por defecto pestaña 1
 
   invoice01: Invoice[] = [];
   invoice02: Invoice[] = [];
@@ -60,6 +60,7 @@ export class InvoiceComponent {
   invoice04: Invoice[] = [];
   invoice05: Invoice[] = [];
   invoice06: Invoice[] = [];
+  invoice07: Invoice[] = [];
   allInvoices: any[] = [];
 
   totalCat1 = 0;
@@ -68,6 +69,7 @@ export class InvoiceComponent {
   totalCat4 = 0;
   totalCat5 = 0;
   totalCat6 = 0;
+  totalCat7 = 0;
 
   cantidadCat1 = 0;
   cantidadCat2 = 0;
@@ -75,6 +77,7 @@ export class InvoiceComponent {
   cantidadCat4 = 0;
   cantidadCat5 = 0;
   cantidadCat6 = 0;
+  cantidadCat7 = 0;
 
   selectedCategoryType: number | null = null;
   editingInvoice: Invoice | null = null;
@@ -90,7 +93,7 @@ export class InvoiceComponent {
     private userService: UserService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.user = this.userService.getUser();
@@ -162,6 +165,10 @@ export class InvoiceComponent {
           (x) => Number(x.category.invoice_type_id) === 6,
         );
 
+        this.invoice07 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 7,
+        );
+
         this.allInvoices = invoices;
 
         this.calculateTotals(invoices);
@@ -181,7 +188,7 @@ export class InvoiceComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 
@@ -225,11 +232,30 @@ export class InvoiceComponent {
     this.totalCat4 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 4),
     );
-    this.totalCat5 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 5),
-    );
+
+    // this.totalCat5 = sum(
+    //   invoices.filter((x) => Number(x.category.invoice_type_id) === 5),
+    // );
+
+    const categoriasRestan = [27];
+
+    this.totalCat5 = invoices
+      .filter((x) => Number(x.category.invoice_type_id) === 5 && x.category_id != 25)
+      .reduce((total, x) => {
+
+        const amount = Number(x.invoice_amount || 0);
+
+        return total +
+          (categoriasRestan.includes(x.category_id)
+            ? -amount
+            : amount);
+      }, 0);
 
     this.totalCat6 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+    );
+
+    this.totalCat7 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
     );
 
@@ -250,6 +276,9 @@ export class InvoiceComponent {
     ).length;
     this.cantidadCat6 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 6,
+    ).length;
+    this.cantidadCat7 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 7,
     ).length;
   }
 

@@ -1,4 +1,4 @@
-import { DecimalPipe, NgIf } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { TxtsignoPipe } from '../../../../core/pipes/txtsigno.pipe';
 import { Compra } from '../../../../core/models/compra.model';
@@ -10,7 +10,7 @@ import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-purchase-list',
-  imports: [TableModule, TabViewModule, TxtsignoPipe, ButtonModule, NgIf],
+  imports: [TableModule, TabViewModule, TxtsignoPipe, ButtonModule],
   providers: [
     DecimalPipe
   ],

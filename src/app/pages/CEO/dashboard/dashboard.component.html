@@ -12,15 +12,8 @@
           <span>Locations</span>
         </label>
 
-        <p-multiSelect
-          [options]="locations"
-          [(ngModel)]="selectedLocation"
-          optionLabel="location_name"
-          placeholder="Select locations"
-          display="chip"
-          styleClass="w-full"
-          (onChange)="onLocationsChange()"
-        >
+        <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select locations" display="chip" styleClass="w-full" (onChange)="onLocationsChange()">
         </p-multiSelect>
       </div>
 
@@ -30,21 +23,14 @@
           <span>Date Range</span>
         </label>
 
-        <p-datepicker
-          [(ngModel)]="dateRange"
-          selectionMode="range"
-          dateFormat="dd/mm/yy"
-          [showIcon]="true"
-          [readonlyInput]="true"
-          styleClass="w-full"
-          (ngModelChange)="onLocationsChangeDate($event)"
-        >
+        <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
+          [readonlyInput]="true" styleClass="w-full" (ngModelChange)="onLocationsChangeDate($event)">
         </p-datepicker>
       </div>
     </div>
 
     <div class="text-muted small mt-2">
-      <ng-container *ngIf="selectedLocation.length; else noneSelected">
+      <ng-container *ngIf="selectedLocation && selectedLocation.length >0; else noneSelected">
         {{ selectedLocationNames }}
       </ng-container>
       <ng-template #noneSelected>None</ng-template>
@@ -57,8 +43,8 @@
 <!-- KPI CARDS -->
 <!-- ===================== -->
 <div class="row g-3 mb-4">
-  <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of dasboard?.totales">
-    <div class="kpi-card bg-white">
+  <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of totales">
+    <div *ngIf="!item.es_proyectado" class="kpi-card bg-white">
       <div class="sum-inner">
         <div class="sum-top d-flex align-items-center gap-2">
           <i [class]="item.icon"></i>
@@ -69,7 +55,7 @@
           {{ item.Result | txtsigno: item.signo }}
         </div>
 
-        <div class="kpi-footer">
+        <div *ngIf="!item.es_proyectado" class="kpi-footer">
           <span class="kpi-target">
             Target: {{ item.goal | txtsigno: item.signo }}
           </span>
@@ -93,18 +79,9 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Daily Scorecard">
-        <p-table
-          [value]="dasboard?.dailyMetrics!"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-          styleClass="p-datatable-sm"
-        >
+        <p-table [value]="dailyMetrics!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>
@@ -149,18 +126,9 @@
   <div class="card">
     <p-tabView>
       <p-tabPanel header="Invoices">
-        <p-table
-          [value]="dasboard?.invoices!"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-          styleClass="p-datatable-sm"
-        >
+        <p-table [value]="invoices!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+          [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
           <!-- Header -->
           <ng-template pTemplate="header">
             <tr>

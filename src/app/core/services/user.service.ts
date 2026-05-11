@@ -20,11 +20,21 @@ export class UserService {
   }
 
   getAll(): Observable<User[]> {
-    console.log('[UserService] GET', this.apiUrl);
 
-    return this.http.get<ApiResponse<User[]>>(this.apiUrl).pipe(
+
+    const userData = localStorage.getItem('user');
+    const user: User | null = userData ? (JSON.parse(userData) as User) : null;
+
+    let url = this.apiUrl;
+    if (user?.user_rol === 3) {
+      url += `?location_id=${user?.location_id}`
+    }
+
+
+    return this.http.get<ApiResponse<User[]>>(url).pipe(
       map((res) => {
         const arr = res?.data;
+        console.log('getAll - response:', res);
         return Array.isArray(arr) ? arr : [];
       }),
     );

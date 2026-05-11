@@ -1,6 +1,6 @@
 <div class="page">
   <div class="login-card shadow-sm">
-    <a class="back-link" routerLink="/"> ← Back to Home </a>
+
 
     <h1 class="title">Welcome back</h1>
     <p class="subtitle">Sign in to your account</p>
@@ -9,7 +9,7 @@
       <div class="mb-3">
         <label class="form-label">Email address</label>
         <input class="form-control form-control-lg" type="email" name="email" [(ngModel)]="email" required email
-          placeholder="info@divinoceviche.com" />
+          placeholder="Email address" />
       </div>
 
       <div class="mb-3">
@@ -17,7 +17,7 @@
 
         <div class="input-group input-group-lg">
           <input class="form-control" [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password"
-            required placeholder="••••••••••" />
+            required placeholder="Enter password" />
           <button type="button" class="btn btn-outline-secondary" (click)="togglePassword()"
             aria-label="Toggle password visibility">
             {{ showPassword ? "Hide" : "Show" }}

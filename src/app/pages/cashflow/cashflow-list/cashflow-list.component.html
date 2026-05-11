@@ -1,11 +1,9 @@
 <div class="row g-3 mb-4 bg-white">
   <div class="card">
     <p-tabView>
-      <p-tabPanel
-        [header]="
+      <p-tabPanel [header]="
           'Cash Flow Report' + (monthsLabel ? '  |  ' + monthsLabel : '')
-        "
-      >
+        ">
         <div class="row g-3">
           <!-- Sales & Net Profit -->
           <div class="col-12 col-lg-6">
@@ -14,19 +12,10 @@
                 <span class="chart-card__title">Sales & Net Profit</span>
                 <span class="chart-card__badge">Monthly</span>
               </div> -->
-              <apx-chart
-                [series]="salesOpts.series"
-                [chart]="salesOpts.chart"
-                [plotOptions]="salesOpts.plotOptions"
-                [colors]="salesOpts.colors ?? []"
-                [dataLabels]="salesOpts.dataLabels"
-                [stroke]="salesOpts.stroke"
-                [fill]="salesOpts.fill"
-                [xaxis]="salesOpts.xaxis"
-                [yaxis]="salesOpts.yaxis"
-                [legend]="salesOpts.legend"
-                [tooltip]="salesOpts.tooltip"
-              ></apx-chart>
+              <apx-chart [series]="salesOpts.series" [chart]="salesOpts.chart" [plotOptions]="salesOpts.plotOptions"
+                [colors]="salesOpts.colors ?? []" [dataLabels]="salesOpts.dataLabels" [stroke]="salesOpts.stroke"
+                [fill]="salesOpts.fill" [xaxis]="salesOpts.xaxis" [yaxis]="salesOpts.yaxis" [legend]="salesOpts.legend"
+                [tooltip]="salesOpts.tooltip"></apx-chart>
             </div>
           </div>
 
@@ -37,17 +26,10 @@
                 <span class="chart-card__title">Expense Breakdown</span>
                 <span class="chart-card__badge">Monthly</span>
               </div> -->
-              <apx-chart
-                [series]="expenseOpts.series"
-                [chart]="expenseOpts.chart"
-                [plotOptions]="expenseOpts.plotOptions"
-                [colors]="expenseOpts.colors ?? []"
-                [dataLabels]="expenseOpts.dataLabels"
-                [xaxis]="expenseOpts.xaxis"
-                [yaxis]="expenseOpts.yaxis"
-                [legend]="expenseOpts.legend"
-                [tooltip]="expenseOpts.tooltip"
-              ></apx-chart>
+              <apx-chart [series]="expenseOpts.series" [chart]="expenseOpts.chart"
+                [plotOptions]="expenseOpts.plotOptions" [colors]="expenseOpts.colors ?? []"
+                [dataLabels]="expenseOpts.dataLabels" [xaxis]="expenseOpts.xaxis" [yaxis]="expenseOpts.yaxis"
+                [legend]="expenseOpts.legend" [tooltip]="expenseOpts.tooltip"></apx-chart>
             </div>
           </div>
 
@@ -60,83 +42,59 @@
                   >Trend</span
                 >
               </div> -->
-              <apx-chart
-                [series]="trendOpts.series"
-                [chart]="trendOpts.chart"
-                [colors]="trendOpts.colors ?? []"
-                [dataLabels]="trendOpts.dataLabels"
-                [stroke]="trendOpts.stroke"
-                [markers]="trendOpts.markers"
-                [xaxis]="trendOpts.xaxis"
-                [yaxis]="trendOpts.yaxis"
-                [legend]="trendOpts.legend"
-                [tooltip]="trendOpts.tooltip"
-                [annotations]="trendOpts.annotations"
-              ></apx-chart>
+              <apx-chart [series]="trendOpts.series" [chart]="trendOpts.chart" [colors]="trendOpts.colors ?? []"
+                [dataLabels]="trendOpts.dataLabels" [stroke]="trendOpts.stroke" [markers]="trendOpts.markers"
+                [xaxis]="trendOpts.xaxis" [yaxis]="trendOpts.yaxis" [legend]="trendOpts.legend"
+                [tooltip]="trendOpts.tooltip" [annotations]="trendOpts.annotations"></apx-chart>
             </div>
           </div>
         </div>
       </p-tabPanel>
 
       <p-tabPanel header="CashFlow">
-        <div class="container flex">
-          <div class="item flex-item">
-            <p-treeTable
-              [value]="treeData"
-              [paginator]="true"
-              [rows]="10"
-              [rowsPerPageOptions]="[10, 15, 25]"
-              [scrollable]="true"
-              scrollHeight="flex"
-              appendTo="body"
-            >
-              <ng-template pTemplate="header">
-                <tr>
-                  <th [width]="col1">Date / Location</th>
-                  <th>Gross Sales</th>
-                  <th>Net Sales</th>
-                  <th>Food Cost</th>
-                  <th>Labor</th>
-                  <th>Rent</th>
-                  <th>O. Expenses</th>
-                  <th>App Fees</th>
-                  <th>Others</th>
-                  <th>T. Expenses</th>
-                  <th>Net Profit</th>
-                  <th>Net Margin</th>
-                </tr>
-              </ng-template>
+        <p-treeTable [value]="treeData" [paginator]="true" [rows]="15" [rowsPerPageOptions]="[15, 30, 60]"
+          [scrollable]="true" scrollHeight="flex">
+          <ng-template pTemplate="header">
+            <tr>
+              <th [width]="col1" >Date / Location</th>
+              <!-- <th>Gross Sales</th> -->
+              <th>Net Sales</th>
+              <th>Food Cost</th>
+              <th>Labor</th>
+              <th>Rent</th>
+              <th>O. Expenses</th>
+              <th>App Fees</th>
+              <th>Others</th>
+              <!-- <th>T. Expenses</th> -->
+              <th>Net Profit</th>
+              <th>Net Margin</th>
+            </tr>
+          </ng-template>
 
-              <ng-template #body let-rowNode let-rowData="rowData">
-                <tr
-                  [ttRow]="rowNode"
-                  [ngClass]="{
+          <ng-template #body let-rowNode let-rowData="rowData">
+            <tr [ttRow]="rowNode" [ngClass]="{
                     'row-date': rowData.level === 'date',
                     'row-location': rowData.level === 'location',
-                  }"
-                >
-                  <td [width]="col1">
-                    <p-treeTableToggler
-                      [rowNode]="rowNode"
-                    ></p-treeTableToggler>
-                    {{ rowData.label }}
-                  </td>
-                  <td>{{ rowData.venta_bruta | txtsigno: "$" }}</td>
-                  <td>{{ rowData.venta_neta | txtsigno: "$" }}</td>
-                  <td>{{ rowData.food_cost | txtsigno: "$" }}</td>
-                  <td>{{ rowData.labor | txtsigno: "$" }}</td>
-                  <td>{{ rowData.renta | txtsigno: "$" }}</td>
-                  <td>{{ rowData.gastos_operacionales | txtsigno: "$" }}</td>
-                  <td>{{ rowData.fees_apps | txtsigno: "$" }}</td>
-                  <td>{{ rowData.gastos_varios | txtsigno: "$" }}</td>
-                  <td>{{ rowData.total_gastos | txtsigno: "$" }}</td>
-                  <td>{{ rowData.ganancia_neta | txtsigno: "$" }}</td>
-                  <td>{{ rowData.net_margin | txtsigno: "$" }}</td>
-                </tr>
-              </ng-template>
-            </p-treeTable>
-          </div>
-        </div>
+                    'row-projected': rowData.es_proyectado
+                  }">
+              <td [width]="col1">
+                <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
+                {{ rowData.label }} <b *ngIf="rowData.es_proyectado">Proyectado</b>
+              </td>
+              <!-- <td>{{ rowData.venta_bruta | txtsigno: "$" }}</td> -->
+              <td>{{ rowData.venta_neta | txtsigno: "$" }}</td>
+              <td>{{ rowData.food_cost | txtsigno: "$" }}</td>
+              <td>{{ rowData.labor | txtsigno: "$" }}</td>
+              <td>{{ rowData.renta | txtsigno: "$" }}</td>
+              <td>{{ rowData.gastos_operacionales | txtsigno: "$" }}</td>
+              <td>{{ rowData.fees_apps | txtsigno: "$" }}</td>
+              <td>{{ rowData.gastos_varios | txtsigno: "$" }}</td>
+              <!-- <td>{{ rowData.total_gastos | txtsigno: "$" }}</td> -->
+              <td>{{ rowData.ganancia_neta | txtsigno: "$" }}</td>
+              <td>{{ rowData.net_margin | txtsigno: "%" }}</td>
+            </tr>
+          </ng-template>
+        </p-treeTable>
       </p-tabPanel>
     </p-tabView>
   </div>
@@ -150,22 +108,12 @@
           <div class="col-12 col-lg-6">
             <div class="chart-card">
               <div class="chart-card__header">
-                <span class="chart-card__title"
-                  >Opening vs Closing Balance</span
-                >
+                <span class="chart-card__title">Opening vs Closing Balance</span>
                 <span class="chart-card__badge">Balance</span>
               </div>
-              <apx-chart
-                [series]="saldosOpts.series"
-                [chart]="saldosOpts.chart"
-                [plotOptions]="saldosOpts.plotOptions"
-                [colors]="saldosOpts.colors ?? []"
-                [dataLabels]="saldosOpts.dataLabels"
-                [xaxis]="saldosOpts.xaxis"
-                [yaxis]="saldosOpts.yaxis"
-                [legend]="saldosOpts.legend"
-                [tooltip]="saldosOpts.tooltip"
-              ></apx-chart>
+              <apx-chart [series]="saldosOpts.series" [chart]="saldosOpts.chart" [plotOptions]="saldosOpts.plotOptions"
+                [colors]="saldosOpts.colors ?? []" [dataLabels]="saldosOpts.dataLabels" [xaxis]="saldosOpts.xaxis"
+                [yaxis]="saldosOpts.yaxis" [legend]="saldosOpts.legend" [tooltip]="saldosOpts.tooltip"></apx-chart>
             </div>
           </div>
           <div class="col-12 col-lg-6">
@@ -174,34 +122,19 @@
                 <span class="chart-card__title">Bank Flow</span>
                 <span class="chart-card__badge">Deposits</span>
               </div>
-              <apx-chart
-                [series]="depositsOpts.series"
-                [chart]="depositsOpts.chart"
-                [plotOptions]="depositsOpts.plotOptions"
-                [colors]="depositsOpts.colors ?? []"
-                [dataLabels]="depositsOpts.dataLabels"
-                [stroke]="depositsOpts.stroke"
-                [fill]="depositsOpts.fill"
-                [xaxis]="depositsOpts.xaxis"
-                [yaxis]="depositsOpts.yaxis"
-                [legend]="depositsOpts.legend"
-                [tooltip]="depositsOpts.tooltip"
-              ></apx-chart>
+              <apx-chart [series]="depositsOpts.series" [chart]="depositsOpts.chart"
+                [plotOptions]="depositsOpts.plotOptions" [colors]="depositsOpts.colors ?? []"
+                [dataLabels]="depositsOpts.dataLabels" [stroke]="depositsOpts.stroke" [fill]="depositsOpts.fill"
+                [xaxis]="depositsOpts.xaxis" [yaxis]="depositsOpts.yaxis" [legend]="depositsOpts.legend"
+                [tooltip]="depositsOpts.tooltip"></apx-chart>
             </div>
           </div>
         </div>
       </p-tabPanel>
 
       <p-tabPanel header="Balance Details">
-        <p-treeTable
-          [value]="treeData"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 15, 25]"
-          [scrollable]="true"
-          scrollHeight="flex"
-          appendTo="body"
-        >
+        <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 15, 25]"
+          [scrollable]="true" scrollHeight="flex" appendTo="body">
           <ng-template pTemplate="header">
             <tr>
               <th [width]="colSaldos">Date / Location</th>
@@ -214,13 +147,10 @@
           </ng-template>
 
           <ng-template #body let-rowNode let-rowData="rowData">
-            <tr
-              [ttRow]="rowNode"
-              [ngClass]="{
+            <tr [ttRow]="rowNode" [ngClass]="{
                 'row-date': rowData.level === 'date',
                 'row-location': rowData.level === 'location',
-              }"
-            >
+              }">
               <td [width]="colSaldos">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 {{ rowData.label }}
@@ -249,51 +179,29 @@
                 <span class="chart-card__title">Sales by App</span>
                 <span class="chart-card__badge">Daily</span>
               </div>
-              <apx-chart
-                [series]="appsBarOpts.series"
-                [chart]="appsBarOpts.chart"
-                [plotOptions]="appsBarOpts.plotOptions"
-                [colors]="appsBarOpts.colors ?? []"
-                [dataLabels]="appsBarOpts.dataLabels"
-                [xaxis]="appsBarOpts.xaxis"
-                [yaxis]="appsBarOpts.yaxis"
-                [legend]="appsBarOpts.legend"
-                [tooltip]="appsBarOpts.tooltip"
-              ></apx-chart>
+              <apx-chart [series]="appsBarOpts.series" [chart]="appsBarOpts.chart"
+                [plotOptions]="appsBarOpts.plotOptions" [colors]="appsBarOpts.colors ?? []"
+                [dataLabels]="appsBarOpts.dataLabels" [xaxis]="appsBarOpts.xaxis" [yaxis]="appsBarOpts.yaxis"
+                [legend]="appsBarOpts.legend" [tooltip]="appsBarOpts.tooltip"></apx-chart>
             </div>
           </div>
           <div class="col-12 col-lg-4">
             <div class="chart-card">
               <div class="chart-card__header">
                 <span class="chart-card__title">App Share</span>
-                <span class="chart-card__badge chart-card__badge--accent"
-                  >Total</span
-                >
+                <span class="chart-card__badge chart-card__badge--accent">Total</span>
               </div>
-              <apx-chart
-                [series]="appsDonOpts.series"
-                [chart]="appsDonOpts.chart"
-                [labels]="appsDonOpts.labels ?? []"
-                [colors]="appsDonOpts.colors ?? []"
-                [legend]="appsDonOpts.legend"
-                [dataLabels]="appsDonOpts.dataLabels"
-                [tooltip]="appsDonOpts.tooltip"
-              ></apx-chart>
+              <apx-chart [series]="appsDonOpts.series" [chart]="appsDonOpts.chart" [labels]="appsDonOpts.labels ?? []"
+                [colors]="appsDonOpts.colors ?? []" [legend]="appsDonOpts.legend" [dataLabels]="appsDonOpts.dataLabels"
+                [tooltip]="appsDonOpts.tooltip"></apx-chart>
             </div>
           </div>
         </div>
       </p-tabPanel>
 
       <p-tabPanel header="Apps and Tips Details">
-        <p-treeTable
-          [value]="treeData"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 15, 25]"
-          [scrollable]="true"
-          scrollHeight="flex"
-          appendTo="body"
-        >
+        <p-treeTable [value]="treeData" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 15, 25]"
+          [scrollable]="true" scrollHeight="flex" appendTo="body">
           <ng-template pTemplate="header">
             <tr>
               <th [width]="colApps">Date / Location</th>
@@ -309,13 +217,10 @@
           </ng-template>
 
           <ng-template #body let-rowNode let-rowData="rowData">
-            <tr
-              [ttRow]="rowNode"
-              [ngClass]="{
+            <tr [ttRow]="rowNode" [ngClass]="{
                 'row-date': rowData.level === 'date',
                 'row-location': rowData.level === 'location',
-              }"
-            >
+              }">
               <td [width]="colApps">
                 <p-treeTableToggler [rowNode]="rowNode"></p-treeTableToggler>
                 {{ rowData.label }}

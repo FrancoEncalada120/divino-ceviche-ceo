@@ -8,5 +8,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'divino-ceviche-ceo';
+  title = 'Divino Ceviche Financials';
 }

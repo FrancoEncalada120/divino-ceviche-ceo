@@ -4,7 +4,9 @@ import { Location } from '../../../core/models/location.model';
 import { DashboardService } from '../../../core/services/dashboard.service';
 import {
   CashFlow,
-  DashboardResponse,
+  DailyMetric,
+  Invoice,
+  TotalMetric,
 } from '../../../core/models/dashboard.models';
 import { LocationService } from '../../../core/services/location.service';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -15,7 +17,6 @@ import { TabViewModule } from 'primeng/tabview';
 import { Subject } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
-import { TabPanel } from 'primeng/tabview';
 import { CardModule } from 'primeng/card';
 import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-list.component';
 
@@ -39,7 +40,12 @@ import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-lis
 export class DashboardComponent implements OnInit {
   loading = false;
   locations: Location[] = [];
-  dasboard: DashboardResponse | null = null;
+
+  //dasboard: DashboardResponse | null = null;
+  invoices: Invoice[] = [];
+  ProjectedDebits: Invoice[] = [];
+  totales: TotalMetric[] = [];
+  dailyMetrics: DailyMetric[] = [];
 
   dateRange: Date[] | null = null;
 
@@ -50,7 +56,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private dashboardSvc: DashboardService,
     private locationService: LocationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const yesterday = new Date();
@@ -99,8 +105,14 @@ export class DashboardComponent implements OnInit {
 
     this.dashboardSvc.getDashboard(startDate, endDate, locales).subscribe({
       next: (res) => {
-        this.dasboard = res;
+        // this.dasboard = res;
         this.movimientos = res.cashflow;
+        this.invoices = res.invoices.filter((inv) => inv.category.invoice_type_id === 7);
+        this.ProjectedDebits = res.invoices.filter((inv) => inv.category.invoice_type_id !== 7);
+        this.totales = res.totales;
+        this.dailyMetrics = res.dailyMetrics;
+
+        //console.log('Dashboard data loaded:', res.cashflow);
       },
       error: () => (this.loading = false),
       complete: () => (this.loading = false),
@@ -120,7 +132,7 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 

@@ -62,7 +62,7 @@
 /////////// cards
 .invoice-summary-grid {
   display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin: 1.5rem 0;
 }
@@ -150,6 +150,10 @@
   background: #e11d48;
 }
 
+.invoice-summary-card--proyected::after {
+  background: #f5d0a0fc;
+}
+
 @media (max-width: 1400px) {
   .invoice-summary-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -225,6 +229,10 @@
   color: #e11d48 !important;
 }
 
+.invoice-summary-card__add-btn--proyected {
+  color: #f5d0a0fc !important;
+}
+
 //-----------
 
 .invoice-tabs-wrapper {
@@ -265,6 +273,10 @@
 
 .invoice-tab-header--app i {
   color: #e11d48;
+}
+
+.invoice-tab-header--proyected i {
+  color: #f5d0a0fc;
 }
 
 :host ::ng-deep .p-tabview-nav li {

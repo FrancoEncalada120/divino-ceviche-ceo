@@ -13,15 +13,8 @@
             <span>Locations</span>
           </label>
 
-          <p-multiSelect
-            [options]="locations"
-            [(ngModel)]="selectedLocation"
-            optionLabel="location_name"
-            placeholder="Select locations"
-            display="chip"
-            styleClass="w-full"
-            (onChange)="onLocationsChange()"
-          >
+          <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+            placeholder="Select locations" display="chip" styleClass="w-full" (onChange)="onLocationsChange()">
           </p-multiSelect>
         </div>
 
@@ -31,15 +24,8 @@
             <span>Date Range</span>
           </label>
 
-          <p-datepicker
-            [(ngModel)]="dateRange"
-            selectionMode="range"
-            dateFormat="dd/mm/yy"
-            [showIcon]="true"
-            [readonlyInput]="true"
-            styleClass="w-full"
-            (ngModelChange)="onLocationsChangeDate($event)"
-          >
+          <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
+            [readonlyInput]="true" styleClass="w-full" (ngModelChange)="onLocationsChangeDate($event)">
           </p-datepicker>
         </div>
       </div>
@@ -47,10 +33,7 @@
   </p-card>
 
   <div class="invoice-summary-grid">
-    <p-card
-      class="invoice-summary-card invoice-summary-card--cogs"
-      (click)="activeTab = 1"
-    >
+    <p-card class="invoice-summary-card invoice-summary-card--cogs" (click)="activeTab = 1">
       <div class="invoice-summary-card__content">
         <div class="invoice-summary-card__topbar">
           <div class="invoice-summary-card__header">
@@ -58,15 +41,10 @@
             <span>COGS Invoice</span>
           </div>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-plus-circle"
+          <button pButton type="button" icon="pi pi-plus-circle"
             class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--cogs"
-            (click)="openAddInvoice(1); $event.stopPropagation()"
-            pTooltip="Add COGS Invoice"
-            tooltipPosition="top"
-          ></button>
+            (click)="openAddInvoice(1); $event.stopPropagation()" pTooltip="Add COGS Invoice"
+            tooltipPosition="top"></button>
         </div>
 
         <div class="invoice-summary-card__value">
@@ -76,10 +54,7 @@
       </div>
     </p-card>
 
-    <p-card
-      class="invoice-summary-card invoice-summary-card--fixed"
-      (click)="activeTab = 2"
-    >
+    <p-card class="invoice-summary-card invoice-summary-card--fixed" (click)="activeTab = 2">
       <div class="invoice-summary-card__content">
         <div class="invoice-summary-card__topbar">
           <div class="invoice-summary-card__header">
@@ -87,15 +62,10 @@
             <span>Fixed Expense</span>
           </div>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-plus-circle"
+          <button pButton type="button" icon="pi pi-plus-circle"
             class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--fixed"
-            (click)="openAddInvoice(2); $event.stopPropagation()"
-            pTooltip="Add Fixed Expense"
-            tooltipPosition="top"
-          ></button>
+            (click)="openAddInvoice(2); $event.stopPropagation()" pTooltip="Add Fixed Expense"
+            tooltipPosition="top"></button>
         </div>
 
         <div class="invoice-summary-card__value">
@@ -105,10 +75,7 @@
       </div>
     </p-card>
 
-    <p-card
-      class="invoice-summary-card invoice-summary-card--other"
-      (click)="activeTab = 3"
-    >
+    <p-card class="invoice-summary-card invoice-summary-card--other" (click)="activeTab = 3">
       <div class="invoice-summary-card__content">
         <div class="invoice-summary-card__topbar">
           <div class="invoice-summary-card__header">
@@ -116,15 +83,10 @@
             <span>Other Invoice</span>
           </div>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-plus-circle"
+          <button pButton type="button" icon="pi pi-plus-circle"
             class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--other"
-            (click)="openAddInvoice(3); $event.stopPropagation()"
-            pTooltip="Add Other Invoice"
-            tooltipPosition="top"
-          ></button>
+            (click)="openAddInvoice(3); $event.stopPropagation()" pTooltip="Add Other Invoice"
+            tooltipPosition="top"></button>
         </div>
 
         <div class="invoice-summary-card__value">
@@ -134,10 +96,7 @@
       </div>
     </p-card>
 
-    <p-card
-      class="invoice-summary-card invoice-summary-card--unassigned"
-      (click)="activeTab = 4"
-    >
+    <p-card class="invoice-summary-card invoice-summary-card--unassigned" (click)="activeTab = 4">
       <div class="invoice-summary-card__content">
         <div class="invoice-summary-card__topbar">
           <div class="invoice-summary-card__header">
@@ -145,15 +104,10 @@
             <span>Unassigned Invoice</span>
           </div>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-plus-circle"
+          <button pButton type="button" icon="pi pi-plus-circle"
             class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--unassigned"
-            (click)="openAddInvoice(4); $event.stopPropagation()"
-            pTooltip="Add Unassigned Invoice"
-            tooltipPosition="top"
-          ></button>
+            (click)="openAddInvoice(4); $event.stopPropagation()" pTooltip="Add Unassigned Invoice"
+            tooltipPosition="top"></button>
         </div>
 
         <div class="invoice-summary-card__value">
@@ -163,10 +117,7 @@
       </div>
     </p-card>
 
-    <p-card
-      class="invoice-summary-card invoice-summary-card--bank"
-      (click)="activeTab = 5"
-    >
+    <p-card class="invoice-summary-card invoice-summary-card--bank" (click)="activeTab = 5">
       <div class="invoice-summary-card__content">
         <div class="invoice-summary-card__topbar">
           <div class="invoice-summary-card__header">
@@ -174,15 +125,10 @@
             <span>Bank Movements</span>
           </div>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-plus-circle"
+          <button pButton type="button" icon="pi pi-plus-circle"
             class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--bank"
-            (click)="openAddInvoice(5); $event.stopPropagation()"
-            pTooltip="Add Bank Movement"
-            tooltipPosition="top"
-          ></button>
+            (click)="openAddInvoice(5); $event.stopPropagation()" pTooltip="Add Bank Movement"
+            tooltipPosition="top"></button>
         </div>
 
         <div class="invoice-summary-card__value">
@@ -192,10 +138,7 @@
       </div>
     </p-card>
 
-    <p-card
-      class="invoice-summary-card invoice-summary-card--app"
-      (click)="activeTab = 6"
-    >
+    <p-card class="invoice-summary-card invoice-summary-card--app" (click)="activeTab = 6">
       <div class="invoice-summary-card__content">
         <div class="invoice-summary-card__topbar">
           <div class="invoice-summary-card__header">
@@ -203,15 +146,9 @@
             <span>App Fees</span>
           </div>
 
-          <button
-            pButton
-            type="button"
-            icon="pi pi-plus-circle"
+          <button pButton type="button" icon="pi pi-plus-circle"
             class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--app"
-            (click)="openAddInvoice(6); $event.stopPropagation()"
-            pTooltip="Add App Fee"
-            tooltipPosition="top"
-          ></button>
+            (click)="openAddInvoice(6); $event.stopPropagation()" pTooltip="Add App Fee" tooltipPosition="top"></button>
         </div>
 
         <div class="invoice-summary-card__value">
@@ -220,6 +157,28 @@
         <div class="invoice-summary-card__meta">{{ cantidadCat6 }} entries</div>
       </div>
     </p-card>
+
+    <p-card class="invoice-summary-card invoice-summary-card--proyected" (click)="activeTab = 7">
+      <div class="invoice-summary-card__content">
+        <div class="invoice-summary-card__topbar">
+          <div class="invoice-summary-card__header">
+            <i class="pi pi-chart-line"></i>
+            <span>Projected Bank Deposits</span>
+          </div>
+
+          <button pButton type="button" icon="pi pi-plus-circle"
+            class="p-button-rounded p-button-text invoice-summary-card__add-btn invoice-summary-card__add-btn--proyected"
+            (click)="openAddInvoice(7); $event.stopPropagation()" pTooltip="Projected Bank Deposits" tooltipPosition="top">
+          </button>
+        </div>
+
+        <div class="invoice-summary-card__value">
+          {{ totalCat7 | number: "1.2-2" }}
+        </div>
+        <div class="invoice-summary-card__meta">{{ cantidadCat6 }} entries</div>
+      </div>
+    </p-card>
+
   </div>
 
   <div class="invoice-tabs-wrapper">
@@ -232,12 +191,8 @@
           </div>
         </ng-template>
 
-        <app-invoice-table
-          [items]="invoice01"
-          [tabKey]="1"
-          (edit)="openUpdateInvoice($event, 1)"
-          (remove)="openDeleteInvoice($event)"
-        ></app-invoice-table>
+        <app-invoice-table [items]="invoice01" [tabKey]="1" (edit)="openUpdateInvoice($event, 1)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel>
@@ -248,12 +203,8 @@
           </div>
         </ng-template>
 
-        <app-invoice-table
-          [items]="invoice02"
-          [tabKey]="2"
-          (edit)="openUpdateInvoice($event, 2)"
-          (remove)="openDeleteInvoice($event)"
-        ></app-invoice-table>
+        <app-invoice-table [items]="invoice02" [tabKey]="2" (edit)="openUpdateInvoice($event, 2)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel>
@@ -264,12 +215,8 @@
           </div>
         </ng-template>
 
-        <app-invoice-table
-          [items]="invoice03"
-          [tabKey]="3"
-          (edit)="openUpdateInvoice($event, 3)"
-          (remove)="openDeleteInvoice($event)"
-        ></app-invoice-table>
+        <app-invoice-table [items]="invoice03" [tabKey]="3" (edit)="openUpdateInvoice($event, 3)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel>
@@ -280,12 +227,8 @@
           </div>
         </ng-template>
 
-        <app-invoice-table
-          [items]="invoice04"
-          [tabKey]="4"
-          (edit)="openUpdateInvoice($event, 4)"
-          (remove)="openDeleteInvoice($event)"
-        ></app-invoice-table>
+        <app-invoice-table [items]="invoice04" [tabKey]="4" (edit)="openUpdateInvoice($event, 4)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel>
@@ -296,12 +239,8 @@
           </div>
         </ng-template>
 
-        <app-invoice-table
-          [items]="invoice05"
-          [tabKey]="5"
-          (edit)="openUpdateInvoice($event, 5)"
-          (remove)="openDeleteInvoice($event)"
-        ></app-invoice-table>
+        <app-invoice-table [items]="invoice05" [tabKey]="5" (edit)="openUpdateInvoice($event, 5)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
       </p-tabPanel>
 
       <p-tabPanel>
@@ -312,23 +251,26 @@
           </div>
         </ng-template>
 
-        <app-invoice-table
-          [items]="invoice06"
-          [tabKey]="6"
-          (edit)="openUpdateInvoice($event, 6)"
-          (remove)="openDeleteInvoice($event)"
-        ></app-invoice-table>
+        <app-invoice-table [items]="invoice06" [tabKey]="6" (edit)="openUpdateInvoice($event, 6)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
       </p-tabPanel>
+
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="invoice-tab-header invoice-tab-header--proyected">
+            <i class="pi pi-chart-line"></i>
+            <span>Projected Bank Deposits</span>
+          </div>
+        </ng-template>
+
+        <app-invoice-table [items]="invoice07" [tabKey]="7" (edit)="openUpdateInvoice($event, 7)"
+          (remove)="openDeleteInvoice($event)"></app-invoice-table>
+      </p-tabPanel>
+
     </p-tabView>
   </div>
 </div>
 
-<app-invoice-upd-ins
-  *ngIf="showAddLocationModal"
-  [mode]="modalMode"
-  (close)="closeModal()"
-  (submit)="handleSubmit($event)"
-  [invoice]="editingInvoice"
-  [categoryType]="selectedCategoryType"
->
+<app-invoice-upd-ins *ngIf="showAddLocationModal" [mode]="modalMode" (close)="closeModal()"
+  (submit)="handleSubmit($event)" [invoice]="editingInvoice" [categoryType]="selectedCategoryType">
 </app-invoice-upd-ins>

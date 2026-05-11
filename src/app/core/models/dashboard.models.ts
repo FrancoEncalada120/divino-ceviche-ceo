@@ -72,6 +72,7 @@ export interface TotalMetric {
   eval: Eval;
   icon: string;
   signo: string;
+  es_proyectado: boolean;
 }
 
 export interface Eval {
@@ -109,6 +110,7 @@ export interface CashFlow {
   tips: string;
   taxes: string;
   descuentos: string;
+  es_proyectado: boolean;
 }
 
 export interface cashflowMonth {

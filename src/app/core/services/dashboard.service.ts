@@ -16,7 +16,7 @@ export class DashboardService {
     locations: string,
   ): Observable<DashboardResponse> {
     let url = `${this.apiUrl}?fechaIni=${fechaIni}&fechaFin=${fechaFin}&locacion=${locations}`;
-    console.log('[DashboardService] URL =>', url);
+    //console.log('[DashboardService] URL =>', url);
 
     return this.http.get<DashboardResponse>(url);
   }

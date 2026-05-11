@@ -11,7 +11,7 @@ import { UserService } from '../../core/services/user.service';
   styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-  email = 'info@divinoceviche.com';
+  email = '';
   password = '';
   showPassword = false;
   isSubmitting = false;

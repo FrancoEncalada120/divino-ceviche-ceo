@@ -8,7 +8,7 @@ import {
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { TreeTableModule } from 'primeng/treetable';
 import { CashFlow } from '../../../core/models/dashboard.models';
-import { NgClass } from '@angular/common';
+import { NgClass, NgIf } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { TabViewModule } from 'primeng/tabview';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -59,6 +59,7 @@ const P = {
     TableModule,
     TabViewModule,
     NgApexchartsModule,
+    NgIf
   ],
   templateUrl: './cashflow-list.component.html',
   styleUrl: './cashflow-list.component.scss',
@@ -68,7 +69,7 @@ export class CashflowListComponent implements OnChanges, OnInit {
 
   treeData: any[] = [];
 
-  col1 = '15%';
+  col1 = '20%';
   colSaldos = '23%';
   colApps = '23%';
 
@@ -140,7 +141,7 @@ export class CashflowListComponent implements OnChanges, OnInit {
       'venta_inkdind',
       'tips',
       'taxes',
-      'descuentos',
+      'descuentos'
     ];
 
     const initTotals = () => {
@@ -150,9 +151,15 @@ export class CashflowListComponent implements OnChanges, OnInit {
       return obj;
     };
 
+
+
     const groupedByDate: any = {};
 
     this.movimientos.forEach((item) => {
+
+
+      //console.log('Processing item:', item);
+
       if (!groupedByDate[item.fecha]) groupedByDate[item.fecha] = {};
       if (!groupedByDate[item.fecha][item.location_id])
         groupedByDate[item.fecha][item.location_id] = [];
@@ -161,11 +168,31 @@ export class CashflowListComponent implements OnChanges, OnInit {
 
     const tree: TreeNode[] = [];
 
+    //console.log('Grouped by date and location:', groupedByDate);
+
     Object.keys(groupedByDate).forEach((fecha) => {
       let totalFecha = initTotals();
 
+      //console.log('totalFecha', totalFecha);
+
+      const allItemsFecha = Object.values(groupedByDate[fecha]).flat();
+      //console.log(`Items for fecha ${fecha}:`, allItemsFecha);
+
+      const esProyectadoFecha = allItemsFecha.every(
+        (i: any) => {
+        //console.log(`Checking es_proyectado for item with fecha ${fecha} and location_id ${i.location_id}:`, i.es_proyectado);
+         return i.es_proyectado
+        }
+      );
+
+
       const dateNode: TreeNode = {
-        data: { label: fecha, level: 'date', ...initTotals() },
+        data: {
+          label: fecha,
+          level: 'date',
+          es_proyectado: esProyectadoFecha, // 👈 clave
+          ...totalFecha
+        },
         children: [],
       };
 
@@ -202,9 +229,13 @@ export class CashflowListComponent implements OnChanges, OnInit {
           (totalFecha.ganancia_neta / totalFecha.venta_neta) * 100;
       }
 
-      dateNode.data = { label: fecha, level: 'date', ...totalFecha };
+      //console.log(`Fecha ${fecha} es_proyectado:`, esProyectadoFecha);
+
+      dateNode.data = { label: fecha, level: 'date', es_proyectado: esProyectadoFecha, ...totalFecha };
       tree.push(dateNode);
     });
+
+    //console.log('Built tree data:', tree);
 
     this.treeData = tree;
   }
