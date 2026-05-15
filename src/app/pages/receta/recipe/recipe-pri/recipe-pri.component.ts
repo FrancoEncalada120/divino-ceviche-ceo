@@ -129,7 +129,7 @@ export class RecipePriComponent {
           );
         },
         error: (err) => console.error('[Insumos] GET error:', err),
-        complete: () => console.log('[Insumos] GET complete'),
+        complete: () => {},
       });
   }
 

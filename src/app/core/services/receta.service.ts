@@ -32,11 +32,12 @@ export class RecetaService {
       params = params.set('receta_id', recetaId.toString());
     }
 
-    console.log('[RecetaService] GET', this.apiUrl, params.toString());
+    //console.log('[RecetaService] GET', this.apiUrl, params.toString());
 
     return this.http.get<ApiResponse<Receta[]>>(this.apiUrl, { params }).pipe(
       map((res) => {
         const arr = res?.data;
+        console.log('[RecetaService] res', res);
         return Array.isArray(arr) ? arr : [];
       }),
     );

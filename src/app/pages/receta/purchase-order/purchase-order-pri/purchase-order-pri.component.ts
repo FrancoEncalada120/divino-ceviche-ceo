@@ -207,7 +207,7 @@ export class PurchaseOrderPriComponent {
         this.load(false); // recargar para mostrar la nueva compra
 
         this.recetas_impactadas = [];
-        this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
+        this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}.`;
         this.txtSummary = 'Purchase created successfully';
         this.showConfirmanModal = true;
 
@@ -252,7 +252,7 @@ export class PurchaseOrderPriComponent {
         this.recetas_impactadas = savedLocation.receta_impactada;
         this.txtDetail = `The purchase has been successfully created with code ${savedLocation.compra.compra_id}. The following recipes have been impacted:`;
         this.txtSummary = 'Purchase created successfully';
-        this.showConfirmanModal = true;
+        this.showConfirmanPurchaseModal = true;
 
         this.closeModalPurchaseAdd();
       },

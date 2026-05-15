@@ -68,6 +68,9 @@ export class CompraService {
       .post<ApiResponse<CompraFullResponse>>(url, payload)
       .pipe(
         map((res) => {
+
+          console.log("createFull response", res);
+
           if (!res.success)
             throw new Error(res.message || 'Error creating compra full');
           return res.data;

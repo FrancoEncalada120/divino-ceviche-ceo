@@ -116,7 +116,7 @@
                     <tr *ngFor="let det of row.detalles">
                       <td>{{ det.receta_detalle_id }}</td>
                       <td>{{ det.insumo?.nombre || det.insumo_id }}</td>
-                      <td>{{ det.unidad?.abreviatura || det.unidad_id }}</td>
+                      <td>{{ det.insumo?.unidad?.abreviatura || det.unidad_id }}</td>
                       <td>{{ det.cantidad }}</td>
                       <td>{{ det.precio_actual }}</td>
                       <td>{{ det.costo_linea ?? "---" }}</td>
