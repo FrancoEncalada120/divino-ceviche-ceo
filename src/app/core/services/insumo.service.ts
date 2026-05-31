@@ -13,6 +13,7 @@ import {
   UpdateInsumoDto,
   UpdateInsumoResponse,
   UpdateStockInsumoDto,
+  StockCriticalDashboardData,
 } from '../models/insumo.model';
 import { DataResponse } from '../models/grupos.model';
 
@@ -121,5 +122,51 @@ export class InsumoService {
         return Number(res.data?.precio_calculado ?? 0);
       }),
     );
+  }
+
+  // ─── GET dashboard stock crítico ──────────────────────────
+  getStockCriticalDashboard(params?: {
+    location_id?: number;
+  }): Observable<StockCriticalDashboardData> {
+    const url = `${this.apiUrl}/stock-dashboard`;
+
+    console.log('[InsumoService] GET', url, params);
+
+    return this.http
+      .get<ApiResponse<StockCriticalDashboardData>>(url, {
+        params: params as any,
+      })
+      .pipe(
+        map((res) => {
+          if (!res.success) {
+            throw new Error(
+              res.message || 'Error obteniendo dashboard de stock crítico',
+            );
+          }
+
+          return (
+            res.data ?? {
+              kpis: {
+                total_productos: 0,
+                productos_sin_stock: 0,
+                productos_bajo_minimo: 0,
+                productos_stock_ok: 0,
+                productos_sin_stock_ideal: 0,
+                inventario_vencido: 0,
+                valor_faltante_total: 0,
+                porcentaje_saludable: 0,
+                riesgo_general: 'BAJO',
+              },
+              productos_criticos: [],
+              productos_sin_stock: [],
+              productos_bajo_minimo: [],
+              productos_ok: [],
+              productos_sin_stock_ideal: [],
+              inventario_vencido: [],
+              all: [],
+            }
+          );
+        }),
+      );
   }
 }

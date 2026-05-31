@@ -33,8 +33,8 @@ import { UserService } from '../../../../core/services/user.service';
 import { User } from '../../../../core/models/user.models';
 import { DropdownModule } from 'primeng/dropdown';
 import { TimeAgoPipe } from '../../../../core/pipes/timeAgo';
-import { PurchaseOrderConfirmationComponent } from "../../purchase-order/purchase-order-confirmation/purchase-order-confirmation.component";
-import { PurchaseOrderUpdInsComponent } from "../../purchase-order/purchase-order-upd-ins/purchase-order-upd-ins.component";
+import { PurchaseOrderConfirmationComponent } from '../../purchase-order/purchase-order-confirmation/purchase-order-confirmation.component';
+import { PurchaseOrderUpdInsComponent } from '../../purchase-order/purchase-order-upd-ins/purchase-order-upd-ins.component';
 import { CompraDetalle } from '../../../../core/models/compra-detalle.model';
 import { Grupo } from '../../../../core/models/grupos.model';
 
@@ -55,13 +55,12 @@ import { Grupo } from '../../../../core/models/grupos.model';
     DropdownModule,
     TimeAgoPipe,
     PurchaseOrderConfirmationComponent,
-    PurchaseOrderUpdInsComponent
+    PurchaseOrderUpdInsComponent,
   ],
   templateUrl: './stock-list.component.html',
   styleUrl: './stock-list.component.scss',
 })
 export class StockListComponent implements OnInit {
-
   insumos: Insumo[] = [];
   grupo: Grupo[] = [];
 
@@ -92,7 +91,7 @@ export class StockListComponent implements OnInit {
     private route: ActivatedRoute,
     private userService: UserService,
     private locationService: LocationService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.source = this.route.snapshot.data['source'];
@@ -129,8 +128,6 @@ export class StockListComponent implements OnInit {
   }
 
   load(): void {
-
-
     this.insumoService
       .getInsumoAll({
         text: this.searchText,
@@ -140,7 +137,7 @@ export class StockListComponent implements OnInit {
       })
       .subscribe({
         next: (data) => {
-
+          console.log('data', data);
 
           this.grupo = data.grupos;
           this.insumos = (data.insumos ?? []).sort((a, b) => {
@@ -166,13 +163,14 @@ export class StockListComponent implements OnInit {
         this.locations = data ?? [];
 
         const location_id = this.userService.getUser()?.location_id;
-        this.selectedLocation = this.locations.find(x => x.location_id === location_id)!;
-
+        this.selectedLocation = this.locations.find(
+          (x) => x.location_id === location_id,
+        )!;
       },
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
   }
 
@@ -277,25 +275,23 @@ export class StockListComponent implements OnInit {
   }
 
   addToCart(item: Insumo) {
-
-    if (!item)
-      return;
+    if (!item) return;
 
     //console.log('this.selectedLocation', this.selectedLocation);
     const location_id: number = this.selectedLocation.location_id || 0;
 
-    const insumoDet = item.insumos_detalles?.find(x => x.location_id == location_id);
+    const insumoDet = item.insumos_detalles?.find(
+      (x) => x.location_id == location_id,
+    );
     //console.log('insumoDet', insumoDet);
     console.log('item', item);
 
     let cant = (insumoDet?.stock_ideal || 0) - (insumoDet?.stock || 0);
-    if (cant <= 0)
-      cant = 1;
-
+    if (cant <= 0) cant = 1;
 
     let grupoId = 0;
     if (item.grupo_detalle && item.grupo_detalle?.length > 0)
-      grupoId = item.grupo_detalle![0].grupo_id
+      grupoId = item.grupo_detalle![0].grupo_id;
 
     const det: CompraDetalle = {
       cantidad: cant,
@@ -306,13 +302,12 @@ export class StockListComponent implements OnInit {
       insumo_id: item.insumo_id,
       precio: insumoDet?.precio_final || 0,
       total: cant * (insumoDet?.precio_final || 0),
-      unidad_id: item?.unidad_id || 0
+      unidad_id: item?.unidad_id || 0,
     };
 
     console.log(det);
 
     this.cartService.addToCart(det);
-
   }
 
   isInCart(item: any): boolean {

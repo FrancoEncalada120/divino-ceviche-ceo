@@ -19,6 +19,8 @@ import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { CardModule } from 'primeng/card';
 import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-list.component';
+import { DashboardInsumosComponent } from '../dasboard-insumos/dasboard-insumos/dasboard-insumos.component';
+import { DashboardStockComponent } from '../dashboard-stock/dashboard-stock.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -33,6 +35,8 @@ import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-lis
     TableModule,
     TabViewModule,
     CardModule,
+    DashboardInsumosComponent,
+    DashboardStockComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -56,7 +60,7 @@ export class DashboardComponent implements OnInit {
   constructor(
     private dashboardSvc: DashboardService,
     private locationService: LocationService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     const yesterday = new Date();
@@ -107,8 +111,12 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         // this.dasboard = res;
         this.movimientos = res.cashflow;
-        this.invoices = res.invoices.filter((inv) => inv.category.invoice_type_id === 7);
-        this.ProjectedDebits = res.invoices.filter((inv) => inv.category.invoice_type_id !== 7);
+        this.invoices = res.invoices.filter(
+          (inv) => inv.category.invoice_type_id === 7,
+        );
+        this.ProjectedDebits = res.invoices.filter(
+          (inv) => inv.category.invoice_type_id !== 7,
+        );
         this.totales = res.totales;
         this.dailyMetrics = res.dailyMetrics;
 
@@ -132,7 +140,7 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
   }
 

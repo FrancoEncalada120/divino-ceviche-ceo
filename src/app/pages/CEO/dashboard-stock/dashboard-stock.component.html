@@ -1,0 +1,500 @@
+<p-card styleClass="invoice-header-card mb-4">
+  <div class="invoice-header">
+    <div class="invoice-header__title">
+      <h2>Critical Stock Alerts</h2>
+      <p>
+        Productos sin stock, bajo mínimo o con inventario vencido que requieren
+        atención.
+      </p>
+    </div>
+
+    <div class="invoice-header__filters">
+      <div class="invoice-filter">
+        <label class="invoice-filter__label">
+          <i class="pi pi-map-marker"></i>
+          <span>Location</span>
+        </label>
+
+        <select class="form-select form-select-sm">
+          <option>All locations</option>
+        </select>
+      </div>
+
+      <div class="invoice-filter invoice-filter--date">
+        <label class="invoice-filter__label">
+          <i class="pi pi-refresh"></i>
+          <span>Actions</span>
+        </label>
+
+        <button
+          pButton
+          type="button"
+          icon="pi pi-refresh"
+          label="Refresh"
+          class="p-button-sm w-full"
+          (click)="refresh()"
+        ></button>
+      </div>
+    </div>
+
+    <div class="text-muted small mt-2">
+      Dashboard enfocado solo en alertas críticas de inventario.
+    </div>
+  </div>
+</p-card>
+
+<!-- ===================== -->
+<!-- KPI CARDS -->
+<!-- ===================== -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-sm-3 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-box text-danger"></i>
+          <span class="sum-title">Sin stock</span>
+        </div>
+
+        <div class="kpi-value">
+          {{ kpis.productos_sin_stock }}
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Urgente</span>
+          <span class="kpi-diff negative">
+            <i class="pi pi-exclamation-triangle"></i>
+            Crítico
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="col-12 col-sm-6 col-lg-2">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-arrow-down text-warning"></i>
+          <span class="sum-title">Bajo mínimo</span>
+        </div>
+
+        <div class="kpi-value">
+          {{ kpis.productos_bajo_minimo }}
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Reordenar</span>
+          <span class="kpi-diff warning">
+            <i class="pi pi-clock"></i>
+            Riesgo
+          </span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="col-12 col-sm-3 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-calendar-times text-danger"></i>
+          <span class="sum-title">Inventario vencido</span>
+        </div>
+
+        <div class="kpi-value">
+          {{ kpis.inventario_vencido }}
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Sin toma reciente</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <div class="col-12 col-sm-6 col-lg-2">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-dollar text-danger"></i>
+          <span class="sum-title">Valor faltante</span>
+        </div>
+
+        <div class="kpi-value">
+          ${{ formatMoney(kpis.valor_faltante_total) }}
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Compra estimada</span>
+        </div>
+      </div>
+    </div>
+  </div> -->
+
+  <div class="col-12 col-sm-3 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-check-circle text-success"></i>
+          <span class="sum-title">Stock saludable</span>
+        </div>
+
+        <div class="kpi-value">
+          {{ formatPercent(kpis.porcentaje_saludable) }}%
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target"
+            >{{ kpis.productos_stock_ok }} productos OK</span
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-3 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-shield text-warning"></i>
+          <span class="sum-title">Riesgo general</span>
+        </div>
+
+        <div class="kpi-value">
+          {{ kpis.riesgo_general }}
+        </div>
+
+        <div class="kpi-footer">
+          <span [class]="getGeneralRiskClass()">
+            <i class="pi pi-info-circle"></i>
+            Estado
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
+
+<!-- ===================== -->
+<!-- ALERTAS CRÍTICAS -->
+<!-- ===================== -->
+<!-- <div class="row g-3 mb-4" *ngIf="productosCriticos.length > 0">
+  <div
+    class="col-12 col-md-6 col-xl-3"
+    *ngFor="let item of productosCriticos.slice(0, 4)"
+  >
+    <div
+      class="alert-mini-card bg-white"
+      (click)="selectItem(item)"
+      [class.active]="selectedItem?.detalle_id === item.detalle_id"
+    >
+      <div class="alert-mini-card__top">
+        <div class="alert-mini-card__icon">
+          <i class="pi pi-exclamation-triangle"></i>
+        </div>
+
+        <span class="nivel-badge" [ngClass]="getRiskClass(item.nivel_riesgo)">
+          {{ getRiskLabel(item.nivel_riesgo) }}
+        </span>
+      </div>
+
+      <div class="alert-mini-card__name">
+        {{ item.insumo_nombre }}
+      </div>
+
+      <div class="alert-mini-card__detail">
+        Stock: {{ formatNumber(item.stock_actual) }} / Mínimo:
+        {{ formatNumber(item.stock_ideal) }}
+      </div>
+
+      <div class="alert-mini-card__percent">
+        Falta {{ formatNumber(item.cantidad_faltante) }}
+        {{ item.unidad_abreviatura || "" }}
+      </div>
+    </div>
+  </div>
+</div> -->
+
+<!-- ===================== -->
+<!-- TABLA + DETALLE -->
+<!-- ===================== -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-xl-8">
+    <div class="card table-wrapper-card">
+      <p-tabView>
+        <p-tabPanel header="Critical Inventory Items">
+          <p-table
+            [value]="productosCriticos"
+            [loading]="loading"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            [responsiveLayout]="'stack'"
+            breakpoint="768px"
+            sortMode="multiple"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+            styleClass="p-datatable-sm"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Producto</th>
+                <th>Location</th>
+                <th>Stock</th>
+                <th>Mínimo</th>
+                <th>Faltante</th>
+                <th class="d-none d-md-table-cell">Valor faltante</th>
+                <th>Cobertura</th>
+                <th>Estado</th>
+                <th>Riesgo</th>
+                <th>Acción</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+              <tr
+                [class.selected-row]="
+                  selectedItem?.detalle_id === item.detalle_id
+                "
+              >
+                <td>
+                  <div class="ingredient-cell">
+                    <div>
+                      <div class="ingredient-cell__name">
+                        {{ item.insumo_nombre }}
+                      </div>
+                      <div class="ingredient-cell__meta">
+                        {{ item.proveedor_nombre || "Sin proveedor" }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <td>{{ item.location_name }}</td>
+
+                <td>
+                  <span class="price-up">
+                    {{ formatNumber(item.stock_actual) }}
+                    {{ item.unidad_abreviatura || "" }}
+                  </span>
+                </td>
+
+                <td>
+                  {{ formatNumber(item.stock_ideal) }}
+                  {{ item.unidad_abreviatura || "" }}
+                </td>
+
+                <td>
+                  <span class="price-up">
+                    {{ formatNumber(item.cantidad_faltante) }}
+                    {{ item.unidad_abreviatura || "" }}
+                  </span>
+                </td>
+
+                <td class="d-none d-md-table-cell">
+                  <span class="price-up">
+                    ${{ formatMoney(item.valor_faltante) }}
+                  </span>
+                </td>
+
+                <td>
+                  <span class="price-up">
+                    {{ formatPercent(item.porcentaje_cobertura) }}%
+                  </span>
+                </td>
+
+                <td>
+                  <span
+                    class="nivel-badge"
+                    [ngClass]="getStockClass(item.estado_stock)"
+                  >
+                    {{ getStockStatusLabel(item.estado_stock) }}
+                  </span>
+                </td>
+
+                <td>
+                  <span
+                    class="nivel-badge"
+                    [ngClass]="getRiskClass(item.nivel_riesgo)"
+                  >
+                    {{ getRiskLabel(item.nivel_riesgo) }}
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-eye"
+                    label="View"
+                    class="p-button-sm p-button-outlined"
+                    (click)="selectItem(item)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="10" class="text-center text-muted py-4">
+                  No hay productos críticos de stock.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+
+        <p-tabPanel header="Overdue Inventory Count">
+          <p-table
+            [value]="inventarioVencido"
+            [loading]="loading"
+            [paginator]="true"
+            [rows]="10"
+            [responsiveLayout]="'stack'"
+            breakpoint="768px"
+            styleClass="p-datatable-sm"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Producto</th>
+                <th>Location</th>
+                <th>Frecuencia</th>
+                <th>Día inventario</th>
+                <th>Última toma</th>
+                <th>Días sin toma</th>
+                <th>Estado</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+              <tr>
+                <td>{{ item.insumo_nombre }}</td>
+                <td>{{ item.location_name }}</td>
+                <td>{{ item.frecuencia_inventario || "-" }}</td>
+                <td>{{ item.dia_inventario || "-" }}</td>
+                <td>{{ item.ultima_toma_inventario || "-" }}</td>
+                <td>
+                  <span class="price-up"
+                    >{{ item.dias_sin_toma || 0 }} días</span
+                  >
+                </td>
+                <td>
+                  <span class="nivel-badge nivel-alta">
+                    {{ item.estado_inventario }}
+                  </span>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  No hay inventarios vencidos.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-4">
+    <div class="card detail-card" *ngIf="selectedItem; else noSelection">
+      <div class="detail-card__header">
+        <div>
+          <div class="detail-card__eyebrow">Producto seleccionado</div>
+          <h3>{{ selectedItem.insumo_nombre }}</h3>
+        </div>
+
+        <span
+          class="nivel-badge"
+          [ngClass]="getRiskClass(selectedItem.nivel_riesgo)"
+        >
+          {{ getRiskLabel(selectedItem.nivel_riesgo) }}
+        </span>
+      </div>
+
+      <div class="detail-list">
+        <div class="detail-list__item">
+          <span>Stock actual</span>
+          <strong>
+            {{ formatNumber(selectedItem.stock_actual) }}
+            {{ selectedItem.unidad_abreviatura || "" }}
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Stock mínimo</span>
+          <strong>
+            {{ formatNumber(selectedItem.stock_ideal) }}
+            {{ selectedItem.unidad_abreviatura || "" }}
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Cantidad faltante</span>
+          <strong class="price-up">
+            {{ formatNumber(selectedItem.cantidad_faltante) }}
+            {{ selectedItem.unidad_abreviatura || "" }}
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Cobertura</span>
+          <strong class="price-up">
+            {{ formatPercent(selectedItem.porcentaje_cobertura) }}%
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Valor faltante</span>
+          <strong class="price-up">
+            ${{ formatMoney(selectedItem.valor_faltante) }}
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Proveedor</span>
+          <strong>{{
+            selectedItem.proveedor_nombre || "Sin proveedor"
+          }}</strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Restaurante</span>
+          <strong>{{ selectedItem.location_name }}</strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Última toma</span>
+          <strong>{{ selectedItem.ultima_toma_inventario || "-" }}</strong>
+        </div>
+      </div>
+
+      <div class="recommendation-box">
+        <h4>Acción recomendada</h4>
+        <ul>
+          <li>{{ getRecommendedAction(selectedItem) }}</li>
+          <li>Validar stock físico antes de comprar.</li>
+          <li>Revisar proveedor y precio actual.</li>
+          <li>Actualizar inventario hoy si la toma está vencida.</li>
+        </ul>
+      </div>
+
+      <div class="message-box">
+        El producto requiere atención porque está por debajo del stock mínimo o
+        no cuenta con una toma reciente de inventario.
+      </div>
+    </div>
+
+    <ng-template #noSelection>
+      <div class="card detail-card detail-card--empty">
+        <i class="pi pi-info-circle"></i>
+        <p>Selecciona un producto crítico para ver el detalle.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

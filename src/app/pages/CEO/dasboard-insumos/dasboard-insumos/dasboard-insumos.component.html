@@ -1,0 +1,323 @@
+<p-card styleClass="invoice-header-card mb-4">
+  <div class="invoice-header">
+    <div class="invoice-header__title">
+      <h2>Ingredient Price Alerts</h2>
+      <p>
+        Monitor ingredients with price increases and review their cost impact.
+      </p>
+    </div>
+
+    <div class="invoice-header__filters">
+      <div class="invoice-filter">
+        <label class="invoice-filter__label">
+          <i class="pi pi-filter"></i>
+          <span>Alert Level</span>
+        </label>
+
+        <select class="form-select form-select-sm">
+          <option>All</option>
+          <option>Critical</option>
+          <option>High</option>
+          <option>Medium</option>
+        </select>
+      </div>
+
+      <div class="invoice-filter invoice-filter--date">
+        <label class="invoice-filter__label">
+          <i class="pi pi-refresh"></i>
+          <span>Actions</span>
+        </label>
+
+        <button
+          pButton
+          type="button"
+          icon="pi pi-refresh"
+          label="Refresh"
+          class="p-button-sm w-full"
+          (click)="refresh()"
+        ></button>
+      </div>
+    </div>
+
+    <div class="text-muted small mt-2">
+      Price increases detected from latest inventory records.
+    </div>
+  </div>
+</p-card>
+
+<!-- ===================== -->
+<!-- KPI CARDS -->
+<!-- ===================== -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-arrow-up-right text-danger"></i>
+          <span class="sum-title">Price Increases</span>
+        </div>
+
+        <div class="kpi-value">
+          {{ totalSubidas }}
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Latest inventory</span>
+          <span class="kpi-diff negative">
+            <i class="pi pi-arrow-up"></i>
+            Alert
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-percentage text-warning"></i>
+          <span class="sum-title">Average Increase</span>
+        </div>
+
+        <div class="kpi-value">+{{ formatPercent(incrementoPromedio) }}%</div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Average variation</span>
+          <span class="kpi-diff negative">
+            <i class="pi pi-chart-line"></i>
+            Cost
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-exclamation-triangle text-danger"></i>
+          <span class="sum-title">Highest Increase</span>
+        </div>
+
+        <div class="kpi-value kpi-value--text">
+          {{ mayorSubida?.insumo_nombre || "-" }}
+        </div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target" *ngIf="mayorSubida">
+            +{{ formatPercent(mayorSubida.variacion_porcentaje) }}%
+          </span>
+          <span class="kpi-target" *ngIf="!mayorSubida"> No data </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-6 col-lg-3">
+    <div class="kpi-card bg-white">
+      <div class="sum-inner">
+        <div class="sum-top d-flex align-items-center gap-2">
+          <i class="pi pi-dollar text-success"></i>
+          <span class="sum-title">Estimated Impact</span>
+        </div>
+
+        <div class="kpi-value">+{{ formatMoney(impactoTotal) }}</div>
+
+        <div class="kpi-footer">
+          <span class="kpi-target">Total price difference</span>
+          <span class="kpi-diff negative">
+            <i class="pi pi-arrow-up"></i>
+            Increase
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Loading -->
+<div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
+
+<!-- ===================== -->
+<!-- DETAIL + TABLE -->
+<!-- ===================== -->
+<div class="row g-3 mb-4">
+  <div class="col-12 col-xl-8">
+    <div class="card table-wrapper-card">
+      <p-tabView>
+        <p-tabPanel header="Ingredients With Price Increase">
+          <p-table
+            [value]="alerts"
+            [loading]="loading"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            [responsiveLayout]="'stack'"
+            breakpoint="768px"
+            sortMode="multiple"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+            styleClass="p-datatable-sm"
+          >
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Ingredient</th>
+                <th>Previous Price</th>
+                <th>Current Price</th>
+                <th>Variation %</th>
+                <th class="d-none d-md-table-cell">Difference</th>
+                <th class="d-none d-md-table-cell">Date</th>
+                <th>Level</th>
+                <th>Action</th>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="body" let-item>
+              <tr
+                [class.selected-row]="
+                  selectedAlert?.inventario_id === item.inventario_id
+                "
+              >
+                <td>
+                  <div class="ingredient-cell">
+                    <div>
+                      <div class="ingredient-cell__name">
+                        {{ item.insumo_nombre }}
+                      </div>
+                      <div class="ingredient-cell__meta">
+                        ID: {{ item.insumo_id }}
+                      </div>
+                    </div>
+                  </div>
+                </td>
+
+                <td>{{ formatMoney(item.precio_anterior) }}</td>
+
+                <td>
+                  <strong>{{ formatMoney(item.precio_actual) }}</strong>
+                </td>
+
+                <td>
+                  <span class="price-up">
+                    <i class="pi pi-arrow-up"></i>
+                    {{ formatPercent(item.variacion_porcentaje) }}%
+                  </span>
+                </td>
+
+                <td class="d-none d-md-table-cell">
+                  <span class="price-up">
+                    +{{ formatMoney(item.diferencia_precio) }}
+                  </span>
+                </td>
+
+                <td class="d-none d-md-table-cell">
+                  {{ item.fecha_actual }}
+                </td>
+
+                <td>
+                  <span
+                    class="nivel-badge"
+                    [ngClass]="getNivelClass(item.nivel_alerta)"
+                  >
+                    {{ getNivelLabel(item.nivel_alerta) }}
+                  </span>
+                </td>
+
+                <td>
+                  <button
+                    pButton
+                    type="button"
+                    icon="pi pi-eye"
+                    label="View"
+                    class="p-button-sm p-button-outlined"
+                    (click)="selectAlert(item)"
+                  ></button>
+                </td>
+              </tr>
+            </ng-template>
+
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="8" class="text-center text-muted py-4">
+                  No ingredients with price increase were found.
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-4">
+    <div class="card detail-card" *ngIf="selectedAlert; else noSelection">
+      <div class="detail-card__header">
+        <div>
+          <div class="detail-card__eyebrow">Selected Ingredient</div>
+          <h3>{{ selectedAlert.insumo_nombre }}</h3>
+        </div>
+
+        <span
+          class="nivel-badge"
+          [ngClass]="getNivelClass(selectedAlert.nivel_alerta)"
+        >
+          {{ getNivelLabel(selectedAlert.nivel_alerta) }}
+        </span>
+      </div>
+
+      <div class="detail-list">
+        <div class="detail-list__item">
+          <span>Previous Price</span>
+          <strong>{{ formatMoney(selectedAlert.precio_anterior) }}</strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Current Price</span>
+          <strong>{{ formatMoney(selectedAlert.precio_actual) }}</strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Variation</span>
+          <strong class="price-up">
+            +{{ formatPercent(selectedAlert.variacion_porcentaje) }}%
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Difference</span>
+          <strong class="price-up">
+            +{{ formatMoney(selectedAlert.diferencia_precio) }}
+          </strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Stock</span>
+          <strong>{{ selectedAlert.stock }}</strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Previous Date</span>
+          <strong>{{ selectedAlert.fecha_anterior }}</strong>
+        </div>
+
+        <div class="detail-list__item">
+          <span>Current Date</span>
+          <strong>{{ selectedAlert.fecha_actual }}</strong>
+        </div>
+      </div>
+
+      <div class="message-box">
+        {{ selectedAlert.alerta_mensaje }}
+      </div>
+    </div>
+
+    <ng-template #noSelection>
+      <div class="card detail-card detail-card--empty">
+        <i class="pi pi-info-circle"></i>
+        <p>Select an ingredient to view its price details.</p>
+      </div>
+    </ng-template>
+  </div>
+</div>

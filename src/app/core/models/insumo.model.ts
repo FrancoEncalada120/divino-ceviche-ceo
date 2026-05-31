@@ -210,3 +210,71 @@ export const INVENTARIABLE_OPTIONS = [
   { label: 'Yes', value: true },
   { label: 'No', value: false },
 ];
+
+export interface StockCriticalItem {
+  insumo_id: number;
+  insumo_nombre: string;
+  grupo: string | null;
+
+  proveedor_id: number | null;
+  proveedor_nombre: string | null;
+
+  unidad_id: number | null;
+  unidad_nombre: string | null;
+  unidad_abreviatura: string | null;
+
+  detalle_id: number;
+  location_id: number;
+  location_name: string;
+
+  stock_actual: string | number;
+  stock_ideal: string | number;
+  precio_final: string | number;
+
+  frecuencia_inventario: string | null;
+  dia_inventario: string | null;
+  ultima_toma_inventario: string | null;
+
+  cantidad_faltante: string | number;
+  valor_faltante: string | number;
+  porcentaje_cobertura: string | number;
+
+  estado_stock: 'SIN_STOCK' | 'BAJO_MINIMO' | 'OK' | 'SIN_STOCK_IDEAL' | string;
+
+  nivel_riesgo:
+    | 'CRITICO'
+    | 'ALTO'
+    | 'MEDIO'
+    | 'BAJO'
+    | 'SIN_CONFIGURAR'
+    | string;
+
+  estado_inventario: 'SIN_TOMA' | 'VENCIDO' | 'ACTUALIZADO' | string;
+
+  dias_sin_toma: number | null;
+}
+
+export interface StockCriticalKpis {
+  total_productos: number;
+  productos_sin_stock: number;
+  productos_bajo_minimo: number;
+  productos_stock_ok: number;
+  productos_sin_stock_ideal: number;
+  inventario_vencido: number;
+  valor_faltante_total: number;
+  porcentaje_saludable: number;
+  riesgo_general: 'ALTO' | 'MEDIO' | 'BAJO' | string;
+}
+
+export interface StockCriticalDashboardData {
+  kpis: StockCriticalKpis;
+
+  productos_criticos: StockCriticalItem[];
+  productos_sin_stock: StockCriticalItem[];
+  productos_bajo_minimo: StockCriticalItem[];
+  productos_ok: StockCriticalItem[];
+  productos_sin_stock_ideal: StockCriticalItem[];
+  inventario_vencido: StockCriticalItem[];
+
+  all: StockCriticalItem[];
+}

@@ -51,24 +51,47 @@ export class InsumosPriComponent {
 
   load(): void {
     this.loading = true;
-    const auditUserId = this.userService.getUser()?.location_id;
 
-    this.insumoService
-      .getInsumoAll({
-        location_id: auditUserId,
-      })
-      .subscribe({
-        next: (data) => {
-          this.insumo = Array.isArray(data?.insumos) ? data.insumos : [];
-        },
-        error: (err) => {
-          console.error('[LOAD] error:', err);
-          this.loading = false;
-        },
-        complete: () => {
-          this.loading = false;
-        },
-      });
+    const user = this.userService.getUser();
+    const auditUserId = user?.location_id;
+
+    console.log('================ LOAD INSUMOS ================');
+    console.log('[LOAD] Usuario completo:', user);
+    console.log('[LOAD] location_id enviado:', auditUserId);
+
+    const params = {
+      location_id: auditUserId,
+    };
+
+    console.log('[LOAD] Params enviados al servicio:', params);
+
+    this.insumoService.getInsumoAll(params).subscribe({
+      next: (data) => {
+        console.log('[LOAD] Respuesta completa del backend:', data);
+        console.log('[LOAD] data.insumos:', data?.insumos);
+        console.log(
+          '[LOAD] ¿data.insumos es array?:',
+          Array.isArray(data?.insumos),
+        );
+
+        this.insumo = Array.isArray(data?.insumos) ? data.insumos : [];
+
+        console.log('[LOAD] Insumos asignados a this.insumo:', this.insumo);
+        console.log('[LOAD] Total insumos:', this.insumo.length);
+      },
+      error: (err) => {
+        console.error('[LOAD] Error del servicio:', err);
+        console.error('[LOAD] Status:', err?.status);
+        console.error('[LOAD] Error body:', err?.error);
+
+        this.loading = false;
+      },
+      complete: () => {
+        console.log('[LOAD] Petición completada');
+        this.loading = false;
+        console.log('[LOAD] Loading:', this.loading);
+      },
+    });
   }
 
   loadLocations(): void {
