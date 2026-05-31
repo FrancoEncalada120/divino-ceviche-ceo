@@ -1,0 +1,119 @@
+.invoice-header-card {
+  margin-bottom: 1.5rem;
+}
+
+.invoice-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.invoice-header__title h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.invoice-header__title p {
+  margin: 0.5rem 0 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.invoice-header__filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  gap: 1rem;
+  flex: 1;
+  min-width: 500px;
+}
+
+.invoice-filter {
+  display: flex;
+  flex-direction: column;
+  min-width: 220px;
+  flex: 1;
+}
+
+.invoice-filter--date {
+  min-width: 220px;
+  flex: 0 0 220px;
+}
+
+.invoice-filter__label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.invoice-filter__label i {
+  font-size: 0.95rem;
+}
+
+.schedule-calendar {
+  height: calc(100vh - 130px);
+}
+
+:host ::ng-deep .fc {
+  height: 100%;
+  background: var(--surface-card);
+  border-radius: 8px;
+  padding: 0.75rem;
+}
+
+.form-grid label {
+  font-weight: 600;
+}
+
+.employee-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.employee-color {
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.form-grid {
+  display: grid;
+  gap: 0.875rem;
+}
+
+.form-row {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.two-columns {
+  grid-template-columns: 1fr 1fr;
+}
+
+.field {
+  display: grid;
+  gap: 0.375rem;
+}
+
+.field input,
+.field p-datepicker {
+  width: 100%;
+}
+
+:host ::ng-deep .field .p-datepicker {
+  width: 100%;
+}
+
+@media (max-width: 560px) {
+  .two-columns {
+    grid-template-columns: 1fr;
+  }
+}

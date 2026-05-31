@@ -8,6 +8,11 @@
       <th>Prime %</th>
       <th>Net Margin %</th>
       <th>AOV</th>
+      <th>Marketing</th>
+      <th>Loan</th>
+      <th>Repairs</th>
+      <th>App Fee</th>
+      <th>Unassigned</th>
       <th class="text-end">Actions</th>
     </tr>
   </thead>
@@ -40,6 +45,26 @@
 
       <td data-label="AOV">
         {{ item.goal_target_AOV | txtsigno:'$' }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_marketing| txtsigno:'$' }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_loan| txtsigno:'$' }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_repairs| txtsigno:'$' }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_app_fee| txtsigno:'$' }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_unassigned| txtsigno:'$' }}
       </td>
 
       <td data-label="Actions" class="text-end">

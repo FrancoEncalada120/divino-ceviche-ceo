@@ -32,7 +32,7 @@ export class GoalUpdInsComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
 
 
@@ -53,7 +53,12 @@ export class GoalUpdInsComponent implements OnInit {
       location_name: '',
       location_AccountNumber: '',
       location_status: ''
-    }
+    },
+    goal_marketing: 0,
+    goal_loan: 0,
+    goal_repairs: 0,
+    goal_app_fee: 0,
+    goal_unassigned: 0
   };
 
   ngOnInit() {
@@ -95,7 +100,9 @@ export class GoalUpdInsComponent implements OnInit {
 
   years = [
     { value: 2025, label: '2025' },
-    { value: 2026, label: '2026' }
+    { value: 2026, label: '2026' },
+    { value: 2027, label: '2027' },
+    { value: 2028, label: '2028' }
   ];
 
 }

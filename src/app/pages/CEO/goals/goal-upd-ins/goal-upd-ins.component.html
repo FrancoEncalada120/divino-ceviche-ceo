@@ -43,6 +43,8 @@
             </select>
           </div>
 
+
+
         </div>
       </div>
 
@@ -61,12 +63,6 @@
               [(ngModel)]="formData.goal_target_AOV" />
           </div>
 
-        </div>
-      </div>
-
-      <div class="form-group">
-        <div class="row-inline">
-
           <div class="field">
             <label>Food Cost %</label>
             <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
@@ -79,6 +75,7 @@
               [(ngModel)]="formData.goal_labor_cost" />
           </div>
 
+
         </div>
       </div>
 
@@ -87,13 +84,55 @@
 
           <div class="field">
             <label>Net Margin %</label>
-            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*"
-              decimalOnly [(ngModel)]="formData.goal_net_margin" />
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_net_margin" />
+          </div>
+
+          <div class="field">
+            <label>Target Marketing ($)</label>
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_marketing" />
+          </div>
+
+          <div class="field">
+            <label>Target Loan ($)</label>
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_loan" />
+          </div>
+
+          <div class="field">
+            <label>Target Repairs ($)</label>
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_repairs" />
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="form-group">
+        <div class="row-inline">
+
+          <div class="field">
+            <label>Target App Fee ($)</label>
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_app_fee" />
+          </div>
+
+          <div class="field">
+            <label>Target Unassigned ($)</label>
+            <input type="text" inputmode="decimal" pattern="[0-9]*[.]?[0-9]*" decimalOnly
+              [(ngModel)]="formData.goal_unassigned" />
           </div>
 
           <div class="field">
 
           </div>
+
+          <div class="field">
+
+          </div>
+
         </div>
 
       </div>
