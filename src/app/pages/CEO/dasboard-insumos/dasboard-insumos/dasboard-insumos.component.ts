@@ -1,6 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
+
 import { InventoryPriceAlert } from '../../../../core/models/inventory.model';
 import { InventoryService } from '../../../../core/services/inventory.service';
+
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
@@ -13,7 +21,10 @@ import { TabViewModule } from 'primeng/tabview';
   templateUrl: './dasboard-insumos.component.html',
   styleUrl: './dasboard-insumos.component.scss',
 })
-export class DashboardInsumosComponent implements OnInit {
+export class DashboardInsumosComponent implements OnInit, OnChanges {
+  @Input() selectedLocation: any[] = [];
+  @Input() dateRange: Date[] | null = null;
+
   loading: boolean = false;
 
   alerts: InventoryPriceAlert[] = [];
@@ -27,27 +38,151 @@ export class DashboardInsumosComponent implements OnInit {
   constructor(private inventoryService: InventoryService) {}
 
   ngOnInit(): void {
+    console.log('[DashboardInsumos] ngOnInit');
+    console.log(
+      '[DashboardInsumos] selectedLocation inicial:',
+      this.selectedLocation,
+    );
+    console.log('[DashboardInsumos] dateRange inicial:', this.dateRange);
+
     this.loadPriceAlerts();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log('[DashboardInsumos] ngOnChanges:', changes);
+
+    const locationChanged =
+      changes['selectedLocation'] && !changes['selectedLocation'].firstChange;
+
+    const dateChanged =
+      changes['dateRange'] && !changes['dateRange'].firstChange;
+
+    console.log('[DashboardInsumos] locationChanged:', locationChanged);
+    console.log('[DashboardInsumos] dateChanged:', dateChanged);
+    console.log(
+      '[DashboardInsumos] selectedLocation actual:',
+      this.selectedLocation,
+    );
+    console.log('[DashboardInsumos] dateRange actual:', this.dateRange);
+
+    if (locationChanged || dateChanged) {
+      this.loadPriceAlerts();
+    }
+  }
   loadPriceAlerts(): void {
     this.loading = true;
 
-    this.inventoryService.getPriceAlerts({ soloSubidas: 'S' }).subscribe({
+    console.log('================ DASHBOARD INSUMOS LOAD ================');
+    console.log(
+      '[DashboardInsumos] selectedLocation recibido:',
+      this.selectedLocation,
+    );
+    console.log('[DashboardInsumos] dateRange recibido:', this.dateRange);
+
+    const locationId = this.getSelectedLocationId();
+    const dateFrom = this.getDateFrom();
+    const dateTo = this.getDateTo();
+
+    const params: {
+      soloSubidas: 'S' | 'N';
+      location_id?: number | null;
+      date_from?: string | null;
+      date_to?: string | null;
+    } = {
+      soloSubidas: 'S',
+      location_id: locationId ?? null,
+      date_from: dateFrom ?? null,
+      date_to: dateTo ?? null,
+    };
+
+    console.log('[DashboardInsumos] locationId calculado:', locationId);
+    console.log('[DashboardInsumos] dateFrom calculado:', dateFrom);
+    console.log('[DashboardInsumos] dateTo calculado:', dateTo);
+    console.log('[DashboardInsumos] Params enviados al backend:', params);
+
+    this.inventoryService.getPriceAlerts(params).subscribe({
       next: (data) => {
-        this.alerts = data || [];
+        console.log('[DashboardInsumos] Respuesta completa del backend:', data);
+        console.log('[DashboardInsumos] ¿data es array?:', Array.isArray(data));
+        console.log(
+          '[DashboardInsumos] Total recibido:',
+          Array.isArray(data) ? data.length : 'NO ES ARRAY',
+        );
+
+        this.alerts = Array.isArray(data) ? data : [];
+
+        console.log('[DashboardInsumos] alerts asignado:', this.alerts);
+        console.log('[DashboardInsumos] Total alerts:', this.alerts.length);
+
         this.calculateKpis();
+
+        console.log('[DashboardInsumos] KPIs calculados:', {
+          totalSubidas: this.totalSubidas,
+          incrementoPromedio: this.incrementoPromedio,
+          mayorSubida: this.mayorSubida,
+          impactoTotal: this.impactoTotal,
+        });
+
         this.selectedAlert = this.alerts.length > 0 ? this.alerts[0] : null;
+
+        console.log('[DashboardInsumos] selectedAlert:', this.selectedAlert);
+
         this.loading = false;
+        console.log('[DashboardInsumos] loading:', this.loading);
       },
       error: (error) => {
-        console.error('Error cargando alertas de precios:', error);
+        console.error(
+          '[DashboardInsumos] Error cargando alertas de precios:',
+          error,
+        );
+        console.error('[DashboardInsumos] Status:', error?.status);
+        console.error('[DashboardInsumos] Error body:', error?.error);
+        console.error('[DashboardInsumos] Message:', error?.message);
+
         this.alerts = [];
         this.selectedAlert = null;
         this.calculateKpis();
+
         this.loading = false;
       },
+      complete: () => {
+        console.log('[DashboardInsumos] Petición completada');
+      },
     });
+  }
+
+  getSelectedLocationId(): number | undefined {
+    if (!this.selectedLocation || this.selectedLocation.length === 0) {
+      return undefined;
+    }
+
+    const firstLocation = this.selectedLocation[0];
+
+    return Number(firstLocation.location_id || 0) || undefined;
+  }
+
+  getDateFrom(): string | undefined {
+    if (!this.dateRange || !this.dateRange[0]) {
+      return undefined;
+    }
+
+    return this.formatDateForApi(this.dateRange[0]);
+  }
+
+  getDateTo(): string | undefined {
+    if (!this.dateRange || !this.dateRange[1]) {
+      return undefined;
+    }
+
+    return this.formatDateForApi(this.dateRange[1]);
+  }
+
+  formatDateForApi(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 
   calculateKpis(): void {

@@ -35,8 +35,6 @@ import { DashboardStockComponent } from '../dashboard-stock/dashboard-stock.comp
     TableModule,
     TabViewModule,
     CardModule,
-    DashboardInsumosComponent,
-    DashboardStockComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

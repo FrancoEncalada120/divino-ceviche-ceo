@@ -78,13 +78,13 @@ export class MenuComponent {
         children: [
           ...(this.userRole === 2
             ? [
-              {
-                type: 'link',
-                label: 'Profile',
-                icon: 'bi-person',
-                route: 'settings/Profile',
-              } satisfies MenuLinkItem,
-            ]
+                {
+                  type: 'link',
+                  label: 'Profile',
+                  icon: 'bi-person',
+                  route: 'settings/Profile',
+                } satisfies MenuLinkItem,
+              ]
             : []),
           {
             type: 'link',
@@ -115,6 +115,13 @@ export class MenuComponent {
         route: 'PurchaseOrder',
       },
       { type: 'section', label: 'RECIPES' },
+
+      {
+        type: 'link',
+        label: 'Dashboard',
+        icon: 'bi-grid',
+        route: 'dashboard-receta',
+      },
 
       {
         type: 'link',
@@ -155,7 +162,7 @@ export class MenuComponent {
         label: 'User Management',
         icon: 'bi-person',
         route: 'settings/Profile',
-      }
+      },
     ];
   }
 

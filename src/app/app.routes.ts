@@ -117,6 +117,14 @@ export const routes: Routes = [
           ),
       },
 
+      {
+        path: 'dashboard-receta',
+        loadComponent: () =>
+          import('./pages/receta/dashboard-receta/dashboard-receta.component').then(
+            (m) => m.DashboardRecetaComponent,
+          ),
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
