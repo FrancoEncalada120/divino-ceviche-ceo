@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 
 import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
@@ -28,7 +34,9 @@ import {
   templateUrl: './dashboard-stock.component.html',
   styleUrls: ['./dashboard-stock.component.scss'],
 })
-export class DashboardStockComponent implements OnInit {
+export class DashboardStockComponent implements OnInit, OnChanges {
+  @Input() selectedLocation: any[] = [];
+
   loading = false;
 
   data: StockCriticalDashboardData | null = null;
@@ -55,26 +63,75 @@ export class DashboardStockComponent implements OnInit {
     this.loadDashboard();
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (
+      changes['selectedLocation'] &&
+      !changes['selectedLocation'].firstChange
+    ) {
+      this.loadDashboard();
+    }
+  }
+
+  getSelectedLocationId(): number | undefined {
+    if (!this.selectedLocation || this.selectedLocation.length === 0) {
+      return undefined;
+    }
+
+    const firstLocation = this.selectedLocation[0];
+
+    return Number(firstLocation.location_id || 0) || undefined;
+  }
+
   loadDashboard(): void {
     this.loading = true;
 
-    this.insumoService.getStockCriticalDashboard().subscribe({
-      next: (resp) => {
-        this.data = resp;
-        this.kpis = resp.kpis;
-        this.productosCriticos = resp.productos_criticos || [];
-        this.inventarioVencido = resp.inventario_vencido || [];
-        this.selectedItem = this.productosCriticos.length
-          ? this.productosCriticos[0]
-          : null;
+    const locationId = this.getSelectedLocationId();
 
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('[DashboardStock] Error:', err);
-        this.loading = false;
-      },
-    });
+    this.insumoService
+      .getStockCriticalDashboard({
+        location_id: locationId,
+      })
+      .subscribe({
+        next: (resp) => {
+          this.data = resp;
+          this.kpis = resp.kpis;
+
+          this.productosCriticos = resp.productos_criticos || [];
+          this.inventarioVencido = resp.inventario_vencido || [];
+
+          this.selectedItem = this.productosCriticos.length
+            ? this.productosCriticos[0]
+            : null;
+
+          this.loading = false;
+        },
+        error: (err) => {
+          console.error('[DashboardStock] Error:', err);
+
+          this.data = null;
+          this.resetDashboardData();
+
+          this.loading = false;
+        },
+      });
+  }
+
+  resetDashboardData(): void {
+    this.kpis = {
+      total_productos: 0,
+      productos_sin_stock: 0,
+      productos_bajo_minimo: 0,
+      productos_stock_ok: 0,
+      productos_sin_stock_ideal: 0,
+      inventario_vencido: 0,
+      valor_faltante_total: 0,
+      porcentaje_saludable: 0,
+      riesgo_general: 'BAJO',
+    };
+
+    this.productosCriticos = [];
+    this.inventarioVencido = [];
+    this.selectedItem = null;
   }
 
   refresh(): void {

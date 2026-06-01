@@ -1,0 +1,68 @@
+<p-card styleClass="invoice-header-card mb-4">
+  <div class="invoice-header">
+    <div class="invoice-header__title">
+      <h2>Dashboard</h2>
+      <p>Monitor and filter metrics by location and date range.</p>
+    </div>
+
+    <div class="invoice-header__filters">
+      <div class="invoice-filter">
+        <label class="invoice-filter__label">
+          <i class="pi pi-map-marker"></i>
+          <span>Locations</span>
+        </label>
+
+        <p-multiSelect
+          [options]="locations"
+          [(ngModel)]="selectedLocation"
+          optionLabel="location_name"
+          placeholder="Select locations"
+          display="chip"
+          styleClass="w-full"
+          (onChange)="onLocationsChange()"
+        >
+        </p-multiSelect>
+      </div>
+
+      <div class="invoice-filter invoice-filter--date">
+        <label class="invoice-filter__label">
+          <i class="pi pi-calendar"></i>
+          <span>Date Range</span>
+        </label>
+
+        <p-datepicker
+          [(ngModel)]="dateRange"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          [readonlyInput]="true"
+          styleClass="w-full"
+          (ngModelChange)="onLocationsChangeDate($event)"
+        >
+        </p-datepicker>
+      </div>
+    </div>
+
+    <div class="text-muted small mt-2">
+      <ng-container
+        *ngIf="
+          selectedLocation && selectedLocation.length > 0;
+          else noneSelected
+        "
+      >
+        {{ selectedLocationNames }}
+      </ng-container>
+      <ng-template #noneSelected>None</ng-template>
+      &nbsp;·&nbsp;{{ formattedDateRange }}
+    </div>
+  </div>
+</p-card>
+
+<app-dashboard-insumos
+  [selectedLocation]="selectedLocation"
+  [dateRange]="dateRange"
+>
+</app-dashboard-insumos>
+
+<app-dashboard-stock [selectedLocation]="selectedLocation">
+</app-dashboard-stock>

@@ -126,15 +126,25 @@ export class InsumoService {
 
   // ─── GET dashboard stock crítico ──────────────────────────
   getStockCriticalDashboard(params?: {
-    location_id?: number;
+    location_id?: number | null;
   }): Observable<StockCriticalDashboardData> {
     const url = `${this.apiUrl}/stock-dashboard`;
 
-    console.log('[InsumoService] GET', url, params);
+    const cleanParams: any = {};
+
+    if (params?.location_id && Number(params.location_id) !== 0) {
+      cleanParams.location_id = Number(params.location_id);
+    }
+
+    console.log(
+      '[InsumoService] GET Stock Critical Dashboard',
+      url,
+      cleanParams,
+    );
 
     return this.http
       .get<ApiResponse<StockCriticalDashboardData>>(url, {
-        params: params as any,
+        params: cleanParams,
       })
       .pipe(
         map((res) => {

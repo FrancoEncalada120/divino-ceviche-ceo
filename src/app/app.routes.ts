@@ -116,6 +116,15 @@ export const routes: Routes = [
             (m) => m.RecipePriComponent,
           ),
       },
+
+      {
+        path: 'dashboard-receta',
+        loadComponent: () =>
+          import('./pages/receta/dashboard-receta/dashboard-receta.component').then(
+            (m) => m.DashboardRecetaComponent,
+          ),
+      },
+
       {
         path: 'employees',
         loadComponent: () =>
@@ -130,6 +139,7 @@ export const routes: Routes = [
             (m) => m.SchedulesPriComponent,
           ),
       },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },
