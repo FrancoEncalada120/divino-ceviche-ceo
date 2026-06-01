@@ -1,7 +1,3 @@
-<app-dashboard-insumos></app-dashboard-insumos>
-
-<app-dashboard-stock></app-dashboard-stock>
-
 <p-card styleClass="invoice-header-card mb-4">
   <div class="invoice-header">
     <div class="invoice-header__title">
@@ -16,15 +12,8 @@
           <span>Locations</span>
         </label>
 
-        <p-multiSelect
-          [options]="locations"
-          [(ngModel)]="selectedLocation"
-          optionLabel="location_name"
-          placeholder="Select locations"
-          display="chip"
-          styleClass="w-full"
-          (onChange)="onLocationsChange()"
-        >
+        <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select locations" display="chip" styleClass="w-full" (onChange)="onLocationsChange()">
         </p-multiSelect>
       </div>
 
@@ -34,26 +23,17 @@
           <span>Date Range</span>
         </label>
 
-        <p-datepicker
-          [(ngModel)]="dateRange"
-          selectionMode="range"
-          dateFormat="dd/mm/yy"
-          [showIcon]="true"
-          [readonlyInput]="true"
-          styleClass="w-full"
-          (ngModelChange)="onLocationsChangeDate($event)"
-        >
+        <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
+          [readonlyInput]="true" styleClass="w-full" (ngModelChange)="onLocationsChangeDate($event)">
         </p-datepicker>
       </div>
     </div>
 
     <div class="text-muted small mt-2">
-      <ng-container
-        *ngIf="
+      <ng-container *ngIf="
           selectedLocation && selectedLocation.length > 0;
           else noneSelected
-        "
-      >
+        ">
         {{ selectedLocationNames }}
       </ng-container>
       <ng-template #noneSelected>None</ng-template>
@@ -66,14 +46,15 @@
 <!-- KPI CARDS -->
 <!-- ===================== -->
 <div class="row g-3 mb-4">
-  <div class="col-12 col-sm-6 col-lg-4" *ngFor="let item of totales">
+  <div class="col-12 col-sm-6 col-lg-3" *ngFor="let item of totales">
+
     <div *ngIf="!item.es_proyectado" class="kpi-card bg-white">
-      <div class="sum-inner">
+      <div class="sum-inner" [style.cursor]="item.params.invoice ? 'pointer' : 'default'"
+        (click)="mostrarInvoice(item.name, item.params.invoice_type_id, item.params.category_id, item.params.invoice)">
         <div class="sum-top d-flex align-items-center gap-2">
           <i [class]="item.icon"></i>
           <span class="sum-title">{{ item.name }}</span>
         </div>
-
         <div class="kpi-value">
           {{ item.Result | txtsigno: item.signo }}
         </div>
@@ -90,120 +71,122 @@
         </div>
       </div>
     </div>
+
   </div>
 </div>
 
 <!-- Loading -->
-<div class="text-muted small mb-4" *ngIf="loading">Loading...</div>
+<p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [draggable]="false" [resizable]="false"
+  [dismissableMask]="false" [showHeader]="false" [style]="{ width: '18rem' }" styleClass="loading-dialog">
+
+  <div class="loading-content">
+    <p-progressSpinner strokeWidth="4" animationDuration=".8s">
+    </p-progressSpinner>
+
+    <div class="loading-title">Loading...</div>
+    <div class="loading-subtitle">Please wait</div>
+  </div>
+</p-dialog>
 
 <app-cashflow-list [movimientos]="movimientos"></app-cashflow-list>
 
-<div class="row g-3 mb-4 bg-white">
-  <div class="card">
-    <p-tabView>
-      <p-tabPanel header="Daily Scorecard">
-        <p-table
-          [value]="dailyMetrics!"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-          styleClass="p-datatable-sm"
-        >
-          <!-- Header -->
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Date</th>
-              <th>Location</th>
-              <th>Sales</th>
-              <th class="d-none d-md-table-cell">Labor Cost</th>
-              <th class="d-none d-md-table-cell">Labor %</th>
-              <th>AOV</th>
-            </tr>
-          </ng-template>
+<p-dialog header="Detalle" [(visible)]="showDailyDialog" [modal]="true" [draggable]="false" [resizable]="false"
+  [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
+  <div class="row g-3 mb-4 bg-white">
+    <div class="card">
+      <p-tabView>
+        <p-tabPanel header="Daily Scorecard">
+          <p-table [value]="dailyMetrics!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+            [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+            <!-- Header -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Sales</th>
+                <th class="d-none d-md-table-cell">Labor Cost</th>
+                <th class="d-none d-md-table-cell">Labor %</th>
+                <th>AOV</th>
+              </tr>
+            </ng-template>
 
-          <!-- Body -->
-          <ng-template pTemplate="body" let-row>
-            <tr>
-              <td>{{ row.daily_metric_date }}</td>
-              <td>{{ row.location_name }}</td>
-              <td>{{ row.totalNetSales | number: "1.0-3" }}</td>
-              <td class="d-none d-md-table-cell">{{ row.totalDailyHourly }}</td>
-              <td class="d-none d-md-table-cell">
-                {{ row.LaborCost | number: "1.0-3" }}
-              </td>
-              <td>{{ row.AOV | number: "1.0-3" }}</td>
-            </tr>
-          </ng-template>
+            <!-- Body -->
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td>{{ row.daily_metric_date }}</td>
+                <td>{{ row.location_name }}</td>
+                <td>{{ row.totalNetSales | number: "1.0-3" }}</td>
+                <td class="d-none d-md-table-cell">{{ row.totalDailyHourly }}</td>
+                <td class="d-none d-md-table-cell">
+                  {{ row.LaborCost | number: "1.0-3" }}
+                </td>
+                <td>{{ row.AOV | number: "1.0-3" }}</td>
+              </tr>
+            </ng-template>
 
-          <!-- Empty -->
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="6" class="text-center text-muted py-4">
-                No Daily exist for the selected dates and locations
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabPanel>
-    </p-tabView>
+            <!-- Empty -->
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  No Daily exist for the selected dates and locations
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
   </div>
-</div>
 
-<div class="row g-3 mb-4 bg-white">
-  <div class="card">
-    <p-tabView>
-      <p-tabPanel header="Invoices">
-        <p-table
-          [value]="invoices!"
-          [paginator]="true"
-          [rows]="10"
-          [rowsPerPageOptions]="[10, 20, 50]"
-          [responsiveLayout]="'stack'"
-          breakpoint="768px"
-          sortMode="multiple"
-          [showCurrentPageReport]="true"
-          currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-          styleClass="p-datatable-sm"
-        >
-          <!-- Header -->
-          <ng-template pTemplate="header">
-            <tr>
-              <th>Date</th>
-              <th>Location</th>
-              <th class="d-none d-md-table-cell">Category</th>
-              <th>Description</th>
-              <th class="text-end">Amount</th>
-            </tr>
-          </ng-template>
+</p-dialog>
 
-          <!-- Body -->
-          <ng-template pTemplate="body" let-row>
-            <tr>
-              <td>{{ row.invoice_date }}</td>
-              <td>{{ row.locations.location_name }}</td>
-              <td class="d-none d-md-table-cell">
-                {{ row.category.category_code }}
-              </td>
-              <td>{{ row.invoice_vendor_description }}</td>
-              <td class="text-end">{{ row.invoice_amount }}</td>
-            </tr>
-          </ng-template>
+<p-dialog header="Detalle" [(visible)]="showInvoicesDialog" [modal]="true" [draggable]="false" [resizable]="false"
+  [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
 
-          <!-- Empty -->
-          <ng-template pTemplate="emptymessage">
-            <tr>
-              <td colspan="6" class="text-center text-muted py-4">
-                No invoices exist for the selected dates and locations
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
-      </p-tabPanel>
-    </p-tabView>
+  <div class="row g-3 mb-4 bg-white">
+    <div class="card">
+      <p-tabView>
+        <p-tabPanel [header]="InviceTitulo">
+          <p-table [value]="invoicespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+            paginatorDropdownAppendTo="body" [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple"
+            [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+            styleClass="p-datatable-sm" appendTo="body">
+            <!-- Header -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Date</th>
+                <th>Location</th>
+                <th class="d-none d-md-table-cell">Category</th>
+                <th>Description</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td>{{ row.invoice_date }}</td>
+                <td>{{ row.locations.location_name }}</td>
+                <td class="d-none d-md-table-cell">
+                  {{ row.category.category_code }}
+                </td>
+                <td>{{ row.invoice_vendor_description }}</td>
+                <td class="text-end">{{ row.invoice_amount }}</td>
+              </tr>
+            </ng-template>
+
+            <!-- Empty -->
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  No invoices exist for the selected dates and locations
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
   </div>
-</div>
+</p-dialog>

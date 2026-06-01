@@ -5,16 +5,18 @@
 .page-wrapper {
   width: 100%;
   justify-content: center;
-  padding-left: 50px;
-  padding-right: 50px;
+  padding-left: 20px;
+  padding-right: 20px;
+
 }
 
 /* Contenedor central */
-.page-container {
-  width: 100%;
-  max-width: 1320px; // desktop grande
-  padding: 2rem 2.5rem;
-}
+// .page-container {
+//   width: 100%;
+//   max-width: 1320px; // desktop grande
+//   padding: 2rem 2.5rem;
+//   background-color:aqua;
+// }
 
 @media (max-width: 992px) {
   .page-container {

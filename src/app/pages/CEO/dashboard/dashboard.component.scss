@@ -181,3 +181,26 @@
     font-size: 1.3rem;
   }
 }
+
+
+:host ::ng-deep .loading-dialog .p-dialog-content {
+  padding: 2rem;
+  border-radius: 8px;
+}
+
+.loading-content {
+  display: grid;
+  justify-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+.loading-title {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.loading-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+}

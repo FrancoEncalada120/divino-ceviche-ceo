@@ -21,6 +21,8 @@ import { CardModule } from 'primeng/card';
 import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-list.component';
 import { DashboardInsumosComponent } from '../dasboard-insumos/dasboard-insumos/dasboard-insumos.component';
 import { DashboardStockComponent } from '../dashboard-stock/dashboard-stock.component';
+import { DialogModule } from 'primeng/dialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-dashboard',
@@ -35,8 +37,8 @@ import { DashboardStockComponent } from '../dashboard-stock/dashboard-stock.comp
     TableModule,
     TabViewModule,
     CardModule,
-    DashboardInsumosComponent,
-    DashboardStockComponent,
+    DialogModule,
+    ProgressSpinnerModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
@@ -47,7 +49,9 @@ export class DashboardComponent implements OnInit {
 
   //dasboard: DashboardResponse | null = null;
   invoices: Invoice[] = [];
-  ProjectedDebits: Invoice[] = [];
+  invoicespopUp: Invoice[] = [];
+
+  //ProjectedDebits: Invoice[] = [];
   totales: TotalMetric[] = [];
   dailyMetrics: DailyMetric[] = [];
 
@@ -57,10 +61,36 @@ export class DashboardComponent implements OnInit {
   movimientos: CashFlow[] = [];
   cashflowMonths: CashFlow[] = [];
 
+  showInvoicesDialog = false;
+  InviceTitulo: string = '';
+  showDailyDialog = false;
+
+  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, invoice: boolean) {
+
+    if (InvoiceTye === 0 && categoria === 0) {
+
+      if (invoice) {
+        this.showDailyDialog = true;
+      }
+      return;
+
+    }
+
+    this.InviceTitulo = titulo;
+
+    this.invoicespopUp = this.invoices.filter(
+      (inv) =>
+        inv.category.invoice_type_id === InvoiceTye &&
+        (categoria === 0 || inv.category.category_id === categoria)
+    );
+
+    this.showInvoicesDialog = true;
+  }
+
   constructor(
     private dashboardSvc: DashboardService,
     private locationService: LocationService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     const yesterday = new Date();
@@ -111,12 +141,13 @@ export class DashboardComponent implements OnInit {
       next: (res) => {
         // this.dasboard = res;
         this.movimientos = res.cashflow;
-        this.invoices = res.invoices.filter(
-          (inv) => inv.category.invoice_type_id === 7,
-        );
-        this.ProjectedDebits = res.invoices.filter(
-          (inv) => inv.category.invoice_type_id !== 7,
-        );
+        this.invoices = res.invoices;
+        // this.invoices = res.invoices.filter(
+        //   (inv) => inv.category.invoice_type_id === 7,
+        // );
+        // this.ProjectedDebits = res.invoices.filter(
+        //   (inv) => inv.category.invoice_type_id !== 7,
+        // );
         this.totales = res.totales;
         this.dailyMetrics = res.dailyMetrics;
 
@@ -140,7 +171,7 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 
@@ -174,10 +205,32 @@ export class DashboardComponent implements OnInit {
   private locationChange$ = new Subject<void>();
 
   onLocationsChange() {
+
+    if (
+      !this.dateRange ||
+      this.dateRange.length !== 2 ||
+      !this.dateRange[0] ||
+      !this.dateRange[1]
+    ) {
+      return;
+    }
+
     this.locationChange$.next();
   }
 
   onLocationsChangeDate(event: any) {
+
+    if (
+      !this.dateRange ||
+      this.dateRange.length !== 2 ||
+      !this.dateRange[0] ||
+      !this.dateRange[1]
+    ) {
+      return;
+    }
+
+
+
     this.load();
   }
 }

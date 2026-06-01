@@ -73,6 +73,13 @@ export interface TotalMetric {
   icon: string;
   signo: string;
   es_proyectado: boolean;
+  params : params;
+}
+
+export interface params {
+  invoice: boolean;
+  category_id: number;
+  invoice_type_id: number;
 }
 
 export interface Eval {
