@@ -125,6 +125,21 @@ export const routes: Routes = [
           ),
       },
 
+      {
+        path: 'employees',
+        loadComponent: () =>
+          import('./pages/employee/employee/employee-pri/employee-pri.component').then(
+            (m) => m.EmployeePriComponent,
+          ),
+      },
+      {
+        path: 'schedules',
+        loadComponent: () =>
+          import('./pages/employee/schedules/schedules-pri/schedules-pri.component').then(
+            (m) => m.SchedulesPriComponent,
+          ),
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

@@ -1,0 +1,121 @@
+<p-card styleClass="invoice-header-card mb-4">
+  <div class="invoice-header">
+    <div class="invoice-header__title">
+      <h2>Schedules</h2>
+      <p>Monitor and filter metrics by location and date range.</p>
+    </div>
+
+    <div class="invoice-header__filters">
+      <div class="invoice-filter">
+        <label class="invoice-filter__label">
+          <i class="pi pi-map-marker"></i>
+          <span>Locations</span>
+        </label>
+
+        <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
+          placeholder="Select locations" display="chip" styleClass="w-full" appendTo="body">
+        </p-multiSelect>
+      </div>
+
+      <div class="invoice-filter">
+
+        <label class="invoice-filter__label">
+          <i class="pi bi-people-fill"></i>
+          <span>Employees</span>
+        </label>
+
+        <p-select [(ngModel)]="scheduleForm.employeeId" [options]="employees" optionLabel="name" optionValue="id"
+          placeholder="Seleccionar empleado" appendTo="body">
+
+          <ng-template pTemplate="item" let-employee>
+            <div class="employee-option">
+              <span class="employee-color" [style.background]="employee.color">
+              </span>
+              <span>{{ employee.name }}</span>
+            </div>
+          </ng-template>
+
+          <ng-template pTemplate="selectedItem" let-employee>
+            <div class="employee-option" *ngIf="employee">
+              <span class="employee-color" [style.background]="employee.color">
+              </span>
+              <span>{{ employee.name }}</span>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+
+    </div>
+
+    <!-- <div class="text-muted small mt-2">
+      <ng-container *ngIf="selectedLocation && selectedLocation.length >0; else noneSelected">
+        {{ selectedLocationNames }}
+      </ng-container>
+      <ng-template #noneSelected>None</ng-template>
+      &nbsp;·&nbsp;{{ formattedDateRange }}
+    </div> -->
+  </div>
+</p-card>
+
+
+
+
+
+<div class="schedule-calendar">
+  <full-calendar [options]="calendarOptions"></full-calendar>
+</div>
+
+
+
+<p-dialog [(visible)]="scheduleDialogVisible" [modal]="true" [style]="{ width: '34rem' }" header="Horario del empleado">
+
+  <div class="form-grid">
+    <div class="form-row two-columns">
+      <div class="field">
+        <label>Fecha entrada</label>
+        <input pInputText [value]="selectedStartDate | date:'dd/MM/yyyy'" readonly>
+      </div>
+
+      <div class="field">
+        <label>Fecha salida</label>
+        <input pInputText [value]="selectedEndDate | date:'dd/MM/yyyy'" readonly>
+      </div>
+    </div>
+
+    <label>Empleado</label>
+    <p-select [(ngModel)]="scheduleForm.employeeId" [options]="employees" optionLabel="name" optionValue="id"
+      placeholder="Seleccionar empleado" appendTo="body">
+    </p-select>
+
+    <div class="form-row two-columns">
+      <div class="field">
+        <label>Entrada</label>
+        <p-datepicker [(ngModel)]="scheduleForm.start" [timeOnly]="true" hourFormat="24" [stepMinute]="30"
+          appendTo="body" (ngModelChange)="updateWorkedHours()">
+        </p-datepicker>
+      </div>
+
+      <div class="field">
+        <label>Salida</label>
+        <p-datepicker [(ngModel)]="scheduleForm.end" [timeOnly]="true" hourFormat="24" [stepMinute]="30" appendTo="body"
+          (ngModelChange)="updateWorkedHours()">
+        </p-datepicker>
+      </div>
+    </div>
+
+    <label>Horas a trabajar</label>
+    <input pInputText [value]="workedHoursLabel" readonly>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <p-button label="Eliminar" severity="danger" [outlined]="true" [disabled]="!editingEventId"
+      (onClick)="deleteSchedule()">
+    </p-button>
+
+    <p-button label="Cancelar" severity="secondary" [outlined]="true" (onClick)="closeDialog()">
+    </p-button>
+
+    <p-button label="Guardar" icon="pi pi-save" (onClick)="saveSchedule()">
+    </p-button>
+  </ng-template>
+</p-dialog>
