@@ -282,3 +282,87 @@
 :host ::ng-deep .p-tabview-nav li {
   margin-right: 5.5rem;
 }
+
+/* =========================
+   Invoice colors
+========================= */
+
+.invoice-summary-card--cogs,
+.invoice-tab-header--cogs {
+  --invoice-color: #14b8a6;
+}
+
+.invoice-summary-card--fixed,
+.invoice-tab-header--fixed {
+  --invoice-color: #6366f1;
+}
+
+.invoice-summary-card--other,
+.invoice-tab-header--other {
+  --invoice-color: #d97706;
+}
+
+.invoice-summary-card--unassigned,
+.invoice-tab-header--unassigned {
+  --invoice-color: #9ca3af;
+}
+
+.invoice-summary-card--bank,
+.invoice-tab-header--bank {
+  --invoice-color: #4f46e5;
+}
+
+.invoice-summary-card--app,
+.invoice-tab-header--app {
+  --invoice-color: #e11d48;
+}
+
+.invoice-summary-card--proyected,
+.invoice-tab-header--proyected {
+  --invoice-color: #f5d0a0;
+}
+
+.invoice-summary-card--debt,
+.invoice-tab-header--debt {
+  --invoice-color: #047857;
+}
+
+/* Línea lateral / detalle de color */
+.invoice-summary-card::after {
+  background: var(--invoice-color, #9ca3af);
+}
+
+/* Header de tabs */
+.invoice-tab-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--invoice-color, #374151);
+  font-weight: 600;
+}
+
+.invoice-tab-header i {
+  font-size: 1rem;
+}
+
+/* Header dentro de la card */
+.invoice-summary-card__header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--invoice-color, #374151);
+  font-weight: 600;
+}
+
+/* Botón agregar */
+.invoice-summary-card__add-btn {
+  color: var(--invoice-color, #374151) !important;
+}
+
+.invoice-summary-card__add-btn:hover {
+  background: color-mix(
+    in srgb,
+    var(--invoice-color, #374151) 12%,
+    transparent
+  ) !important;
+}

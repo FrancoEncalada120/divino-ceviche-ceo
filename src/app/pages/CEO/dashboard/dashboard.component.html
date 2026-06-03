@@ -12,8 +12,15 @@
           <span>Locations</span>
         </label>
 
-        <p-multiSelect [options]="locations" [(ngModel)]="selectedLocation" optionLabel="location_name"
-          placeholder="Select locations" display="chip" styleClass="w-full" (onChange)="onLocationsChange()">
+        <p-multiSelect
+          [options]="locations"
+          [(ngModel)]="selectedLocation"
+          optionLabel="location_name"
+          placeholder="Select locations"
+          display="chip"
+          styleClass="w-full"
+          (onChange)="onLocationsChange()"
+        >
         </p-multiSelect>
       </div>
 
@@ -23,17 +30,26 @@
           <span>Date Range</span>
         </label>
 
-        <p-datepicker [(ngModel)]="dateRange" selectionMode="range" dateFormat="dd/mm/yy" [showIcon]="true"
-          [readonlyInput]="true" styleClass="w-full" (ngModelChange)="onLocationsChangeDate($event)">
+        <p-datepicker
+          [(ngModel)]="dateRange"
+          selectionMode="range"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          [readonlyInput]="true"
+          styleClass="w-full"
+          (ngModelChange)="onLocationsChangeDate($event)"
+        >
         </p-datepicker>
       </div>
     </div>
 
     <div class="text-muted small mt-2">
-      <ng-container *ngIf="
+      <ng-container
+        *ngIf="
           selectedLocation && selectedLocation.length > 0;
           else noneSelected
-        ">
+        "
+      >
         {{ selectedLocationNames }}
       </ng-container>
       <ng-template #noneSelected>None</ng-template>
@@ -47,10 +63,19 @@
 <!-- ===================== -->
 <div class="row g-3 mb-4">
   <div class="col-12 col-sm-6 col-lg-3" *ngFor="let item of totales">
-
     <div *ngIf="!item.es_proyectado" class="kpi-card bg-white">
-      <div class="sum-inner" [style.cursor]="item.params.invoice ? 'pointer' : 'default'"
-        (click)="mostrarInvoice(item.name, item.params.invoice_type_id, item.params.category_id, item.params.invoice)">
+      <div
+        class="sum-inner"
+        [style.cursor]="item.params.invoice ? 'pointer' : 'default'"
+        (click)="
+          mostrarInvoice(
+            item.name,
+            item.params.invoice_type_id,
+            item.params.category_id,
+            item.params.invoice
+          )
+        "
+      >
         <div class="sum-top d-flex align-items-center gap-2">
           <i [class]="item.icon"></i>
           <span class="sum-title">{{ item.name }}</span>
@@ -71,14 +96,21 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
 
 <!-- Loading -->
-<p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [draggable]="false" [resizable]="false"
-  [dismissableMask]="false" [showHeader]="false" [style]="{ width: '18rem' }" styleClass="loading-dialog">
-
+<p-dialog
+  [(visible)]="loading"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="false"
+  [showHeader]="false"
+  [style]="{ width: '18rem' }"
+  styleClass="loading-dialog"
+>
   <div class="loading-content">
     <p-progressSpinner strokeWidth="4" animationDuration=".8s">
     </p-progressSpinner>
@@ -90,15 +122,31 @@
 
 <app-cashflow-list [movimientos]="movimientos"></app-cashflow-list>
 
-<p-dialog header="Detalle" [(visible)]="showDailyDialog" [modal]="true" [draggable]="false" [resizable]="false"
-  [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
+<p-dialog
+  header="Detalle"
+  [(visible)]="showDailyDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '100vw', maxWidth: '1100px' }"
+  [contentStyle]="{ overflow: 'auto' }"
+>
   <div class="row g-3 mb-4 bg-white">
     <div class="card">
       <p-tabView>
         <p-tabPanel header="Daily Scorecard">
-          <p-table [value]="dailyMetrics!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-            [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple" [showCurrentPageReport]="true"
-            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}" styleClass="p-datatable-sm">
+          <p-table
+            [value]="dailyMetrics!"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            [responsiveLayout]="'stack'"
+            breakpoint="768px"
+            sortMode="multiple"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+            styleClass="p-datatable-sm"
+          >
             <!-- Header -->
             <ng-template pTemplate="header">
               <tr>
@@ -117,7 +165,9 @@
                 <td>{{ row.daily_metric_date }}</td>
                 <td>{{ row.location_name }}</td>
                 <td>{{ row.totalNetSales | number: "1.0-3" }}</td>
-                <td class="d-none d-md-table-cell">{{ row.totalDailyHourly }}</td>
+                <td class="d-none d-md-table-cell">
+                  {{ row.totalDailyHourly }}
+                </td>
                 <td class="d-none d-md-table-cell">
                   {{ row.LaborCost | number: "1.0-3" }}
                 </td>
@@ -138,20 +188,35 @@
       </p-tabView>
     </div>
   </div>
-
 </p-dialog>
 
-<p-dialog header="Detalle" [(visible)]="showInvoicesDialog" [modal]="true" [draggable]="false" [resizable]="false"
-  [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
-
+<p-dialog
+  header="Detalle"
+  [(visible)]="showInvoicesDialog"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '100vw', maxWidth: '1100px' }"
+  [contentStyle]="{ overflow: 'auto' }"
+>
   <div class="row g-3 mb-4 bg-white">
     <div class="card">
       <p-tabView>
         <p-tabPanel [header]="InviceTitulo">
-          <p-table [value]="invoicespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
-            paginatorDropdownAppendTo="body" [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple"
-            [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
-            styleClass="p-datatable-sm" appendTo="body">
+          <p-table
+            [value]="invoicespopUp!"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="[10, 20, 50]"
+            paginatorDropdownAppendTo="body"
+            [responsiveLayout]="'stack'"
+            breakpoint="768px"
+            sortMode="multiple"
+            [showCurrentPageReport]="true"
+            currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+            styleClass="p-datatable-sm"
+            appendTo="body"
+          >
             <!-- Header -->
             <ng-template pTemplate="header">
               <tr>

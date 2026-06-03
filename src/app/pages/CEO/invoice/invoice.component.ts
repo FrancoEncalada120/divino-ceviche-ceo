@@ -52,7 +52,7 @@ export class InvoiceComponent {
   dateRange: Date[] | null = null;
   dasboard: DashboardResponse | null = null;
   private locationChange$ = new Subject<void>();
-  activeTab: 1 | 2 | 3 | 4 | 5 | 6 | 7 = 1; // por defecto pestaña 1
+  activeTab: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 = 1; // por defecto pestaña 1
 
   invoice01: Invoice[] = [];
   invoice02: Invoice[] = [];
@@ -61,6 +61,8 @@ export class InvoiceComponent {
   invoice05: Invoice[] = [];
   invoice06: Invoice[] = [];
   invoice07: Invoice[] = [];
+  invoice08: Invoice[] = [];
+  invoice09: Invoice[] = [];
   allInvoices: any[] = [];
 
   totalCat1 = 0;
@@ -70,6 +72,8 @@ export class InvoiceComponent {
   totalCat5 = 0;
   totalCat6 = 0;
   totalCat7 = 0;
+  totalCat8 = 0;
+  totalCat9 = 0;
 
   cantidadCat1 = 0;
   cantidadCat2 = 0;
@@ -78,6 +82,8 @@ export class InvoiceComponent {
   cantidadCat5 = 0;
   cantidadCat6 = 0;
   cantidadCat7 = 0;
+  cantidadCat8 = 0;
+  cantidadCat9 = 0;
 
   selectedCategoryType: number | null = null;
   editingInvoice: Invoice | null = null;
@@ -93,7 +99,7 @@ export class InvoiceComponent {
     private userService: UserService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.user = this.userService.getUser();
@@ -169,6 +175,14 @@ export class InvoiceComponent {
           (x) => Number(x.category.invoice_type_id) === 7,
         );
 
+        this.invoice08 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 8,
+        );
+
+        this.invoice09 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 9,
+        );
+
         this.allInvoices = invoices;
 
         this.calculateTotals(invoices);
@@ -188,7 +202,7 @@ export class InvoiceComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
   }
 
@@ -240,15 +254,15 @@ export class InvoiceComponent {
     const categoriasRestan = [27];
 
     this.totalCat5 = invoices
-      .filter((x) => Number(x.category.invoice_type_id) === 5 && x.category_id != 25)
+      .filter(
+        (x) => Number(x.category.invoice_type_id) === 5 && x.category_id != 25,
+      )
       .reduce((total, x) => {
-
         const amount = Number(x.invoice_amount || 0);
 
-        return total +
-          (categoriasRestan.includes(x.category_id)
-            ? -amount
-            : amount);
+        return (
+          total + (categoriasRestan.includes(x.category_id) ? -amount : amount)
+        );
       }, 0);
 
     this.totalCat6 = sum(
@@ -256,6 +270,14 @@ export class InvoiceComponent {
     );
 
     this.totalCat7 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+    );
+
+    this.totalCat8 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+    );
+
+    this.totalCat9 = sum(
       invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
     );
 
@@ -279,6 +301,12 @@ export class InvoiceComponent {
     ).length;
     this.cantidadCat7 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 7,
+    ).length;
+    this.cantidadCat8 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 8,
+    ).length;
+    this.cantidadCat7 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 9,
     ).length;
   }
 
