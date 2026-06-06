@@ -213,6 +213,7 @@
               <th>Tips</th>
               <th>Taxes</th>
               <th>Discount</th>
+              <th>Others</th>
             </tr>
           </ng-template>
 
@@ -233,6 +234,9 @@
               <td>{{ rowData.tips | txtsigno: "$" }}</td>
               <td>{{ rowData.taxes | txtsigno: "$" }}</td>
               <td>{{ rowData.descuentos | txtsigno: "$" }}</td>
+              <td>
+                {{ rowData.otherPayments | txtsigno: "$" }}
+              </td>
             </tr>
           </ng-template>
         </p-treeTable>

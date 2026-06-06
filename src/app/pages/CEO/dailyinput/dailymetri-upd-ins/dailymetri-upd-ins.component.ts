@@ -10,7 +10,7 @@ import {
 import { LocationService } from '../../../../core/services/location.service';
 import { DailyMetricService } from '../../../../core/services/dailymetri.service';
 
-import { finalize, forkJoin, Subject } from 'rxjs';
+import { finalize, forkJoin, merge, Subject } from 'rxjs';
 
 // PrimeNG
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -35,6 +35,11 @@ type DailyMetricForm = {
   tickets: FormControl<number | null>;
   netSales: FormControl<number | null>;
   dailyHourly: FormControl<number | null>;
+  grossSales: FormControl<number | null>;
+  tips: FormControl<number | null>;
+  discounts: FormControl<number | null>;
+  otherPayments: FormControl<number | null>;
+  taxes: FormControl<number | null>;
 };
 
 @Component({
@@ -79,11 +84,26 @@ export class DailymetriUpdInsComponent {
     }),
 
     // ✅ obligatorios
-    netSales: this.fb.control<number | null>(null, {
+    netSales: this.fb.control<number | null>({ value: null, disabled: true }, {
       validators: [Validators.required, Validators.min(0)],
     }),
     dailyHourly: this.fb.control<number | null>(null, {
       validators: [Validators.required, Validators.min(0)],
+    }),
+    discounts: this.fb.control<number | null>(0, {
+      validators: [Validators.min(0)],
+    }),
+    grossSales: this.fb.control<number | null>(0, {
+      validators: [Validators.min(0)],
+    }),
+    tips: this.fb.control<number | null>(0, {
+      validators: [Validators.min(0)],
+    }),
+    otherPayments: this.fb.control<number | null>(0, {
+      validators: [Validators.min(0)],
+    }),
+    taxes: this.fb.control<number | null>(0, {
+      validators: [Validators.min(0)],
     }),
   });
 
@@ -96,9 +116,43 @@ export class DailymetriUpdInsComponent {
   ) { }
 
   ngOnInit(): void {
+
     this.user = this.userService.getUser();
     this.loadLocations();
     this.form.patchValue({ date: new Date() });
+
+
+    this.form.controls.netSales.disable();
+
+    merge(
+      this.form.controls.grossSales.valueChanges,
+      this.form.controls.taxes.valueChanges,
+      this.form.controls.tips.valueChanges,
+      this.form.controls.discounts.valueChanges,
+      this.form.controls.otherPayments.valueChanges
+    ).subscribe(() => {
+      this.calculateNetSales();
+    });
+
+    this.calculateNetSales();
+
+
+  }
+
+  private calculateNetSales(): void {
+    const grossSales = this.form.controls.grossSales.value ?? 0;
+    const taxes = this.form.controls.taxes.value ?? 0;
+    const tips = this.form.controls.tips.value ?? 0;
+    const discounts = this.form.controls.discounts.value ?? 0;
+    const otherPayments = this.form.controls.otherPayments.value ?? 0;
+
+    const netSales =
+      grossSales - (taxes + tips + discounts + otherPayments);
+
+    this.form.controls.netSales.setValue(
+      Number(netSales.toFixed(2)),
+      { emitEvent: false }
+    );
   }
 
   loadLocations(): void {
@@ -141,6 +195,11 @@ export class DailymetriUpdInsComponent {
       daily_metric_tickets: Number(v.tickets ?? 0),
       daily_metric_net_sales: Number(v.netSales),
       daily_metric_daily_hourly: Number(v.dailyHourly),
+      daily_metric_grossSales: Number(v.grossSales ?? 0),
+      daily_metric_tips: Number(v.tips ?? 0),
+      daily_metric_discounts: Number(v.discounts ?? 0),
+      daily_metric_otherPayments: Number(v.otherPayments ?? 0),
+      daily_metric_taxes: Number(v.taxes ?? 0),
       created_by: auditUserId ?? null,
     };
 

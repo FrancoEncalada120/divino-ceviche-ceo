@@ -51,11 +51,16 @@ export interface DailyMetric {
 
 export interface DailyMetricCreateDto {
   daily_metric_id?: number | null;
-  location_id: number; // ✅ CORRECTO
+  location_id: number; //
   daily_metric_date: string; // YYYY-MM-DD
   daily_metric_tickets: number;
   daily_metric_net_sales: number;
   daily_metric_daily_hourly: number;
+  daily_metric_grossSales: number;
+  daily_metric_tips: number;
+  daily_metric_discounts: number;
+  daily_metric_otherPayments: number;
+  daily_metric_taxes: number;
   created_at?: string | Date | null;
   updated_at?: string | Date | null;
   created_by?: number | null;
@@ -73,11 +78,12 @@ export interface TotalMetric {
   icon: string;
   signo: string;
   es_proyectado: boolean;
-  params : params;
+  params: params;
+  alt: string | '';
 }
 
 export interface params {
-  invoice: boolean;
+  type: string;
   category_id: number;
   invoice_type_id: number;
 }
@@ -118,6 +124,7 @@ export interface CashFlow {
   taxes: string;
   descuentos: string;
   es_proyectado: boolean;
+  otherPayments: number;
 }
 
 export interface cashflowMonth {

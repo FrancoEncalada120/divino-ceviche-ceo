@@ -35,6 +35,11 @@
             <tr>
               <th class="col-date" pSortableColumn="daily_metric_date">Date</th>
               <th class="col-location" pSortableColumn="location_name">Location</th>
+              <th class="col-sales text-end" pSortableColumn="totalNetSales">Gross Sales</th>
+              <th class="col-sales text-end" pSortableColumn="totalNetSales">Taxes</th>
+              <th class="col-sales text-end" pSortableColumn="totalNetSales">Tips</th>
+              <th class="col-sales text-end" pSortableColumn="totalNetSales">Discounts</th>
+              <th class="col-sales text-end" pSortableColumn="totalNetSales">Other Payments</th>
               <th class="col-sales text-end" pSortableColumn="totalNetSales">Net Sales</th>
               <th class="col-hourly" pSortableColumn="daily_metric_daily_hourly">
                 Daily Hourly
@@ -51,6 +56,26 @@
             <tr>
               <td class="col-date">{{ row.daily_metric_date }}</td>
               <td class="col-location">{{ row.locations.location_name }}</td>
+
+              <td class="col-sales text-end">
+                {{ row.daily_metric_grossSales | number : "1.2-2" }}
+              </td>
+
+              <td class="col-sales text-end">
+                {{ row.daily_metric_taxes | number : "1.2-2" }}
+              </td>
+
+              <td class="col-sales text-end">
+                {{ row.daily_metric_tips | number : "1.2-2" }}
+              </td>
+
+              <td class="col-sales text-end">
+                {{ row.daily_metric_discounts | number : "1.2-2" }}
+              </td>
+
+              <td class="col-sales text-end">
+                {{ row.daily_metric_otherPayments | number : "1.2-2" }}
+              </td>
 
               <td class="col-sales text-end">
                 {{ row.daily_metric_net_sales | number : "1.2-2" }}

@@ -8,6 +8,7 @@ import {
 } from '../../../../core/models/dashboard.models';
 import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
+import { merge } from 'rxjs';
 
 @Component({
   selector: 'app-modal',
@@ -24,7 +25,7 @@ export class ModalComponent {
   locations: Location[] = [];
   selectedLocation!: Location[];
 
-  constructor(private locationService: LocationService) {}
+  constructor(private locationService: LocationService) { }
 
   formData: Partial<DailyMetricCreateDto> = {
     daily_metric_id: null,
@@ -33,6 +34,11 @@ export class ModalComponent {
     daily_metric_tickets: 0,
     daily_metric_net_sales: 0,
     daily_metric_daily_hourly: 0,
+    daily_metric_grossSales: 0,
+    daily_metric_tips: 0,
+    daily_metric_discounts: 0,
+    daily_metric_otherPayments: 0,
+    daily_metric_taxes: 0,
     created_at: null,
     created_by: 0,
     updated_at: null,
@@ -43,6 +49,27 @@ export class ModalComponent {
     this.formData = { ...this.dailyMetric };
 
     this.load();
+
+
+  }
+
+  public calculateNetSales(): void {
+
+    const grossSales = Number(this.formData.daily_metric_grossSales || 0);
+    const taxes = Number(this.formData.daily_metric_taxes || 0);
+    const tips = Number(this.formData.daily_metric_tips || 0);
+    const discounts = Number(this.formData.daily_metric_discounts || 0);
+    const otherPayments = Number(this.formData.daily_metric_otherPayments || 0);
+
+    console.log('Calculating Net Sales with:', { grossSales, taxes, tips, discounts, otherPayments });
+
+    this.formData.daily_metric_net_sales =
+      Number(
+        (
+          grossSales -
+          (taxes + tips + discounts + otherPayments)
+        ).toFixed(2)
+      );
   }
 
   load(): void {
@@ -53,7 +80,7 @@ export class ModalComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 

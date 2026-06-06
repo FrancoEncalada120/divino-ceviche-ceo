@@ -65,26 +65,27 @@ export class DashboardComponent implements OnInit {
   InviceTitulo: string = '';
   showDailyDialog = false;
 
-  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, invoice: boolean) {
+  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, type: string) {
 
-    if (InvoiceTye === 0 && categoria === 0) {
+    if (type == '' || type === null || type === undefined) {
 
-      if (invoice) {
-        this.showDailyDialog = true;
-      }
       return;
+    } else if (type === 'Daily') {
+      this.showDailyDialog = true;
+    }
+    else if (type === 'Invoice') {
+
+      this.invoicespopUp = this.invoices.filter(
+        (inv) =>
+          inv.category.invoice_type_id === InvoiceTye &&
+          (categoria === 0 || inv.category.category_id === categoria)
+      );
+
+      this.showInvoicesDialog = true;
 
     }
 
     this.InviceTitulo = titulo;
-
-    this.invoicespopUp = this.invoices.filter(
-      (inv) =>
-        inv.category.invoice_type_id === InvoiceTye &&
-        (categoria === 0 || inv.category.category_id === categoria)
-    );
-
-    this.showInvoicesDialog = true;
   }
 
   constructor(

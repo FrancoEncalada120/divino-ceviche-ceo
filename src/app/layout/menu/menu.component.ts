@@ -164,19 +164,19 @@ export class MenuComponent {
         route: 'settings/Profile',
       },
 
-       { type: 'section', label: 'EMPLOYEES' },
-      // {
-      //   type: 'link',
-      //   label: 'Management',
-      //   icon: 'bi-person-vcard',
-      //   route: 'employees',
-      // },
-      // {
-      //   type: 'link',
-      //   label: 'Schedules',
-      //   icon: 'bi-calendar3',
-      //   route: 'schedules',
-      // },
+      { type: 'section', label: 'EMPLOYEES' },
+      {
+        type: 'link',
+        label: 'Management',
+        icon: 'bi-person-vcard',
+        route: 'employees',
+      },
+      {
+        type: 'link',
+        label: 'Schedules',
+        icon: 'bi-calendar3',
+        route: 'schedules',
+      },
     ];
   }
 

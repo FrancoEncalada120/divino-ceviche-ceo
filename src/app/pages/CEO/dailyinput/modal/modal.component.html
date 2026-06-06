@@ -59,8 +59,97 @@
             </div>
 
             <div class="field">
+
+              <label>Daily Hourly</label>
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_daily_hourly"
+                name="daily_metric_daily_hourly" required #dailyHourly="ngModel" />
+
+              <small class="error" *ngIf="
+              dailyHourly.invalid && (dailyHourly.touched || dmForm.submitted)
+            ">
+                Daily hourly is required
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily Hourly -->
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Gross Sales</label>
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_grossSales"
+                (ngModelChange)="calculateNetSales()" name="daily_metric_grossSales" required #grossSales="ngModel" />
+
+              <small class="error" *ngIf="
+                  grossSales.invalid && (grossSales.touched || dmForm.submitted)
+                ">
+                Taxes are required
+              </small>
+            </div>
+
+            <div class="field">
+              <label>Taxes</label>
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_taxes"
+                (ngModelChange)="calculateNetSales()" name="daily_metric_taxes" required #netTaxes="ngModel" />
+
+              <small class="error" *ngIf="
+                  netTaxes.invalid && (netTaxes.touched || dmForm.submitted)
+                ">
+                Net sales are required
+              </small>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Tips</label>
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_tips" name="daily_metric_tips"
+                (ngModelChange)="calculateNetSales()" required #tips="ngModel" />
+
+              <small class="error" *ngIf="
+                  tips.invalid && (tips.touched || dmForm.submitted)
+                ">
+                Tips are required
+              </small>
+            </div>
+
+            <div class="field">
+              <label>Discounts</label>
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_discounts"
+                (ngModelChange)="calculateNetSales()" name="daily_metric_discounts" required #discounts="ngModel" />
+
+              <small class="error" *ngIf="
+                  discounts.invalid && (discounts.touched || dmForm.submitted)
+                ">
+                Discounts are required
+              </small>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="row-inline">
+            <div class="field">
+              <label>Other Payments</label>
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_otherPayments"
+                (ngModelChange)="calculateNetSales()" name="daily_metric_otherPayments" required
+                #otherPayments="ngModel" />
+
+              <small class="error" *ngIf="
+                  otherPayments.invalid && (otherPayments.touched || dmForm.submitted)
+                ">
+                Other Payments are required
+              </small>
+            </div>
+
+            <div class="field">
               <label>Net Sales</label>
-              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_net_sales"
+              <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_net_sales" disabled="true"
                 name="daily_metric_net_sales" required #netSales="ngModel" />
 
               <small class="error" *ngIf="
@@ -70,19 +159,6 @@
               </small>
             </div>
           </div>
-        </div>
-
-        <!-- Daily Hourly -->
-        <div class="form-group">
-          <label>Daily Hourly</label>
-          <input type="number" min="0" step="0.01" [(ngModel)]="formData.daily_metric_daily_hourly"
-            name="daily_metric_daily_hourly" required #dailyHourly="ngModel" />
-
-          <small class="error" *ngIf="
-              dailyHourly.invalid && (dailyHourly.touched || dmForm.submitted)
-            ">
-            Daily hourly is required
-          </small>
         </div>
 
         <!-- Audit info (solo edit) -->
