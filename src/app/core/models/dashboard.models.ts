@@ -7,6 +7,16 @@ export interface DashboardResponse {
   dailyMetrics: DailyMetric[];
   totales: TotalMetric[];
   cashflow: CashFlow[];
+  resumenes: Resumenes[];
+}
+
+export interface Resumenes {
+  id: number;
+  fecha: string;
+  sede: string;
+  tipo: string;
+  nombre: string;
+  importe: number;
 }
 
 export interface Invoice {
@@ -41,10 +51,15 @@ export interface Invoicetype {
 }
 
 export interface DailyMetric {
-  daily_metric_date: string;
-  location_name: string;
-  totalNetSales: string;
-  totalDailyHourly: string;
+  daily_metric_date: number;
+  location_name: number;
+  totalNetSales: number;
+  totalGrossSales: number;
+  totalTips: number;
+  totalDiscounts: number;
+  totalOtherPayments: number;
+  totalTaxes: number;
+  totalDailyHourly: number;
   LaborCost: string;
   AOV: string;
 }
@@ -77,6 +92,8 @@ export interface TotalMetric {
   eval: Eval;
   icon: string;
   signo: string;
+  signoTarge: string;
+  view_Target: boolean;
   es_proyectado: boolean;
   params: params;
   alt: string | '';
@@ -86,6 +103,7 @@ export interface params {
   type: string;
   category_id: number;
   invoice_type_id: number;
+  tipo: string;
 }
 
 export interface Eval {

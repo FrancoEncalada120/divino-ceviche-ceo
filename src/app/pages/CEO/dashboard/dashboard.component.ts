@@ -6,6 +6,7 @@ import {
   CashFlow,
   DailyMetric,
   Invoice,
+  Resumenes,
   TotalMetric,
 } from '../../../core/models/dashboard.models';
 import { LocationService } from '../../../core/services/location.service';
@@ -51,6 +52,9 @@ export class DashboardComponent implements OnInit {
   invoices: Invoice[] = [];
   invoicespopUp: Invoice[] = [];
 
+  resumenes: Resumenes[] = [];
+  resumenespopUp: Resumenes[] = [];
+
   //ProjectedDebits: Invoice[] = [];
   totales: TotalMetric[] = [];
   dailyMetrics: DailyMetric[] = [];
@@ -64,11 +68,15 @@ export class DashboardComponent implements OnInit {
   showInvoicesDialog = false;
   InviceTitulo: string = '';
   showDailyDialog = false;
+  showResumenDialog = false;
 
-  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, type: string) {
+  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, type: string, tipo: string = '') {
+
+    this.showInvoicesDialog = false;
+    this.showDailyDialog = false;
+    this.showResumenDialog = false;
 
     if (type == '' || type === null || type === undefined) {
-
       return;
     } else if (type === 'Daily') {
       this.showDailyDialog = true;
@@ -82,6 +90,15 @@ export class DashboardComponent implements OnInit {
       );
 
       this.showInvoicesDialog = true;
+
+    } else if (type === 'Discount') {
+
+      this.resumenespopUp = this.resumenes.filter(
+        (inv) =>
+          inv.tipo === tipo
+      );
+
+      this.showResumenDialog = true;
 
     }
 
@@ -151,6 +168,7 @@ export class DashboardComponent implements OnInit {
         // );
         this.totales = res.totales;
         this.dailyMetrics = res.dailyMetrics;
+        this.resumenes = res.resumenes;
 
         //console.log('Dashboard data loaded:', res.cashflow);
       },

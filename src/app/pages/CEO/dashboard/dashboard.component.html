@@ -53,7 +53,9 @@
             item.name,
             item.params.invoice_type_id,
             item.params.category_id,
-            item.params.type
+            item.params.type,
+            item.params.tipo
+
           )
         ">
         <div class="sum-top d-flex align-items-center gap-2">
@@ -69,17 +71,15 @@
           {{ item.Result | txtsigno: item.signo }}
         </div>
 
-        <div *ngIf="!item.es_proyectado" class="kpi-footer">
+        <div *ngIf="!item.es_proyectado && item.view_Target" class="kpi-footer">
 
           <span class="kpi-target">
-            Target: {{ item.goal | txtsigno: item.signo }}
+            Target: {{ item.goal | txtsigno: item.signoTarge }}
           </span>
           <span [class]="item.eval.color">
             <i [class]="item.eval.arrow"></i>
-            {{ item.diff | txtsigno: item.signo }}
+            {{ item.diff | txtsigno: item.signoTarge }}
           </span>
-
-
 
         </div>
 
@@ -103,7 +103,7 @@
 <app-cashflow-list [movimientos]="movimientos"></app-cashflow-list>
 
 <p-dialog header="Detalle" [(visible)]="showDailyDialog" [modal]="true" [draggable]="false" [resizable]="false"
-  [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
+  [style]="{ width: '100vw', maxWidth: '1500px' }" [contentStyle]="{ overflow: 'auto' }">
   <div class="row g-3 mb-4 bg-white">
     <div class="card">
       <p-tabView>
@@ -116,6 +116,11 @@
               <tr>
                 <th>Date</th>
                 <th>Location</th>
+                <th>Gross</th>
+                <th>Tips</th>
+                <th>Taxes</th>
+                <th>Discounts</th>
+                <th>O. Paymentens</th>
                 <th>Sales</th>
                 <th class="d-none d-md-table-cell">Labor Cost</th>
                 <th class="d-none d-md-table-cell">Labor %</th>
@@ -128,6 +133,11 @@
               <tr>
                 <td>{{ row.daily_metric_date }}</td>
                 <td>{{ row.location_name }}</td>
+                <td>{{ row.totalGrossSales | number: "1.0-3" }}</td>
+                <td>{{ row.totalTips | number: "1.0-3" }}</td>
+                <td>{{ row.totalDiscounts | number: "1.0-3" }}</td>
+                <td>{{ row.totalTaxes | number: "1.0-3" }}</td>
+                <td>{{ row.totalOtherPayments | number: "1.0-3" }}</td>
                 <td>{{ row.totalNetSales | number: "1.0-3" }}</td>
                 <td class="d-none d-md-table-cell">
                   {{ row.totalDailyHourly }}
@@ -153,6 +163,7 @@
     </div>
   </div>
 </p-dialog>
+
 
 <p-dialog header="Detalle" [(visible)]="showInvoicesDialog" [modal]="true" [draggable]="false" [resizable]="false"
   [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
@@ -185,6 +196,51 @@
                 </td>
                 <td>{{ row.invoice_vendor_description }}</td>
                 <td class="text-end">{{ row.invoice_amount }}</td>
+              </tr>
+            </ng-template>
+
+            <!-- Empty -->
+            <ng-template pTemplate="emptymessage">
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  No invoices exist for the selected dates and locations
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </p-tabPanel>
+      </p-tabView>
+    </div>
+  </div>
+</p-dialog>
+
+<p-dialog header="Detalle" [(visible)]="showResumenDialog" [modal]="true" [draggable]="false" [resizable]="false"
+  [style]="{ width: '100vw', maxWidth: '1100px' }" [contentStyle]="{ overflow: 'auto' }">
+  <div class="row g-3 mb-4 bg-white">
+    <div class="card">
+      <p-tabView>
+        <p-tabPanel [header]="InviceTitulo">
+          <p-table [value]="resumenespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+            paginatorDropdownAppendTo="body" [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple"
+            [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
+            styleClass="p-datatable-sm" appendTo="body">
+            <!-- Header -->
+            <ng-template pTemplate="header">
+              <tr>
+                <th>Date</th>
+                <th>Location</th>
+                <th>Description</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </ng-template>
+
+            <!-- Body -->
+            <ng-template pTemplate="body" let-row>
+              <tr>
+                <td>{{ row.fecha }}</td>
+                <td>{{ row.sede }}</td>
+                <td>{{ row.nombre }}</td>
+                <td class="text-end">{{ row.importe }}</td>
               </tr>
             </ng-template>
 

@@ -10,9 +10,9 @@
       <th>AOV</th>
       <th>Marketing</th>
       <th>Loan</th>
-      <th>Repairs</th>
+      <!-- <th>Repairs</th>
       <th>App Fee</th>
-      <th>Unassigned</th>
+      <th>Unassigned</th> -->
       <th class="text-end">Actions</th>
     </tr>
   </thead>
@@ -55,7 +55,7 @@
         {{ item.goal_loan| txtsigno:'$' }}
       </td>
 
-      <td data-label="AOV">
+      <!-- <td data-label="AOV">
         {{ item.goal_repairs| txtsigno:'$' }}
       </td>
 
@@ -65,7 +65,7 @@
 
       <td data-label="AOV">
         {{ item.goal_unassigned| txtsigno:'$' }}
-      </td>
+      </td> -->
 
       <td data-label="Actions" class="text-end">
         <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
