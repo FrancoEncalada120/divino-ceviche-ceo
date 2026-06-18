@@ -1,10 +1,14 @@
 .kpi-card {
-  background: #f9fbfd;
   border-radius: 12px;
-  padding: 8px 1px;
+  padding: 10px;
   width: 100%;
   height: 100%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  background: white;
+}
+
+.color-costo {
+  background: #fdf9f9;
 }
 
 .kpi-header {
@@ -37,7 +41,7 @@
 
 .kpi-footer {
   display: flex;
-  gap:1px;
+  gap: 1px;
   align-items: start;
 }
 
@@ -91,11 +95,9 @@
 }
 
 .sum-inner {
-  padding: 1.25rem 1.4rem;
-  background: #fff;
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
 }
-
-
 
 /* ====== Invoice-style header / filters ====== */
 .invoice-header-card {
@@ -176,27 +178,7 @@
 }
 
 
-:host ::ng-deep .loading-dialog .p-dialog-content {
-  padding: 2rem;
-  border-radius: 8px;
-}
 
-.loading-content {
-  display: grid;
-  justify-items: center;
-  gap: 1rem;
-  text-align: center;
-}
-
-.loading-title {
-  font-weight: 600;
-  color: var(--text-color);
-}
-
-.loading-subtitle {
-  font-size: 0.875rem;
-  color: var(--text-color-secondary);
-}
 
 .formula-tooltip {
   display: none;

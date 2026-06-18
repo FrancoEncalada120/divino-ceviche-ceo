@@ -20,10 +20,9 @@ import { debounceTime } from 'rxjs/operators';
 import { TxtsignoPipe } from '../../../core/pipes/txtsigno.pipe';
 import { CardModule } from 'primeng/card';
 import { CashflowListComponent } from '../../cashflow/cashflow-list/cashflow-list.component';
-import { DashboardInsumosComponent } from '../dasboard-insumos/dasboard-insumos/dasboard-insumos.component';
-import { DashboardStockComponent } from '../dashboard-stock/dashboard-stock.component';
 import { DialogModule } from 'primeng/dialog';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { AccordionModule } from 'primeng/accordion';
+import { LoadingComponent } from "../../../shared/components/loading/loading.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -39,8 +38,9 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     TabViewModule,
     CardModule,
     DialogModule,
-    ProgressSpinnerModule
-  ],
+    AccordionModule,
+    LoadingComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -70,39 +70,154 @@ export class DashboardComponent implements OnInit {
   showDailyDialog = false;
   showResumenDialog = false;
 
-  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, type: string, tipo: string = '') {
+  cssCard = 'kpi-card';
+  cssinner = 'sum-inner';
 
+  groupedInvoices: any[] = [];
+  totalInvoicesPopUp = 0;
+
+  groupedResumen: any[] = [];
+  totalResumenPopUp = 0;
+
+  groupInvoices() {
+    const groups: Record<string, { items: Invoice[]; total: number }> = {};
+
+    this.invoicespopUp.forEach((invoice) => {
+      const category = invoice.category?.category_code || 'Sin categoría';
+      const amount = Number(invoice.invoice_amount) || 0;
+
+      if (!groups[category]) {
+        groups[category] = {
+          items: [],
+          total: 0,
+        };
+      }
+
+      groups[category].items.push(invoice);
+      groups[category].total += amount;
+    });
+
+    this.groupedInvoices = Object.keys(groups).map((category) => ({
+      category,
+      items: groups[category].items,
+      total: groups[category].total,
+    }));
+
+    this.totalInvoicesPopUp = this.groupedInvoices.reduce(
+      (sum, group) => sum + group.total,
+      0
+    );
+  }
+
+  groupResumen() {
+
+    const groups: Record<string, { items: Resumenes[]; total: number }> = {};
+
+    this.resumenespopUp.forEach((invoice) => {
+
+      const category = invoice.nombre || 'Sin categoría';
+      const amount = Number(invoice.importe) || 0;
+
+      if (!groups[category]) {
+        groups[category] = {
+          items: [],
+          total: 0,
+        };
+      }
+
+      groups[category].items.push(invoice);
+      groups[category].total += amount;
+    });
+
+    this.groupedResumen = Object.keys(groups).map((category) => ({
+      category,
+      items: groups[category].items,
+      total: groups[category].total,
+    }));
+
+    this.totalResumenPopUp = this.groupedResumen.reduce(
+      (sum, group) => sum + group.total,
+      0
+    );
+  }
+
+  mostrarInvoice(titulo: string, InvoiceTye: number, categoria: number, type: string, tipo: string = '', exclude: number[] = []) {
+
+    this.loading = true;
     this.showInvoicesDialog = false;
     this.showDailyDialog = false;
     this.showResumenDialog = false;
 
     if (type == '' || type === null || type === undefined) {
+      this.loading = false;
       return;
     } else if (type === 'Daily') {
       this.showDailyDialog = true;
+      this.loading = false;
     }
     else if (type === 'Invoice') {
 
       this.invoicespopUp = this.invoices.filter(
         (inv) =>
           inv.category.invoice_type_id === InvoiceTye &&
-          (categoria === 0 || inv.category.category_id === categoria)
+          (categoria === 0 || inv.category.category_id === categoria) &&
+          (!exclude || !exclude.includes(inv.category.category_id))
       );
 
-      this.showInvoicesDialog = true;
+      this.invoicespopUp.sort((a, b) => {
+
+        const categoryCompare = a.category.category_code.localeCompare(
+          b.category.category_code
+        );
+
+        if (categoryCompare !== 0) {
+          return categoryCompare;
+        }
+
+        return new Date(a.invoice_date).getTime() -
+          new Date(b.invoice_date).getTime();
+      });
+
+      this.groupInvoices();
+
+      setTimeout(() => {
+        this.showInvoicesDialog = true;
+        this.loading = false;
+      }, 1000);
+
 
     } else if (type === 'Discount') {
 
       this.resumenespopUp = this.resumenes.filter(
         (inv) =>
-          inv.tipo === tipo
+          inv.tipo === tipo && inv.nombre != 'Total'
       );
 
-      this.showResumenDialog = true;
+      this.resumenespopUp.sort((a, b) => {
+
+        const categoryCompare = a.nombre.localeCompare(
+          b.nombre
+        );
+
+        if (categoryCompare !== 0) {
+          return categoryCompare;
+        }
+
+        return new Date(a.fecha).getTime() -
+          new Date(b.fecha).getTime();
+      });
+
+      this.groupResumen();
+
+      setTimeout(() => {
+        this.showResumenDialog = true;
+        this.loading = false;
+      }, 500);
 
     }
 
     this.InviceTitulo = titulo;
+
   }
 
   constructor(

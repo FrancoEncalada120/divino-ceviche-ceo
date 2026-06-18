@@ -23,6 +23,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { InvoiceTableComponent } from '../../../shared/components/invoice-table/invoice-table.component';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { LoadingComponent } from "../../../shared/components/loading/loading.component";
 
 @Component({
   selector: 'app-invoice',
@@ -39,6 +40,7 @@ import { saveAs } from 'file-saver';
     InvoiceUpdInsComponent,
     NgIf,
     InvoiceTableComponent,
+    LoadingComponent
   ],
 
   templateUrl: './invoice.component.html',
@@ -52,7 +54,7 @@ export class InvoiceComponent {
   dateRange: Date[] | null = null;
   dasboard: DashboardResponse | null = null;
   private locationChange$ = new Subject<void>();
-  activeTab: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 = 1; // por defecto pestaña 1
+  activeTab: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 = 1; // por defecto pestaña 1
 
   invoice01: Invoice[] = [];
   invoice02: Invoice[] = [];
@@ -63,6 +65,8 @@ export class InvoiceComponent {
   invoice07: Invoice[] = [];
   invoice08: Invoice[] = [];
   invoice09: Invoice[] = [];
+  invoice10: Invoice[] = [];
+
   allInvoices: any[] = [];
 
   totalCat1 = 0;
@@ -74,6 +78,7 @@ export class InvoiceComponent {
   totalCat7 = 0;
   totalCat8 = 0;
   totalCat9 = 0;
+  totalCat10 = 0;
 
   cantidadCat1 = 0;
   cantidadCat2 = 0;
@@ -84,6 +89,7 @@ export class InvoiceComponent {
   cantidadCat7 = 0;
   cantidadCat8 = 0;
   cantidadCat9 = 0;
+  cantidadCat10 = 0;
 
   selectedCategoryType: number | null = null;
   editingInvoice: Invoice | null = null;
@@ -99,7 +105,7 @@ export class InvoiceComponent {
     private userService: UserService,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.user = this.userService.getUser();
@@ -109,10 +115,10 @@ export class InvoiceComponent {
     this.loadLocations();
 
     this.locationChange$.pipe(debounceTime(1000)).subscribe(() => {
-      console.log('Locations changed, reloading dashboard...');
+      this.load();
     });
 
-    this.load();
+
     this.loadLocations();
   }
 
@@ -141,6 +147,8 @@ export class InvoiceComponent {
 
     const startDate = this.dateRange[0].toISOString().split('T')[0];
     const endDate = this.dateRange[1].toISOString().split('T')[0];
+
+
 
     this.dashboardSvc.getDashboard(startDate, endDate, locales).subscribe({
       next: (res) => {
@@ -183,6 +191,10 @@ export class InvoiceComponent {
           (x) => Number(x.category.invoice_type_id) === 9,
         );
 
+        this.invoice10 = invoices.filter(
+          (x) => Number(x.category.invoice_type_id) === 10,
+        );
+
         this.allInvoices = invoices;
 
         this.calculateTotals(invoices);
@@ -202,16 +214,42 @@ export class InvoiceComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => {
+        this.load();
+       },
     });
   }
 
   onLocationsChange() {
+
+    if (
+      !this.dateRange ||
+      this.dateRange.length !== 2 ||
+      !this.dateRange[0] ||
+      !this.dateRange[1]
+    ) {
+      return;
+    }
+
     this.locationChange$.next();
-    this.load();
+
+
+
+    //this.load();
   }
 
   onLocationsChangeDate(event: any) {
+
+
+    if (
+      !this.dateRange ||
+      this.dateRange.length !== 2 ||
+      !this.dateRange[0] ||
+      !this.dateRange[1]
+    ) {
+      return;
+    }
+
     this.load();
   }
 
@@ -270,15 +308,19 @@ export class InvoiceComponent {
     );
 
     this.totalCat7 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 7),
     );
 
     this.totalCat8 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 8),
     );
 
     this.totalCat9 = sum(
-      invoices.filter((x) => Number(x.category.invoice_type_id) === 6),
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 9),
+    );
+
+    this.totalCat10 = sum(
+      invoices.filter((x) => Number(x.category.invoice_type_id) === 10),
     );
 
     this.cantidadCat1 = invoices.filter(
@@ -305,8 +347,11 @@ export class InvoiceComponent {
     this.cantidadCat8 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 8,
     ).length;
-    this.cantidadCat7 = invoices.filter(
+    this.cantidadCat9 = invoices.filter(
       (x) => Number(x.category.invoice_type_id) === 9,
+    ).length;
+    this.cantidadCat10 = invoices.filter(
+      (x) => Number(x.category.invoice_type_id) === 10,
     ).length;
   }
 

@@ -124,7 +124,7 @@ export class DailymetricListComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => {},
+      complete: () => { },
     });
   }
 
@@ -228,6 +228,11 @@ export class DailymetricListComponent {
       daily_metric_tickets: invoice.daily_metric_tickets,
       daily_metric_net_sales: invoice.daily_metric_net_sales,
       daily_metric_daily_hourly: invoice.daily_metric_daily_hourly,
+      daily_metric_discounts: invoice.daily_metric_discounts,
+      daily_metric_grossSales: invoice.daily_metric_grossSales,
+      daily_metric_otherPayments: invoice.daily_metric_otherPayments,
+      daily_metric_taxes: invoice.daily_metric_taxes,
+      daily_metric_tips: invoice.daily_metric_tips,
       updated_by: auditUserId ?? null, // si lo usas
     };
 
@@ -239,7 +244,7 @@ export class DailymetricListComponent {
       .pipe(finalize(() => (this.saving = false)))
       .subscribe({
         next: (updated) => {
-          console.log('[handleSubmit] Updated ok', updated);
+          //console.log('[handleSubmit] Updated ok', updated);
 
           // opcional: cerrar modal / refrescar lista
           this.closeModal();

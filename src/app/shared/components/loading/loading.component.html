@@ -1,0 +1,10 @@
+<p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [draggable]="false" [resizable]="false"
+  [dismissableMask]="false" [showHeader]="false" [style]="{ width: '18rem' }" styleClass="loading-dialog">
+  <div class="loading-content">
+    <p-progressSpinner strokeWidth="4" animationDuration=".8s">
+    </p-progressSpinner>
+
+    <div class="loading-title">Loading...</div>
+    <div class="loading-subtitle">Please wait</div>
+  </div>
+</p-dialog>

@@ -47,15 +47,16 @@
 <!-- ===================== -->
 <div class="row g-3 mb-4">
   <div class="col-12 col-sm-6 col-lg-2" *ngFor="let item of totales">
-    <div *ngIf="!item.es_proyectado" class="kpi-card bg-white">
-      <div class="sum-inner" [style.cursor]="item.params.type ? 'pointer' : 'default'" (click)="
+
+    <div *ngIf="!item.es_proyectado" [ngClass]="[cssCard, item.color]">
+      <div [ngClass]="[cssinner, item.color]" [style.cursor]="item.params.type ? 'pointer' : 'default'" (click)="
           mostrarInvoice(
             item.name,
             item.params.invoice_type_id,
             item.params.category_id,
             item.params.type,
-            item.params.tipo
-
+            item.params.tipo,
+            item.params.exclude
           )
         ">
         <div class="sum-top d-flex align-items-center gap-2">
@@ -89,7 +90,9 @@
 </div>
 
 <!-- Loading -->
-<p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [draggable]="false" [resizable]="false"
+<app-loading [loading]="loading" ></app-loading>
+
+<!-- <p-dialog [(visible)]="loading" [modal]="true" [closable]="false" [draggable]="false" [resizable]="false"
   [dismissableMask]="false" [showHeader]="false" [style]="{ width: '18rem' }" styleClass="loading-dialog">
   <div class="loading-content">
     <p-progressSpinner strokeWidth="4" animationDuration=".8s">
@@ -98,7 +101,7 @@
     <div class="loading-title">Loading...</div>
     <div class="loading-subtitle">Please wait</div>
   </div>
-</p-dialog>
+</p-dialog> -->
 
 <app-cashflow-list [movimientos]="movimientos"></app-cashflow-list>
 
@@ -170,12 +173,68 @@
   <div class="row g-3 mb-4 bg-white">
     <div class="card">
       <p-tabView>
+
         <p-tabPanel [header]="InviceTitulo">
-          <p-table [value]="invoicespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+
+
+          <div class="d-flex justify-content-end mb-3">
+            <strong>
+              Total: {{ totalInvoicesPopUp | number: '1.2-2' }}
+            </strong>
+          </div>
+
+          <p-accordion>
+
+            <p-accordion-panel *ngFor="let group of groupedInvoices" [value]="group.category">
+
+              <p-accordion-header>
+                <div class="d-flex justify-content-between w-100">
+                  <span>
+                    {{ group.category }} ({{ group.items.length }})
+                  </span>
+
+                  <strong>
+                    {{ group.total | number: '1.2-2' }}
+                  </strong>
+                </div>
+              </p-accordion-header>
+
+              <p-accordion-content>
+
+                <p-table [value]="group.items">
+
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>Date</th>
+                      <th>Location</th>
+                      <th>Description</th>
+                      <th>Amount</th>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template pTemplate="body" let-row>
+                    <tr>
+                      <td>{{ row.invoice_date }}</td>
+                      <td>{{ row.locations.location_name }}</td>
+                      <td>{{ row.invoice_vendor_description }}</td>
+                      <td>{{ row.invoice_amount }}</td>
+                    </tr>
+                  </ng-template>
+
+                </p-table>
+
+              </p-accordion-content>
+
+            </p-accordion-panel>
+
+          </p-accordion>
+
+
+          <!-- <p-table [value]="invoicespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
             paginatorDropdownAppendTo="body" [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple"
             [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
             styleClass="p-datatable-sm" appendTo="body">
-            <!-- Header -->
+
             <ng-template pTemplate="header">
               <tr>
                 <th>Date</th>
@@ -186,7 +245,7 @@
               </tr>
             </ng-template>
 
-            <!-- Body -->
+
             <ng-template pTemplate="body" let-row>
               <tr>
                 <td>{{ row.invoice_date }}</td>
@@ -199,7 +258,7 @@
               </tr>
             </ng-template>
 
-            <!-- Empty -->
+
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center text-muted py-4">
@@ -207,7 +266,7 @@
                 </td>
               </tr>
             </ng-template>
-          </p-table>
+          </p-table> -->
         </p-tabPanel>
       </p-tabView>
     </div>
@@ -220,11 +279,65 @@
     <div class="card">
       <p-tabView>
         <p-tabPanel [header]="InviceTitulo">
-          <p-table [value]="resumenespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
+
+
+          <div class="d-flex justify-content-end mb-3">
+            <strong>
+              Total: {{ totalResumenPopUp | number: '1.2-2' }}
+            </strong>
+          </div>
+
+          <p-accordion>
+
+            <p-accordion-panel *ngFor="let group of groupedResumen" [value]="group.category">
+
+              <p-accordion-header>
+                <div class="d-flex justify-content-between w-100">
+                  <span>
+                    {{ group.category }} ({{ group.items.length }})
+                  </span>
+
+                  <strong>
+                    {{ group.total | number: '1.2-2' }}
+                  </strong>
+                </div>
+              </p-accordion-header>
+
+              <p-accordion-content>
+
+                <p-table [value]="group.items">
+
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th>Date</th>
+                      <th>Location</th>
+                      <th>Description</th>
+                      <th>Amount</th>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template pTemplate="body" let-row>
+                    <tr>
+                      <td>{{ row.fecha }}</td>
+                      <td>{{ row.sede }}</td>
+                      <td>{{ row.nombre }}</td>
+                      <td class="text-end">{{ row.importe }}</td>
+                    </tr>
+                  </ng-template>
+
+                </p-table>
+
+              </p-accordion-content>
+
+            </p-accordion-panel>
+
+          </p-accordion>
+
+          <!-- <p-table [value]="resumenespopUp!" [paginator]="true" [rows]="10" [rowsPerPageOptions]="[10, 20, 50]"
             paginatorDropdownAppendTo="body" [responsiveLayout]="'stack'" breakpoint="768px" sortMode="multiple"
             [showCurrentPageReport]="true" currentPageReportTemplate="Mostrando {first} a {last} de {totalRecords}"
             styleClass="p-datatable-sm" appendTo="body">
-            <!-- Header -->
+
             <ng-template pTemplate="header">
               <tr>
                 <th>Date</th>
@@ -234,7 +347,7 @@
               </tr>
             </ng-template>
 
-            <!-- Body -->
+
             <ng-template pTemplate="body" let-row>
               <tr>
                 <td>{{ row.fecha }}</td>
@@ -244,7 +357,7 @@
               </tr>
             </ng-template>
 
-            <!-- Empty -->
+
             <ng-template pTemplate="emptymessage">
               <tr>
                 <td colspan="6" class="text-center text-muted py-4">
@@ -252,7 +365,7 @@
                 </td>
               </tr>
             </ng-template>
-          </p-table>
+          </p-table> -->
         </p-tabPanel>
       </p-tabView>
     </div>

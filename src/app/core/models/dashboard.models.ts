@@ -96,6 +96,7 @@ export interface TotalMetric {
   view_Target: boolean;
   es_proyectado: boolean;
   params: params;
+  color: string;
   alt: string | '';
 }
 
@@ -104,6 +105,7 @@ export interface params {
   category_id: number;
   invoice_type_id: number;
   tipo: string;
+  exclude: number[] | []
 }
 
 export interface Eval {
