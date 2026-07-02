@@ -1,0 +1,189 @@
+<p-dialog
+  [visible]="true"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="user-modal"
+  [style]="{ width: '620px' }"
+>
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h2 class="modal-title mb-0">
+        {{
+          mode === "edit"
+            ? "Update Employee Position"
+            : mode === "rate"
+              ? "Update Rate Employee Position"
+              : "Add Employee Position"
+        }}
+      </h2>
+
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="onClose()"
+      ></button>
+    </div>
+  </ng-template>
+
+  <div class="modal-body-content">
+    <input type="hidden" [(ngModel)]="formData.empleado_cargo_id" />
+
+    <div class="mb-3">
+      <label class="form-label">Employee</label>
+      <p-dropdown
+        [options]="users"
+        [(ngModel)]="formData.user_id"
+        optionLabel="user_name"
+        optionValue="user_id"
+        placeholder="Select employee"
+        styleClass="w-100"
+        appendTo="body"
+      >
+        <ng-template pTemplate="item" let-user>
+          {{ user.user_name }} {{ user.user_apellido }}
+        </ng-template>
+
+        <ng-template pTemplate="selectedItem" let-user>
+          <span *ngIf="user">
+            {{ user.user_name }} {{ user.user_apellido }}
+          </span>
+        </ng-template>
+      </p-dropdown>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Position</label>
+      <p-dropdown
+        [options]="cargos"
+        [(ngModel)]="formData.cargo_id"
+        optionLabel="cargo_nombre"
+        optionValue="cargo_id"
+        placeholder="Select position"
+        styleClass="w-100"
+        appendTo="body"
+      ></p-dropdown>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <p-dropdown
+        [options]="locations"
+        [(ngModel)]="formData.location_id"
+        optionLabel="location_name"
+        optionValue="location_id"
+        placeholder="Select location"
+        styleClass="w-100"
+        appendTo="body"
+      ></p-dropdown>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label class="form-label">Start Date</label>
+        <input
+          pInputText
+          type="date"
+          class="w-100"
+          [(ngModel)]="formData.fecha_inicio"
+        />
+      </div>
+
+      <div class="col-md-6 mb-3" *ngIf="mode === 'create' || mode === 'edit'">
+        <label class="form-label">End Date</label>
+        <input
+          pInputText
+          type="date"
+          class="w-100"
+          [(ngModel)]="formData.fecha_fin"
+        />
+      </div>
+    </div>
+
+    <div class="mb-3" *ngIf="mode === 'edit'">
+      <label class="form-label">Status</label>
+      <p-dropdown
+        [options]="statuses"
+        [(ngModel)]="formData.estado"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select status"
+        styleClass="w-100"
+        appendTo="body"
+      ></p-dropdown>
+    </div>
+
+    <ng-container *ngIf="mode === 'create' || mode === 'rate'">
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Hourly Rate</label>
+          <input
+            pInputText
+            type="number"
+            class="w-100"
+            [(ngModel)]="formData.tarifa_hora"
+          />
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label">Overtime Rate</label>
+          <input
+            pInputText
+            type="number"
+            class="w-100"
+            [(ngModel)]="formData.tarifa_hora_extra"
+          />
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <p-checkbox
+          [(ngModel)]="formData.aplica_impuesto"
+          [binary]="true"
+          inputId="tax"
+        ></p-checkbox>
+        <label for="tax" class="ms-2">Apply Tax</label>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Tax Percentage</label>
+        <input
+          pInputText
+          type="number"
+          class="w-100"
+          [(ngModel)]="formData.porcentaje_impuesto"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Reason</label>
+        <input
+          pInputText
+          type="text"
+          class="w-100"
+          [(ngModel)]="formData.motivo"
+          placeholder="Initial rate"
+        />
+      </div>
+
+      <p-message
+        severity="info"
+        text="The employee position will be created as active by default."
+      ></p-message>
+    </ng-container>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">
+        Cancel
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="onSubmit()">
+        {{ mode === "edit" ? "Save Changes" : "Create" }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

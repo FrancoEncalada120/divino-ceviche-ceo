@@ -2,8 +2,11 @@
   <thead class="table-light">
     <tr>
       <th>Status</th>
+      <th>Icon</th>
       <th>Name</th>
       <th>Account Number</th>
+      <th>External Code</th>
+      <th>Abbreviation</th>
       <th class="text-end">Actions</th>
     </tr>
   </thead>
@@ -15,11 +18,16 @@
           class="badge"
           [ngClass]="{
             'bg-success': loc.location_status === 'A',
-            'bg-secondary': loc.location_status !== 'A'
+            'bg-secondary': loc.location_status !== 'A',
           }"
         >
-          {{ loc.location_status === 'A' ? 'Active' : 'Inactive' }}
+          {{ loc.location_status === "A" ? "Active" : "Inactive" }}
         </span>
+      </td>
+
+      <td data-label="Icon">
+        <i [class]="loc.icono || 'pi pi-home'"></i>
+        <span class="ms-2 text-muted">{{ loc.icono || "pi pi-home" }}</span>
       </td>
 
       <td data-label="Name">
@@ -30,15 +38,23 @@
         {{ loc.location_AccountNumber || "—" }}
       </td>
 
+      <td data-label="External Code">
+        {{ loc.ext_code || "—" }}
+      </td>
+
+      <td data-label="Abbreviation">
+        {{ loc.abbreviation || "—" }}
+      </td>
+
       <td data-label="Actions" class="text-end">
-        <button class="btn btn-sm btn-danger" (click)="onEdit(loc)">
+        <button class="btn btn-sm btn-warning" (click)="onEdit(loc)">
           Edit
         </button>
       </td>
     </tr>
 
     <tr *ngIf="!locations.length">
-      <td colspan="4" class="text-center text-muted py-4">
+      <td colspan="7" class="text-center text-muted py-4">
         No locations found
       </td>
     </tr>

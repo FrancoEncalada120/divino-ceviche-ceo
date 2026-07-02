@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
-import { DecimalOnlyDirective } from "../../../../core/directives/decimal-only.directive";
+import { DecimalOnlyDirective } from '../../../../core/directives/decimal-only.directive';
 
 @Component({
   selector: 'app-goal-upd-ins',
   imports: [CommonModule, FormsModule, DecimalOnlyDirective],
   templateUrl: './goal-upd-ins.component.html',
-  styleUrl: './goal-upd-ins.component.scss'
+  styleUrl: './goal-upd-ins.component.scss',
 })
 export class GoalUpdInsComponent implements OnInit {
   @Output() close = new EventEmitter<void>();
@@ -21,10 +21,9 @@ export class GoalUpdInsComponent implements OnInit {
 
   locations: Location[] = [];
 
-  constructor(private locationService: LocationService) { }
+  constructor(private locationService: LocationService) {}
 
   load(): void {
-
     this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
@@ -32,10 +31,8 @@ export class GoalUpdInsComponent implements OnInit {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
-
-
   }
 
   formData: Goal = {
@@ -48,21 +45,15 @@ export class GoalUpdInsComponent implements OnInit {
     goal_target_AOV: 0,
     goal_target_sales: 0,
     location_id: 0,
-    locations: {
-      location_id: 0,
-      location_name: '',
-      location_AccountNumber: '',
-      location_status: ''
-    },
+
     goal_marketing: 0,
     goal_loan: 0,
     goal_repairs: 0,
     goal_app_fee: 0,
-    goal_unassigned: 0
+    goal_unassigned: 0,
   };
 
   ngOnInit() {
-
     this.load();
 
     if (this.mode === 'edit' && this.goal) {
@@ -79,8 +70,6 @@ export class GoalUpdInsComponent implements OnInit {
     this.submit.emit(this.formData);
   }
 
-
-
   // ===========================================
 
   months = [
@@ -95,14 +84,13 @@ export class GoalUpdInsComponent implements OnInit {
     { value: 9, label: 'September' },
     { value: 10, label: 'October' },
     { value: 11, label: 'November' },
-    { value: 12, label: 'December' }
+    { value: 12, label: 'December' },
   ];
 
   years = [
     { value: 2025, label: '2025' },
     { value: 2026, label: '2026' },
     { value: 2027, label: '2027' },
-    { value: 2028, label: '2028' }
+    { value: 2028, label: '2028' },
   ];
-
 }

@@ -1,0 +1,246 @@
+.schedule-calendar {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+}
+
+/* FullCalendar general */
+::ng-deep .schedule-calendar .fc {
+  font-family:
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  color: #111827;
+}
+
+/* Toolbar */
+::ng-deep .schedule-calendar .fc-toolbar {
+  margin-bottom: 18px;
+}
+
+::ng-deep .schedule-calendar .fc-toolbar-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  text-transform: capitalize;
+}
+
+::ng-deep .schedule-calendar .fc-button {
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
+  color: #374151;
+  border-radius: 10px;
+  padding: 7px 12px;
+  font-weight: 600;
+  box-shadow: none;
+  transition: all 0.15s ease;
+}
+
+::ng-deep .schedule-calendar .fc-button:hover {
+  background: #e5e7eb;
+  border-color: #cbd5e1;
+  color: #111827;
+}
+
+::ng-deep .schedule-calendar .fc-button-primary:not(:disabled).fc-button-active,
+::ng-deep .schedule-calendar .fc-button-primary:not(:disabled):active {
+  background: #111827;
+  border-color: #111827;
+  color: #ffffff;
+}
+
+/* Cabecera de días */
+::ng-deep .schedule-calendar .fc-col-header-cell {
+  background: #f9fafb;
+  border-color: #e5e7eb;
+  padding: 10px 0;
+}
+
+::ng-deep .schedule-calendar .fc-col-header-cell-cushion {
+  color: #374151;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+/* Horas laterales */
+::ng-deep .schedule-calendar .fc-timegrid-slot-label {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+::ng-deep .schedule-calendar .fc-timegrid-axis {
+  background: #ffffff;
+}
+
+/* Líneas del calendario */
+::ng-deep .schedule-calendar .fc-theme-standard td,
+::ng-deep .schedule-calendar .fc-theme-standard th {
+  border-color: #e5e7eb;
+}
+
+::ng-deep .schedule-calendar .fc-timegrid-slot {
+  height: 38px;
+}
+
+::ng-deep .schedule-calendar .fc-timegrid-slot-minor {
+  border-top-style: dashed;
+  border-top-color: #e5e7eb;
+}
+
+/* Indicador de hora actual */
+::ng-deep .schedule-calendar .fc-timegrid-now-indicator-line {
+  border-color: #ef4444;
+  border-width: 2px;
+}
+
+::ng-deep .schedule-calendar .fc-timegrid-now-indicator-arrow {
+  border-color: #ef4444;
+}
+
+/* Evento */
+::ng-deep .schedule-calendar .fc-event {
+  border: none !important;
+  border-radius: 12px !important;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.18);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    filter 0.15s ease;
+}
+
+::ng-deep .schedule-calendar .fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.25);
+  filter: brightness(1.04);
+}
+
+::ng-deep .schedule-calendar .fc-event-main {
+  padding: 0;
+}
+
+/* Contenido interno del evento */
+::ng-deep .schedule-event {
+  padding: 7px 8px;
+  color: #ffffff;
+  min-height: 100%;
+  line-height: 1.25;
+}
+
+::ng-deep .schedule-event__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+::ng-deep .schedule-event__time {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
+}
+
+::ng-deep .schedule-event__status {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.22);
+  white-space: nowrap;
+}
+
+::ng-deep .schedule-event__employee {
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+::ng-deep .schedule-event__location {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  opacity: 0.95;
+  margin-top: 3px;
+}
+
+::ng-deep .schedule-event__location i {
+  font-size: 12px;
+}
+
+::ng-deep .schedule-event__notes {
+  margin-top: 5px;
+  font-size: 11px;
+  opacity: 0.9;
+  padding-top: 5px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  display: -webkit-box;
+
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Evento mientras se arrastra */
+::ng-deep .schedule-calendar .fc-event.fc-event-dragging {
+  opacity: 0.85;
+  box-shadow: 0 18px 32px rgba(15, 23, 42, 0.35);
+}
+
+/* Selección de horario */
+::ng-deep .schedule-calendar .fc-highlight {
+  background: rgba(59, 130, 246, 0.14);
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .schedule-calendar {
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  ::ng-deep .schedule-calendar .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  ::ng-deep .schedule-calendar .fc-toolbar-title {
+    font-size: 18px;
+  }
+
+  ::ng-deep .schedule-event {
+    padding: 5px 6px;
+  }
+
+  ::ng-deep .schedule-event__employee {
+    font-size: 12px;
+  }
+
+  ::ng-deep .schedule-event__location,
+  ::ng-deep .schedule-event__notes {
+    font-size: 10px;
+  }
+}
+
+::ng-deep .schedule-calendar-event {
+  background-image: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.16),
+    rgba(0, 0, 0, 0.12)
+  );
+}

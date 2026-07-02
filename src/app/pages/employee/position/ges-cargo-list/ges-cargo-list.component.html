@@ -19,7 +19,7 @@
 
 <p-table
   #dt
-  [value]="users"
+  [value]="cargos"
   responsiveLayout="scroll"
   styleClass="p-datatable-sm"
   [paginator]="true"
@@ -28,96 +28,57 @@
   [showCurrentPageReport]="true"
   currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
   [globalFilterFields]="[
-    'user_id',
-    'user_name',
-    'user_apellido',
-    'user_email',
-    'user_estado',
-    'user_rol',
+    'cargo_id',
+    'cargo_nombre',
+    'cargo_descripcion',
+    'cargo_estado',
     'location.location_name',
-    'user_telefono',
-    'user_documento',
-    'ext_code',
+    'tarifa_hora',
+    'tarifa_hora_extra',
   ]"
 >
-  <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
       <th>ID</th>
       <th>Status</th>
-      <th>Nombre</th>
-      <th>Apellido</th>
-      <th>Email</th>
-      <th>Teléfono</th>
-      <th>Documento</th>
-      <th>Código Ext.</th>
-      <th>Fecha Ingreso</th>
-      <th>Rol</th>
+      <th>Position</th>
+      <th>Description</th>
       <th>Location</th>
+      <th>Hourly Rate</th>
+      <th>Overtime Rate</th>
       <th class="text-end">Actions</th>
     </tr>
   </ng-template>
 
-  <!-- Body -->
   <ng-template pTemplate="body" let-item>
     <tr>
-      <!-- ID -->
       <td>
-        {{ item.user_id }}
+        {{ item.cargo_id }}
       </td>
 
-      <!-- Status -->
       <td>
         <p-tag
-          [severity]="item.user_estado === 'A' ? 'success' : 'secondary'"
-          [value]="item.user_estado === 'A' ? 'Active' : 'Inactive'"
+          [severity]="item.cargo_estado === 'A' ? 'success' : 'secondary'"
+          [value]="item.cargo_estado === 'A' ? 'Active' : 'Inactive'"
         ></p-tag>
       </td>
 
-      <!-- Nombre -->
       <td>
-        {{ item.user_name || "—" }}
-      </td>
-
-      <!-- Apellido -->
-      <td>
-        {{ item.user_apellido || "—" }}
-      </td>
-
-      <!-- Email -->
-      <td>
-        {{ item.user_email || "—" }}
+        {{ item.cargo_nombre || "—" }}
       </td>
 
       <td>
-        {{ item.user_telefono || "—" }}
+        {{ item.cargo_descripcion || "—" }}
       </td>
 
-      <td>
-        {{ item.user_documento || "—" }}
-      </td>
-
-      <td>
-        {{ item.ext_code || "—" }}
-      </td>
-
-      <td>
-        {{ item.user_fecha_ingreso || "—" }}
-      </td>
-
-      <!-- Rol -->
-      <td>
-        {{
-          item.user_rol == 1 ? "SYSTEM" : item.user_rol == 2 ? "ADMIN" : "USER"
-        }}
-      </td>
-
-      <!-- Location -->
       <td>
         {{ item.location?.location_name || "—" }}
       </td>
 
-      <!-- Actions -->
+      <td>$ {{ item.tarifa_hora || 0 }}</td>
+
+      <td>$ {{ item.tarifa_hora_extra || 0 }}</td>
+
       <td class="text-end">
         <button
           type="button"
@@ -126,14 +87,23 @@
         >
           Edit
         </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-danger m-1"
+          (click)="onDelete(item)"
+        >
+          Delete
+        </button>
       </td>
     </tr>
   </ng-template>
 
-  <!-- Empty -->
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td colspan="12" class="text-center text-muted py-4">No users found</td>
+      <td colspan="8" class="text-center text-muted py-4">
+        No positions found
+      </td>
     </tr>
   </ng-template>
 </p-table>

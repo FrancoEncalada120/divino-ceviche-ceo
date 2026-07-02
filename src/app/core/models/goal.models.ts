@@ -1,4 +1,4 @@
-import { Location } from "./location.model";
+import { Location } from './location.model';
 
 export interface Goal {
   goal_id: number;
@@ -10,7 +10,7 @@ export interface Goal {
   goal_food_cost: number;
   goal_labor_cost: number;
   goal_net_margin: number;
-  locations: Location;
+  location?: Location;
   goal_marketing: number;
   goal_loan: number;
   goal_repairs: number;

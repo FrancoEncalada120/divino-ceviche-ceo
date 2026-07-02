@@ -21,16 +21,22 @@
       <!-- ROW 2 -->
       <div class="row">
         <div class="col-md-6">
-          <p-multiSelect
-            [options]="locations"
-            [(ngModel)]="selectedLocation"
-            optionLabel="location_name"
-            placeholder="Select locations"
-            display="chip"
-            styleClass="w-100"
-            (onChange)="loadData()"
-          >
-          </p-multiSelect>
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-map-marker"></i>
+            </p-inputGroupAddon>
+
+            <p-multiSelect
+              [options]="locations"
+              [(ngModel)]="selectedLocation"
+              optionLabel="location_name"
+              placeholder="Select locations"
+              display="chip"
+              styleClass="w-100"
+              (onChange)="loadData()"
+            >
+            </p-multiSelect>
+          </p-inputGroup>
         </div>
       </div>
     </p-card>

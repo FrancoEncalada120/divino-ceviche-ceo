@@ -9,8 +9,10 @@ import { LocationService } from '../../../../core/services/location.service';
 import { Location } from '../../../../core/models/location.model';
 import { UserService } from '../../../../core/services/user.service';
 import { Card } from 'primeng/card';
-import { MultiSelect } from 'primeng/multiselect';
+import { MultiSelect, MultiSelectModule } from 'primeng/multiselect';
 import { FormsModule } from '@angular/forms';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 @Component({
   selector: 'app-insumos-pri',
   standalone: true,
@@ -21,6 +23,9 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     Card,
     MultiSelect,
+    MultiSelectModule,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
   templateUrl: './insumos-pri.component.html',
   styleUrl: './insumos-pri.component.scss',

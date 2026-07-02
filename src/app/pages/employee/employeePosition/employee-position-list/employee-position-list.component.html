@@ -1,0 +1,109 @@
+<div class="d-flex align-items-center gap-2 mb-3 mt-2 px-1">
+  <input
+    #searchInput
+    type="text"
+    class="form-control form-control-sm"
+    placeholder="Search..."
+    (input)="dt.filterGlobal(searchInput.value, 'contains')"
+  />
+</div>
+
+<p-table
+  #dt
+  [value]="items"
+  responsiveLayout="scroll"
+  styleClass="p-datatable-sm"
+  [paginator]="true"
+  [rows]="10"
+  [rowsPerPageOptions]="[10, 20, 50]"
+  [showCurrentPageReport]="true"
+  currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+  [globalFilterFields]="[
+    'usuario.user_name',
+    'usuario.user_apellido',
+    'cargo.cargo_nombre',
+    'location.location_name',
+    'estado',
+  ]"
+>
+  <ng-template pTemplate="header">
+    <tr>
+      <th>ID</th>
+      <th>Status</th>
+      <th>Employee</th>
+      <th>Position</th>
+      <th>Location</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Hourly Rate</th>
+      <th>Overtime Rate</th>
+      <th>Tax</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-item>
+    <tr>
+      <td>{{ item.empleado_cargo_id }}</td>
+
+      <td>
+        <p-tag
+          [severity]="item.estado === 'A' ? 'success' : 'secondary'"
+          [value]="item.estado === 'A' ? 'Active' : 'Inactive'"
+        ></p-tag>
+      </td>
+
+      <td>{{ getEmployeeName(item) }}</td>
+      <td>{{ item.cargo?.cargo_nombre || "—" }}</td>
+      <td>{{ item.location?.location_name || "—" }}</td>
+      <td>{{ item.fecha_inicio || "—" }}</td>
+      <td>{{ item.fecha_fin || "—" }}</td>
+
+      <td>
+        {{ getCurrentRate(item)?.tarifa_hora ?? 0 | number: "1.2-2" }}
+      </td>
+
+      <td>
+        {{ getCurrentRate(item)?.tarifa_hora_extra ?? 0 | number: "1.2-2" }}
+      </td>
+
+      <td>
+        {{ getCurrentRate(item)?.aplica_impuesto ? "Yes" : "No" }}
+      </td>
+
+      <td class="text-end text-nowrap">
+        <button
+          type="button"
+          class="btn btn-sm btn-warning m-1"
+          (click)="edit.emit(item)"
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-info m-1 text-white"
+          (click)="changeRate.emit(item)"
+        >
+          Rate
+        </button>
+
+        <button
+          type="button"
+          class="btn btn-sm btn-danger m-1"
+          (click)="remove.emit(item)"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td colspan="11" class="text-center text-muted py-4">
+        No employee positions found
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

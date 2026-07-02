@@ -1,0 +1,123 @@
+<p-dialog
+  [visible]="true"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  styleClass="user-modal"
+  [style]="{ width: '520px' }"
+>
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h2 class="modal-title mb-0">
+        {{ mode === "edit" ? "Update Position" : "Add New Position" }}
+      </h2>
+
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="onClose()"
+      ></button>
+    </div>
+  </ng-template>
+
+  <div class="modal-body-content">
+    <input type="hidden" [(ngModel)]="formData.cargo_id" />
+
+    <div class="mb-3">
+      <label class="form-label">Position Name</label>
+      <input
+        pInputText
+        type="text"
+        class="w-100"
+        [(ngModel)]="formData.cargo_nombre"
+        placeholder="E.g. Cook, Cashier, Waiter"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <input
+        pInputText
+        type="text"
+        class="w-100"
+        [(ngModel)]="formData.cargo_descripcion"
+        placeholder="Enter description"
+      />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Location</label>
+      <p-dropdown
+        [options]="locations"
+        [(ngModel)]="formData.location_id"
+        optionLabel="location_name"
+        optionValue="location_id"
+        placeholder="Select location"
+        styleClass="w-100"
+      ></p-dropdown>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Hourly Rate</label>
+      <p-inputNumber
+        [(ngModel)]="formData.tarifa_hora"
+        mode="decimal"
+        [min]="0"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="2"
+        inputStyleClass="w-100"
+        styleClass="w-100"
+        placeholder="0.00"
+      ></p-inputNumber>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Overtime Rate</label>
+      <p-inputNumber
+        [(ngModel)]="formData.tarifa_hora_extra"
+        mode="decimal"
+        [min]="0"
+        [minFractionDigits]="2"
+        [maxFractionDigits]="2"
+        inputStyleClass="w-100"
+        styleClass="w-100"
+        placeholder="0.00"
+      ></p-inputNumber>
+    </div>
+
+    <div class="mb-3" *ngIf="mode === 'edit'">
+      <label class="form-label">Status</label>
+      <p-dropdown
+        [options]="statuses"
+        [(ngModel)]="formData.cargo_estado"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select status"
+        styleClass="w-100"
+      ></p-dropdown>
+    </div>
+
+    <p-message
+      severity="info"
+      [text]="
+        mode === 'edit'
+          ? 'You can update the position information.'
+          : 'The new position will be created as active by default.'
+      "
+    ></p-message>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button type="button" class="btn btn-secondary" (click)="onClose()">
+        Cancel
+      </button>
+
+      <button type="button" class="btn btn-primary" (click)="onSubmit()">
+        {{ mode === "edit" ? "Save Changes" : "Create" }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

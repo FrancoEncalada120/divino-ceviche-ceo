@@ -1,1 +1,162 @@
-<p>schedules-ups-ins works!</p>
+<p-dialog
+  [visible]="true"
+  [modal]="true"
+  [closable]="false"
+  [draggable]="false"
+  [resizable]="false"
+  [style]="{ width: '38rem' }"
+  styleClass="user-modal"
+>
+  <ng-template pTemplate="header">
+    <div class="d-flex justify-content-between align-items-center w-100">
+      <h2 class="modal-title mb-0">
+        {{ mode === "edit" ? "Update Schedule" : "Add New Schedule" }}
+      </h2>
+
+      <button
+        type="button"
+        class="btn-close"
+        aria-label="Close"
+        (click)="onClose()"
+      ></button>
+    </div>
+  </ng-template>
+
+  <div class="form-grid">
+    <div class="field">
+      <label>Employee</label>
+      <p-select
+        [(ngModel)]="formData.user_id"
+        [options]="employees"
+        optionLabel="user_name"
+        optionValue="user_id"
+        placeholder="Select employee"
+        appendTo="body"
+        styleClass="w-100"
+      >
+        <ng-template pTemplate="item" let-employee>
+          <span> {{ employee.user_name }} {{ employee.user_apellido }} </span>
+        </ng-template>
+
+        <ng-template pTemplate="selectedItem" let-employee>
+          <span *ngIf="employee">
+            {{ employee.user_name }} {{ employee.user_apellido }}
+          </span>
+        </ng-template>
+      </p-select>
+    </div>
+
+    <div class="field">
+      <label>Location</label>
+      <p-select
+        [(ngModel)]="formData.location_id"
+        [options]="locations"
+        optionLabel="location_name"
+        optionValue="location_id"
+        placeholder="Select location"
+        appendTo="body"
+        styleClass="w-100"
+      >
+      </p-select>
+    </div>
+
+    <div class="form-row two-columns">
+      <div class="field">
+        <label>Start Date and Time</label>
+        <p-datepicker
+          [(ngModel)]="formData.start_datetime"
+          [showTime]="true"
+          hourFormat="24"
+          [stepMinute]="30"
+          dateFormat="dd/mm/yy"
+          appendTo="body"
+          styleClass="w-100"
+          (ngModelChange)="updateWorkedHours()"
+        >
+        </p-datepicker>
+      </div>
+
+      <div class="field">
+        <label>End Date and Time</label>
+        <p-datepicker
+          [(ngModel)]="formData.end_datetime"
+          [showTime]="true"
+          hourFormat="24"
+          [stepMinute]="30"
+          dateFormat="dd/mm/yy"
+          appendTo="body"
+          styleClass="w-100"
+          (ngModelChange)="updateWorkedHours()"
+        >
+        </p-datepicker>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Total Hours</label>
+      <input pInputText [value]="workedHoursLabel" readonly />
+    </div>
+
+    <div class="field">
+      <label>Status</label>
+      <p-select
+        [(ngModel)]="formData.status"
+        [options]="statuses"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select status"
+        appendTo="body"
+        styleClass="w-100"
+      >
+      </p-select>
+    </div>
+
+    <div class="field">
+      <label>Notes</label>
+      <textarea
+        pTextarea
+        rows="3"
+        class="w-100"
+        [(ngModel)]="formData.notes"
+        placeholder="Enter notes"
+      ></textarea>
+    </div>
+
+    <p-message
+      severity="info"
+      text="Total hours are calculated automatically from start and end time."
+    ></p-message>
+  </div>
+
+  <ng-template pTemplate="footer">
+    <div class="d-flex justify-content-end gap-2">
+      <button
+        *ngIf="mode === 'edit'"
+        type="button"
+        class="btn btn-danger"
+        [disabled]="saving"
+        (click)="onDelete()"
+      >
+        Delete
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-secondary"
+        [disabled]="saving"
+        (click)="onClose()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="btn btn-primary"
+        [disabled]="saving"
+        (click)="onSubmit()"
+      >
+        {{ saving ? "Saving..." : mode === "edit" ? "Save Changes" : "Create" }}
+      </button>
+    </div>
+  </ng-template>
+</p-dialog>

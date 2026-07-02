@@ -20,52 +20,52 @@
   <tbody>
     <tr *ngFor="let item of goals">
       <td data-label="Location">
-        {{ item.locations.location_name }}
+        {{ item.location?.location_name }}
       </td>
 
       <td data-label="Sales Target">
-        {{ item.goal_target_sales | txtsigno:'$' }}
+        {{ item.goal_target_sales | txtsigno: "$" }}
       </td>
 
       <td data-label="Food %">
-        {{ item.goal_food_cost | txtsigno:'%' }}
+        {{ item.goal_food_cost | txtsigno: "%" }}
       </td>
 
       <td data-label="Labor %">
-        {{ item.goal_labor_cost | txtsigno:'%' }}
+        {{ item.goal_labor_cost | txtsigno: "%" }}
       </td>
 
       <td data-label="Prime %">
-        {{ (+item.goal_food_cost + +item.goal_labor_cost) | txtsigno:'%' }}
+        {{ +item.goal_food_cost + +item.goal_labor_cost | txtsigno: "%" }}
       </td>
 
       <td data-label="Net Margin %">
-        {{ item.goal_net_margin | txtsigno:'%' }}
+        {{ item.goal_net_margin | txtsigno: "%" }}
       </td>
 
       <td data-label="AOV">
-        {{ item.goal_target_AOV | txtsigno:'$' }}
+        {{ item.goal_target_AOV | txtsigno: "$" }}
       </td>
 
       <td data-label="AOV">
-        {{ item.goal_marketing| txtsigno:'$' }}
+        {{ item.goal_marketing | txtsigno: "$" }}
       </td>
 
       <td data-label="AOV">
-        {{ item.goal_loan| txtsigno:'$' }}
-      </td>
-
-      <!-- <td data-label="AOV">
-        {{ item.goal_repairs| txtsigno:'$' }}
+        {{ item.goal_loan | txtsigno: "$" }}
       </td>
 
       <td data-label="AOV">
-        {{ item.goal_app_fee| txtsigno:'$' }}
+        {{ item.goal_repairs | txtsigno: "$" }}
       </td>
 
       <td data-label="AOV">
-        {{ item.goal_unassigned| txtsigno:'$' }}
-      </td> -->
+        {{ item.goal_app_fee | txtsigno: "$" }}
+      </td>
+
+      <td data-label="AOV">
+        {{ item.goal_unassigned | txtsigno: "$" }}
+      </td>
 
       <td data-label="Actions" class="text-end">
         <button class="btn btn-sm btn-danger m-1" (click)="onEdit(item)">
@@ -80,7 +80,8 @@
     <tr *ngIf="!goals.length">
       <td colspan="8" class="text-center text-muted py-4">
         No goals set for this period for the selected location.<br />
-        Click <strong>Add Goal</strong> or switch to <strong>All Locations</strong>.
+        Click <strong>Add Goal</strong> or switch to
+        <strong>All Locations</strong>.
       </td>
     </tr>
   </tbody>

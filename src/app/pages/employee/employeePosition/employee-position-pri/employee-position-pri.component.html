@@ -1,0 +1,87 @@
+<div class="container-fluid py-3 px-0" style="width: 100%">
+  <div class="row g-3 mb-4 bg-white">
+    <p-card styleClass="invoice-header-card w-100">
+      <div class="row align-items-center mb-3">
+        <div class="col-md-8">
+          <div class="invoice-header__title">
+            <h2>Employee Positions</h2>
+            <p>Assign positions, locations and rates to employees.</p>
+          </div>
+        </div>
+
+        <div class="col-md-4 text-end">
+          <button class="btn btn-primary" (click)="openCreate()">
+            <i class="pi pi-plus me-2"></i>
+            Add Employee Position
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-map-marker"></i>
+            </p-inputGroupAddon>
+
+            <p-dropdown
+              [options]="locations"
+              [(ngModel)]="selectedLocationId"
+              optionLabel="location_name"
+              optionValue="location_id"
+              placeholder="All locations"
+              styleClass="w-100"
+              appendTo="body"
+              [showClear]="true"
+              (onChange)="load()"
+            ></p-dropdown>
+          </p-inputGroup>
+        </div>
+
+        <div class="col-md-6">
+          <p-inputGroup>
+            <p-inputGroupAddon>
+              <i class="pi pi-check-circle"></i>
+            </p-inputGroupAddon>
+
+            <p-dropdown
+              [options]="statuses"
+              [(ngModel)]="selectedStatus"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="Select status"
+              styleClass="w-100"
+              appendTo="body"
+              (onChange)="load()"
+            ></p-dropdown>
+          </p-inputGroup>
+        </div>
+      </div>
+    </p-card>
+
+    <div class="col-12">
+      <p-card styleClass="shadow-sm">
+        <div *ngIf="loading" class="text-muted py-3">Loading...</div>
+
+        <app-employee-position-list
+          *ngIf="!loading"
+          [items]="items"
+          (edit)="openEdit($event)"
+          (changeRate)="changeRate($event)"
+          (remove)="delete($event)"
+        ></app-employee-position-list>
+      </p-card>
+    </div>
+  </div>
+</div>
+
+<app-employee-position-upd-ins
+  *ngIf="showModal"
+  [mode]="modalMode"
+  [item]="selectedItem"
+  [users]="users"
+  [locations]="locations"
+  [cargos]="cargos"
+  (close)="closeModal()"
+  (submit)="handleSubmit($event)"
+></app-employee-position-upd-ins>

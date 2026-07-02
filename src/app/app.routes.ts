@@ -140,6 +140,22 @@ export const routes: Routes = [
           ),
       },
 
+      {
+        path: 'position',
+        loadComponent: () =>
+          import('./pages/employee/position/ges-cargo-pri/ges-cargo-pri.component').then(
+            (m) => m.GesCargoPriComponent,
+          ),
+      },
+
+      {
+        path: 'position-employee',
+        loadComponent: () =>
+          import('./pages/employee/employeePosition/employee-position-pri/employee-position-pri.component').then(
+            (m) => m.EmployeePositionPriComponent,
+          ),
+      },
+
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
     ],
   },

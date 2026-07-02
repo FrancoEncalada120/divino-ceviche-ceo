@@ -1,19 +1,18 @@
 <div class="container-fluid py-3 px-0" style="width: 100%">
   <div class="row g-3 mb-4 bg-white">
     <p-card styleClass="invoice-header-card w-100">
-      <!-- ROW 1 -->
       <div class="row align-items-center mb-3">
         <div class="col-md-8">
           <div class="invoice-header__title">
-            <h2>Team Management</h2>
-            <p>Invite and manage your team members and their permissions.</p>
+            <h2>Position Management</h2>
+            <p>Manage positions, hourly rates, and overtime rates.</p>
           </div>
         </div>
 
         <div class="col-md-4 text-end">
           <button class="btn btn-primary" (click)="openCreate()">
             <i class="pi pi-plus me-2"></i>
-            Add User
+            Add Position
           </button>
         </div>
       </div>
@@ -44,21 +43,22 @@
       <p-card styleClass="shadow-sm">
         <div *ngIf="loading" class="text-muted py-3">Loading...</div>
 
-        <app-user-list
+        <app-ges-cargo-list
           *ngIf="!loading"
-          [users]="users"
+          [cargos]="cargos"
           (edit)="openEdit($event)"
-        ></app-user-list>
+          (delete)="handleDelete($event)"
+        ></app-ges-cargo-list>
       </p-card>
     </div>
   </div>
 </div>
 
-<app-user-upd-ins
-  *ngIf="showAddLocationModal"
+<app-ges-cargo-upd-ins
+  *ngIf="showCargoModal"
   [mode]="modalMode"
-  [user]="selectedUser"
+  [cargo]="selectedCargo"
   (close)="closeModal()"
   (submit)="handleSubmit($event)"
 >
-</app-user-upd-ins>
+</app-ges-cargo-upd-ins>

@@ -12,24 +12,25 @@ type ApiResponse<T> = {
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
-
   private readonly apiUrl = `${environment.apiBaseUrl}/ceo/user`;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
 
-  }
-
-  getAll(): Observable<User[]> {
-
-
+  getAll(locationIds?: number[]): Observable<User[]> {
     const userData = localStorage.getItem('user');
     const user: User | null = userData ? (JSON.parse(userData) as User) : null;
 
     let url = this.apiUrl;
-    if (user?.user_rol === 3) {
-      url += `?location_id=${user?.location_id}`
-    }
 
+    if (user?.user_rol === 3 && user?.location_id) {
+      url += `?location_id=${user.location_id}`;
+    } else if (locationIds && locationIds.length > 0) {
+      const ids = locationIds.filter((id) => id && id !== 0);
+
+      if (ids.length > 0) {
+        url += `?location_id=${ids.join(',')}`;
+      }
+    }
 
     return this.http.get<ApiResponse<User[]>>(url).pipe(
       map((res) => {
@@ -86,13 +87,11 @@ export class UserService {
     try {
       const userData = localStorage.getItem('user');
 
-
       return userData ? (JSON.parse(userData) as User) : null;
     } catch {
       return null;
     }
   }
-
 
   changePassword(
     userId: number,

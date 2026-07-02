@@ -1,24 +1,69 @@
 <div class="modal-backdrop">
   <div class="modal-container" (click)="$event.stopPropagation()">
-
     <div class="modal-header">
-      <h2>{{ mode === 'edit' ? 'Update Location' : 'Add New Location' }}</h2>
+      <h2>{{ mode === "edit" ? "Update Location" : "Add New Location" }}</h2>
       <button class="close-btn" (click)="onClose()">✕</button>
     </div>
 
     <div class="modal-body">
-
-      <input type="hidden" [(ngModel)]="formData.location_id">
+      <input type="hidden" [(ngModel)]="formData.location_id" />
 
       <div class="form-group">
         <label>Location Name</label>
-        <input type="text" [(ngModel)]="formData.location_name"
-          placeholder="e.g., Divino ceviche Doral, Ave Miami Gardens">
+        <input
+          type="text"
+          [(ngModel)]="formData.location_name"
+          placeholder="e.g., Divino ceviche Doral, Ave Miami Gardens"
+        />
       </div>
 
       <div class="form-group">
         <label>Account Number</label>
-        <input type="text" [(ngModel)]="formData.location_AccountNumber" placeholder="e.g., 30000207001, 30000207002">
+        <input
+          type="text"
+          [(ngModel)]="formData.location_AccountNumber"
+          placeholder="e.g., 30000207001, 30000207002"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Icon</label>
+        <input
+          type="text"
+          [(ngModel)]="formData.icono"
+          placeholder="e.g., pi pi-home"
+        />
+
+        <small class="text-muted">
+          Use PrimeIcons classes. Example: pi pi-home, pi pi-map-marker, pi
+          pi-building.
+          <br />
+          <a
+            href="https://primevue.org/icons/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            View PrimeIcons list
+          </a>
+        </small>
+      </div>
+
+      <div class="form-group">
+        <label>External Code</label>
+        <input
+          type="text"
+          [(ngModel)]="formData.ext_code"
+          placeholder="e.g., DORAL, AMG, HALL"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>Abbreviation</label>
+        <input
+          type="text"
+          [(ngModel)]="formData.abbreviation"
+          placeholder="e.g., DOR, AMG, HLL"
+        />
       </div>
 
       <div class="form-group">
@@ -33,9 +78,8 @@
     <div class="modal-footer">
       <button class="btn btn-secondary" (click)="onClose()">Cancel</button>
       <button class="btn btn-primary" (click)="onSubmit()">
-        {{ mode === 'edit' ? 'Save Changes' : 'Create' }}
+        {{ mode === "edit" ? "Save Changes" : "Create" }}
       </button>
     </div>
-
   </div>
 </div>

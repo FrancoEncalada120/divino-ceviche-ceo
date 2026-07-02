@@ -165,17 +165,24 @@ export class MenuComponent {
       },
 
       { type: 'section', label: 'EMPLOYEES' },
-      {
-        type: 'link',
-        label: 'Management',
-        icon: 'bi-person-vcard',
-        route: 'employees',
-      },
+      // {
+      //   type: 'link',
+      //   label: 'Management',
+      //   icon: 'bi-person-vcard',
+      //   route: 'employees',
+      // },
       {
         type: 'link',
         label: 'Schedules',
         icon: 'bi-calendar3',
         route: 'schedules',
+      },
+
+      {
+        type: 'link',
+        label: 'Management',
+        icon: 'bi-person-vcard',
+        route: 'position-employee',
       },
     ];
   }
