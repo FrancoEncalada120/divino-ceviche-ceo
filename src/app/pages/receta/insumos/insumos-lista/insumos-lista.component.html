@@ -37,13 +37,15 @@
   <!-- Header -->
   <ng-template pTemplate="header">
     <tr>
-      <th>Id</th>
+      <!-- <th>Id</th> -->
+      <th>Location</th>
       <th>Status</th>
       <th>Ingredient Name</th>
       <!-- <th>Description</th> -->
       <th>Group</th>
       <th>Supplier</th>
       <th>Unit</th>
+
       <th class="text-end">Stock</th>
 
       <th class="text-end">Actions</th>
@@ -54,8 +56,17 @@
   <ng-template pTemplate="body" let-item>
     <tr>
       <!-- Id -->
-      <td>
+      <!--   <td>
         {{ item.insumo_id }}
+      </td>-->
+
+      <td>
+        <i
+          [class]="item?.insumos_detalles?.[0]?.location?.icono"
+          class="me-1 text-primary"
+        >
+        </i>
+        {{ item?.insumos_detalles?.[0]?.location?.abbreviation ?? "-" }}
       </td>
 
       <!-- Status -->
