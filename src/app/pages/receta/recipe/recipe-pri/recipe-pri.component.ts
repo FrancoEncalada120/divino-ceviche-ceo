@@ -101,7 +101,7 @@ export class RecipePriComponent {
     this.insumosService
       .getInsumoAll({
         bGrupo: 1,
-        location_id: auditUserId, // 👈
+        location_id: auditUserId + '', // 👈
       })
       .subscribe({
         next: (data) => {

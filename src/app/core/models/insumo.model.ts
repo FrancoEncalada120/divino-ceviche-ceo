@@ -154,7 +154,7 @@ export interface GetInsumosParams {
   bGrupo?: number;
   dia_inventario?: string;
   frecuencia_inventario?: string;
-  location_id?: number;
+  location_id?: string;
 }
 
 // ─── Misc ─────────────────────────────────────────────────────

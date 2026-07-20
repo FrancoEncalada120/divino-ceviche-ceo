@@ -95,7 +95,7 @@ export class PurchaseOrderUpdInsComponent {
 
     this.service
       .getInsumoAll({
-        location_id: this.userService.getUser()?.location_id || 0,
+        location_id: this.userService.getUser()?.location_id + '' || '',
       })
       .subscribe({
         next: (data) => {
@@ -273,11 +273,19 @@ export class PurchaseOrderUpdInsComponent {
     doc.text('Pre-orden / Borrador', margin + 33, y + 14);
 
     // ── Info empresa (derecha) ────────────────────────────────
-    const location = this.locations.find(l => l.location_id == this.formData.location_id);
+    const location = this.locations.find(
+      (l) => l.location_id == this.formData.location_id,
+    );
     doc.setFontSize(8);
     doc.setTextColor(60, 60, 60);
-    ['Divino Ceviche', location?.location_name ?? '---', 'Tel: ---', 'info@divinoceviche.com']
-      .forEach((line, i) => doc.text(line, pageW - margin, y + 4 + i * 4, { align: 'right' }));
+    [
+      'Divino Ceviche',
+      location?.location_name ?? '---',
+      'Tel: ---',
+      'info@divinoceviche.com',
+    ].forEach((line, i) =>
+      doc.text(line, pageW - margin, y + 4 + i * 4, { align: 'right' }),
+    );
     y += 24;
 
     // ── Barra N° orden / Fecha ────────────────────────────────
@@ -286,12 +294,21 @@ export class PurchaseOrderUpdInsComponent {
     doc.setTextColor(...white);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text(`N° orden: ${this.formData.compra_orden_referencia || '---'}`, margin + 3, y + 5.5);
-    doc.text(`Fecha: ${this.formData.fecha ?? '---'}`, pageW - margin - 3, y + 5.5, { align: 'right' });
+    doc.text(
+      `N° orden: ${this.formData.compra_orden_referencia || '---'}`,
+      margin + 3,
+      y + 5.5,
+    );
+    doc.text(
+      `Fecha: ${this.formData.fecha ?? '---'}`,
+      pageW - margin - 3,
+      y + 5.5,
+      { align: 'right' },
+    );
     y += 12;
 
     // ── Cabeceras VENDEDOR / ENVIAR A ─────────────────────────
-    [margin, col2X].forEach(x => {
+    [margin, col2X].forEach((x) => {
       doc.setFillColor(...navy);
       doc.rect(x, y, colW, 7, 'F');
     });
@@ -304,17 +321,26 @@ export class PurchaseOrderUpdInsComponent {
 
     // ── Bloques de info ───────────────────────────────────────
     const boxH = 26;
-    [margin, col2X].forEach(x => {
+    [margin, col2X].forEach((x) => {
       doc.setFillColor(...lightGray);
       doc.rect(x, y, colW, boxH, 'F');
     });
     doc.setTextColor(50, 50, 50);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    const userName = `${this.user?.user_name ?? ''} ${this.user?.user_apellido ?? ''}`.trim();
+    const userName =
+      `${this.user?.user_name ?? ''} ${this.user?.user_apellido ?? ''}`.trim();
     [
-      ['Divino Ceviche', `Responsable: ${userName}`, `Referencia: ${this.formData.compra_orden_referencia || '---'}`],
-      ['Divino Ceviche', location?.location_name ?? '---', `Fecha entrega: ${this.formData.fecha ?? '---'}`],
+      [
+        'Divino Ceviche',
+        `Responsable: ${userName}`,
+        `Referencia: ${this.formData.compra_orden_referencia || '---'}`,
+      ],
+      [
+        'Divino Ceviche',
+        location?.location_name ?? '---',
+        `Fecha entrega: ${this.formData.fecha ?? '---'}`,
+      ],
     ].forEach((lines, col) => {
       const x = col === 0 ? margin : col2X;
       lines.forEach((line, i) => doc.text(line, x + 3, y + 6 + i * 6));
@@ -323,10 +349,18 @@ export class PurchaseOrderUpdInsComponent {
 
     // ── Tabla de productos ────────────────────────────────────
     const rows = this.items
-      .filter(it => it.insumo_id)
+      .filter((it) => it.insumo_id)
       .map((it, i) => {
-        const nombre = this.cInsumo.find(x => x.insumo_id === it.insumo_id)?.nombreCompleto ?? '---';
-        return [i + 1, nombre, it.cantidad, `$ ${Number(it.precio).toFixed(2)}`, `$ ${Number(it.total).toFixed(2)}`];
+        const nombre =
+          this.cInsumo.find((x) => x.insumo_id === it.insumo_id)
+            ?.nombreCompleto ?? '---';
+        return [
+          i + 1,
+          nombre,
+          it.cantidad,
+          `$ ${Number(it.precio).toFixed(2)}`,
+          `$ ${Number(it.total).toFixed(2)}`,
+        ];
       });
 
     while (rows.length < 8) rows.push(['', '', '', '', '']);
@@ -338,14 +372,41 @@ export class PurchaseOrderUpdInsComponent {
       head: [['#', 'DESCRIPCIÓN', 'CANTIDAD', 'PRECIO UNITARIO', 'TOTAL']],
       body: rows,
       foot: [
-        [{ content: 'SUBTOTAL', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } }, `$ ${subtotal.toFixed(2)}`],
-        [{ content: 'DESCUENTO', colSpan: 4, styles: { halign: 'right' } }, '$ 0.00'],
         [
-          { content: 'TOTAL', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: navy, textColor: white } },
-          { content: `$ ${subtotal.toFixed(2)}`, styles: { fontStyle: 'bold', fillColor: navy, textColor: white } },
+          {
+            content: 'SUBTOTAL',
+            colSpan: 4,
+            styles: { halign: 'right', fontStyle: 'bold' },
+          },
+          `$ ${subtotal.toFixed(2)}`,
+        ],
+        [
+          { content: 'DESCUENTO', colSpan: 4, styles: { halign: 'right' } },
+          '$ 0.00',
+        ],
+        [
+          {
+            content: 'TOTAL',
+            colSpan: 4,
+            styles: {
+              halign: 'right',
+              fontStyle: 'bold',
+              fillColor: navy,
+              textColor: white,
+            },
+          },
+          {
+            content: `$ ${subtotal.toFixed(2)}`,
+            styles: { fontStyle: 'bold', fillColor: navy, textColor: white },
+          },
         ],
       ],
-      headStyles: { fillColor: navy, textColor: white, fontStyle: 'bold', fontSize: 9 },
+      headStyles: {
+        fillColor: navy,
+        textColor: white,
+        fontStyle: 'bold',
+        fontSize: 9,
+      },
       bodyStyles: { fontSize: 8, minCellHeight: 7 },
       footStyles: { fontSize: 8 },
       columnStyles: {
@@ -374,8 +435,14 @@ export class PurchaseOrderUpdInsComponent {
     doc.setTextColor(80, 80, 80);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.text(this.formData.detalle || 'Sin comentarios adicionales.', margin + 3, finalY + 14);
+    doc.text(
+      this.formData.detalle || 'Sin comentarios adicionales.',
+      margin + 3,
+      finalY + 14,
+    );
 
-    doc.save(`orden-compra-${this.formData.compra_orden_referencia || 'draft'}.pdf`);
+    doc.save(
+      `orden-compra-${this.formData.compra_orden_referencia || 'draft'}.pdf`,
+    );
   }
 }

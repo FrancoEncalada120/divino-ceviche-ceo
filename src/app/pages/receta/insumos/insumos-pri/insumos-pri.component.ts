@@ -49,8 +49,6 @@ export class InsumosPriComponent {
   ) {}
 
   ngOnInit(): void {
-    console.log('[Locations] ngOnInit');
-    this.load();
     this.loadLocations();
   }
 
@@ -60,12 +58,22 @@ export class InsumosPriComponent {
     const user = this.userService.getUser();
     const auditUserId = user?.location_id;
 
-    console.log('================ LOAD INSUMOS ================');
-    console.log('[LOAD] Usuario completo:', user);
-    console.log('[LOAD] location_id enviado:', auditUserId);
+    console.log('================ LOAD INSUMOS2 ================');
+    console.log('selectedLocation:', this.selectedLocation);
+    console.log('Cantidad:', this.selectedLocation?.length);
+
+    this.selectedLocation?.forEach((loc, index) => {
+      console.log(
+        `[${index}] id=${loc.location_id}, nombre=${loc.location_name}`,
+      );
+    });
+
+    const locationIds = this.selectedLocation
+      .map((loc) => loc.location_id)
+      .join(',');
 
     const params = {
-      location_id: auditUserId,
+      location_id: locationIds,
     };
 
     console.log('[LOAD] Params enviados al servicio:', params);
@@ -100,15 +108,30 @@ export class InsumosPriComponent {
   }
 
   loadLocations(): void {
+    const user = this.userService.getUser();
+
     this.locationService.getLocationAll().subscribe({
       next: (data) => {
         this.locations = data ?? [];
-        this.selectedLocation = [...this.locations];
+
+        if (user?.user_rol === 1) {
+          // Administrador: todas las sedes seleccionadas
+          this.selectedLocation = [...this.locations];
+        } else {
+          // Usuario normal: solo su sede
+          this.selectedLocation = this.locations.filter(
+            (x) => x.location_id === user?.location_id,
+          );
+        }
+
+        console.log('selectedLocation:', this.selectedLocation);
+
+        // Ya existe selectedLocation
+        this.load();
       },
       error: (err) => {
-        console.error('[Locations] GET error:', err);
+        console.error(err);
       },
-      complete: () => console.log('[Locations] GET complete'),
     });
   }
 

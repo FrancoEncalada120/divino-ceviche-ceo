@@ -1,5 +1,12 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { FormsModule } from '@angular/forms';
@@ -54,8 +61,8 @@ export class PurchaseUpdInsComponent {
     private service: InsumoService,
     private locationService: LocationService,
     private sUnid: UnidadService,
-    private userService: UserService
-  ) { }
+    private userService: UserService,
+  ) {}
 
   ngOnInit(): void {
     this.load();
@@ -63,8 +70,7 @@ export class PurchaseUpdInsComponent {
 
     console.log('!this.items', !this.items, this.items);
 
-    if (!this.items)
-      this.addRow();
+    if (!this.items) this.addRow();
   }
 
   // ngOnChanges(changes: SimpleChanges) {
@@ -84,12 +90,12 @@ export class PurchaseUpdInsComponent {
       error: (err) => {
         console.error('[Locations] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
 
     this.service
       .getInsumoAll({
-        location_id: this.userService.getUser()?.location_id || 0,
+        location_id: this.userService.getUser()?.location_id + '' || '',
       })
       .subscribe({
         next: (data) => {
@@ -98,7 +104,7 @@ export class PurchaseUpdInsComponent {
         error: (err) => {
           console.error('[cInsumo] GET error:', err);
         },
-        complete: () => { },
+        complete: () => {},
       });
 
     this.sUnid.getAll().subscribe({
@@ -108,7 +114,7 @@ export class PurchaseUpdInsComponent {
       error: (err) => {
         console.error('[cUnidad] GET error:', err);
       },
-      complete: () => { },
+      complete: () => {},
     });
   }
 
@@ -157,7 +163,6 @@ export class PurchaseUpdInsComponent {
   }
 
   // ================
-
 
   addRow() {
     this.items.push({
@@ -259,11 +264,19 @@ export class PurchaseUpdInsComponent {
     doc.text('Pre-orden / Borrador', margin + 33, y + 14);
 
     // ── Info empresa (derecha) ────────────────────────────────
-    const location = this.locations.find(l => l.location_id == this.formData.location_id);
+    const location = this.locations.find(
+      (l) => l.location_id == this.formData.location_id,
+    );
     doc.setFontSize(8);
     doc.setTextColor(60, 60, 60);
-    ['Divino Ceviche', location?.location_name ?? '---', 'Tel: ---', 'info@divinoceviche.com']
-      .forEach((line, i) => doc.text(line, pageW - margin, y + 4 + i * 4, { align: 'right' }));
+    [
+      'Divino Ceviche',
+      location?.location_name ?? '---',
+      'Tel: ---',
+      'info@divinoceviche.com',
+    ].forEach((line, i) =>
+      doc.text(line, pageW - margin, y + 4 + i * 4, { align: 'right' }),
+    );
 
     y += 24;
 
@@ -273,12 +286,21 @@ export class PurchaseUpdInsComponent {
     doc.setTextColor(...white);
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
-    doc.text(`N° orden: ${this.formData.compra_id || '---'}`, margin + 3, y + 5.5);
-    doc.text(`Fecha: ${this.formData.fecha ?? '---'}`, pageW - margin - 3, y + 5.5, { align: 'right' });
+    doc.text(
+      `N° orden: ${this.formData.compra_id || '---'}`,
+      margin + 3,
+      y + 5.5,
+    );
+    doc.text(
+      `Fecha: ${this.formData.fecha ?? '---'}`,
+      pageW - margin - 3,
+      y + 5.5,
+      { align: 'right' },
+    );
     y += 12;
 
     // ── Cabeceras VENDEDOR / ENVIAR A ─────────────────────────
-    [margin, col2X].forEach(x => {
+    [margin, col2X].forEach((x) => {
       doc.setFillColor(...navy);
       doc.rect(x, y, colW, 7, 'F');
     });
@@ -291,17 +313,26 @@ export class PurchaseUpdInsComponent {
 
     // ── Bloques de info ───────────────────────────────────────
     const boxH = 26;
-    [margin, col2X].forEach(x => {
+    [margin, col2X].forEach((x) => {
       doc.setFillColor(...lightGray);
       doc.rect(x, y, colW, boxH, 'F');
     });
     doc.setTextColor(50, 50, 50);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    const userName = `${this.user?.user_name ?? ''} ${this.user?.user_apellido ?? ''}`.trim();
+    const userName =
+      `${this.user?.user_name ?? ''} ${this.user?.user_apellido ?? ''}`.trim();
     [
-      ['Divino Ceviche', `Responsable: ${userName}`, `Ubicación: ${location?.location_name ?? '---'}`],
-      ['Divino Ceviche', location?.location_name ?? '---', `Fecha entrega: ${this.formData.fecha ?? '---'}`],
+      [
+        'Divino Ceviche',
+        `Responsable: ${userName}`,
+        `Ubicación: ${location?.location_name ?? '---'}`,
+      ],
+      [
+        'Divino Ceviche',
+        location?.location_name ?? '---',
+        `Fecha entrega: ${this.formData.fecha ?? '---'}`,
+      ],
     ].forEach((lines, col) => {
       const x = col === 0 ? margin : col2X;
       lines.forEach((line, i) => doc.text(line, x + 3, y + 6 + i * 6));
@@ -310,10 +341,18 @@ export class PurchaseUpdInsComponent {
 
     // ── Tabla de productos ────────────────────────────────────
     const rows = this.items
-      .filter(it => it.insumo_id)
+      .filter((it) => it.insumo_id)
       .map((it, i) => {
-        const nombre = this.cInsumo.find(x => x.insumo_id === it.insumo_id)?.nombreCompleto ?? '---';
-        return [i + 1, nombre, it.cantidad, `$ ${Number(it.precio).toFixed(2)}`, `$ ${Number(it.total).toFixed(2)}`];
+        const nombre =
+          this.cInsumo.find((x) => x.insumo_id === it.insumo_id)
+            ?.nombreCompleto ?? '---';
+        return [
+          i + 1,
+          nombre,
+          it.cantidad,
+          `$ ${Number(it.precio).toFixed(2)}`,
+          `$ ${Number(it.total).toFixed(2)}`,
+        ];
       });
 
     while (rows.length < 8) rows.push(['', '', '', '', '']);
@@ -325,14 +364,41 @@ export class PurchaseUpdInsComponent {
       head: [['#', 'DESCRIPCIÓN', 'CANTIDAD', 'PRECIO UNITARIO', 'TOTAL']],
       body: rows,
       foot: [
-        [{ content: 'SUBTOTAL', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold' } }, `$ ${subtotal.toFixed(2)}`],
-        [{ content: 'DESCUENTO', colSpan: 4, styles: { halign: 'right' } }, '$ 0.00'],
         [
-          { content: 'TOTAL', colSpan: 4, styles: { halign: 'right', fontStyle: 'bold', fillColor: navy, textColor: white } },
-          { content: `$ ${subtotal.toFixed(2)}`, styles: { fontStyle: 'bold', fillColor: navy, textColor: white } },
+          {
+            content: 'SUBTOTAL',
+            colSpan: 4,
+            styles: { halign: 'right', fontStyle: 'bold' },
+          },
+          `$ ${subtotal.toFixed(2)}`,
+        ],
+        [
+          { content: 'DESCUENTO', colSpan: 4, styles: { halign: 'right' } },
+          '$ 0.00',
+        ],
+        [
+          {
+            content: 'TOTAL',
+            colSpan: 4,
+            styles: {
+              halign: 'right',
+              fontStyle: 'bold',
+              fillColor: navy,
+              textColor: white,
+            },
+          },
+          {
+            content: `$ ${subtotal.toFixed(2)}`,
+            styles: { fontStyle: 'bold', fillColor: navy, textColor: white },
+          },
         ],
       ],
-      headStyles: { fillColor: navy, textColor: white, fontStyle: 'bold', fontSize: 9 },
+      headStyles: {
+        fillColor: navy,
+        textColor: white,
+        fontStyle: 'bold',
+        fontSize: 9,
+      },
       bodyStyles: { fontSize: 8, minCellHeight: 7 },
       footStyles: { fontSize: 8 },
       columnStyles: {
@@ -361,7 +427,11 @@ export class PurchaseUpdInsComponent {
     doc.setTextColor(80, 80, 80);
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.text(this.formData.detalle || 'Sin comentarios adicionales.', margin + 3, finalY + 14);
+    doc.text(
+      this.formData.detalle || 'Sin comentarios adicionales.',
+      margin + 3,
+      finalY + 14,
+    );
 
     doc.save(`orden-compra-${this.formData.fecha || 'draft'}.pdf`);
   }

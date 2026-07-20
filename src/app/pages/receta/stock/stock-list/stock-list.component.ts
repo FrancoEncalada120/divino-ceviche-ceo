@@ -133,7 +133,7 @@ export class StockListComponent implements OnInit {
         text: this.searchText,
         dia_inventario: this.diaInventario || '',
         frecuencia_inventario: this.frecuenciaInventario || '',
-        location_id: this.userService.getUser()?.location_id || 0,
+        location_id: this.userService.getUser()?.location_id + '' || '',
       })
       .subscribe({
         next: (data) => {

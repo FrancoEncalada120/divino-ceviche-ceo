@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, map } from 'rxjs';
+import { Observable, map, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import {
   CalcularPrecioRequest,
@@ -31,9 +31,17 @@ export class InsumoService {
 
   // ─── GET todos ────────────────────────────────────────────
   getInsumoAll(params?: GetInsumosParams): Observable<DataResponse> {
+    console.log('URL:', this.apiUrl);
+    console.log('Params:', params);
+
     return this.http
       .get<ApiResponse<DataResponse>>(this.apiUrl, { params: params as any })
-      .pipe(map((res) => res?.data ?? { insumos: [], grupos: [] }));
+      .pipe(
+        tap((res) => {
+          console.log('Response:', res);
+        }),
+        map((res) => res?.data ?? { insumos: [], grupos: [] }),
+      );
   }
 
   // ─── GET por id ───────────────────────────────────────────
